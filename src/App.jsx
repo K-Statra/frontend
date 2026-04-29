@@ -1,37 +1,14 @@
 import { useEffect, useState } from "react";
 import { listBuyers } from "./apis/buyers.js";
 import { useAuthStore } from "./stores/authStore.js";
-import {
-  Link,
-  NavLink,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-import Overview from "./pages/Overview.jsx";
-import PartnerSearch from "./pages/PartnerSearch.jsx";
-import Partners from "./pages/Partners.jsx";
-import CompanyList from "./pages/CompanyList.jsx";
-import BuyerForm from "./pages/BuyerForm.jsx";
-import CompanyInputForm from "./pages/CompanyInputForm.jsx";
-import Matches from "./pages/Matches.jsx";
-import PaymentsPage from "./pages/PaymentsPage.jsx";
-import SchedulePage from "./pages/SchedulePage.jsx";
-import PaymentCheckout from "./pages/PaymentCheckout2.jsx";
-import PaymentStatus from "./pages/PaymentStatus.jsx";
-import AdminPayments from "./pages/AdminPayments.jsx";
-import AdminMatches from "./pages/AdminMatches.jsx";
-import AdminStats from "./pages/AdminStats.jsx";
-import ContactPage from "./pages/ContactPage.jsx";
-import About from "./pages/About.jsx";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./components/LanguageSwitcher.jsx";
-import FeedbackButton from "./components/FeedbackButton.jsx";
 import Button from "./components/Button.jsx";
 import Modal from "./components/Modal.jsx";
 import Footer from "./components/Footer.jsx";
 import { useI18n } from "./lib/i18n/I18nProvider.jsx";
 import { track } from "./lib/analytics.js";
+import AppRouter from "./router.jsx";
 
 const navItems = [
   { to: "/overview", key: "nav_overview" },
@@ -42,16 +19,6 @@ const navItems = [
 ];
 
 const notificationCount = 3;
-
-function NotFound() {
-  const location = useLocation();
-  return (
-    <div>
-      <h2>404</h2>
-      <p>Page not found: {location.pathname}</p>
-    </div>
-  );
-}
 
 export default function App() {
   const { t, lang } = useI18n();
@@ -359,29 +326,7 @@ export default function App() {
       </header>
 
       <main id="main-content" className="container">
-        <Routes>
-          <Route path="/" element={<PartnerSearch />} />
-          <Route path="/overview" element={<Overview />} />
-          <Route path="/dashboard" element={<Overview />} />{" "}
-          {/* Redirect or alias */}
-          <Route path="/analytics" element={<Overview />} />{" "}
-          {/* Redirect or alias */}
-          <Route path="/partners" element={<Partners />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/payments" element={<PaymentsPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/companies" element={<CompanyList />} />
-          <Route path="/companies/new" element={<CompanyInputForm />} />
-          <Route path="/buyers/new" element={<BuyerForm />} />
-          <Route path="/matches" element={<Matches />} />
-          <Route path="/matches/detail" element={<ContactPage />} />
-          <Route path="/payments/checkout/:id" element={<PaymentCheckout />} />
-          <Route path="/payments/:id" element={<PaymentStatus />} />
-          <Route path="/admin/payments" element={<AdminPayments />} />
-          <Route path="/admin/matches" element={<AdminMatches />} />
-          <Route path="/admin/stats" element={<AdminStats />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppRouter />
       </main>
       <Footer />
 
