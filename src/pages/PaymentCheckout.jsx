@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { newIdemKey } from "../apis/client";
 import Modal from "../components/Modal";
 import { buildGuideFromInvoice } from "../lib/guide";
@@ -12,12 +12,15 @@ import {
   useCreatePayment,
 } from "../hooks/usePayments";
 
-export default function PaymentCheckout() {
+export default function PaymentCheckout2() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useI18n();
   const [msg, setMsg] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [editAmount, setEditAmount] = useState("");
+  const [editCurrency, setEditCurrency] = useState("");
 
   const pollMs = Math.max(
     1000,
@@ -49,6 +52,24 @@ export default function PaymentCheckout() {
     [deeplink, qrBase],
   );
 
+  const currencies = useMemo(() => {
+    const raw = import.meta?.env?.VITE_PAYMENT_CURRENCIES || "XRP,USD,KRW";
+    return String(raw)
+      .split(",")
+      .map((s) => s.trim().toUpperCase())
+      .filter(Boolean);
+  }, []);
+
+  const currencyOptions = useMemo(
+    () =>
+      currencies.map((c) => ({
+        code: c,
+        label: (t && t(`currency_name_${c}`)) || c,
+        desc: (t && t(`currency_desc_${c}`)) || "",
+      })),
+    [currencies, t],
+  );
+
   const { mutateAsync: doRefresh, isPending: refreshing } = useRefreshPayment();
   const { mutateAsync: doCreate, isPending: creating } = useCreatePayment();
 
@@ -66,22 +87,31 @@ export default function PaymentCheckout() {
     if (!data) return;
     setMsg("");
     try {
+      const amt = Number(editAmount || data.amount);
+      if (!Number.isFinite(amt) || amt <= 0)
+        throw new Error(t("invalid_amount"));
+      const curr = String(editCurrency || data.currency || "XRP").toUpperCase();
       const payload = {
-        amount: data.amount,
-        currency: data.currency,
+        amount: amt,
+        currency: curr,
         buyerId: data.buyerId,
         companyId: data.companyId,
         memo: data.memo,
       };
       const res = await doCreate({ payload, idemKey: newIdemKey() });
-      const newId = res?.payment?._id || res?._id;
-      if (newId) navigate(`/payments/checkout/${newId}`);
+      const newId = res?._id;
+      if (newId)
+        navigate(`/payments/checkout/${newId}`, { state: { prevId: id } });
     } catch (e) {
       setMsg(`${t("refresh_failed")}: ${e?.message || ""}`.trim());
     }
   }
 
   function openConfirm() {
+    if (data) {
+      setEditAmount(String(data.amount ?? ""));
+      setEditCurrency(String(data.currency || "XRP"));
+    }
     setConfirmOpen(true);
   }
   function closeConfirm() {
@@ -191,6 +221,13 @@ export default function PaymentCheckout() {
               </button>
             </div>
           )}
+          {location?.state?.prevId && (
+            <div style={{ marginTop: 8 }}>
+              <a href={`/payments/${location.state.prevId}`}>
+                {t("compare_prev_payment")}
+              </a>
+            </div>
+          )}
         </div>
       )}
 
@@ -216,17 +253,47 @@ export default function PaymentCheckout() {
         <div>
           <p>{t("confirm_create_text")}</p>
           {data && (
-            <ul>
-              <li>
-                {t("state")}: {data.status}
-              </li>
-              <li>
-                Amount: {data.amount} {data.currency}
-              </li>
-            </ul>
+            <div>
+              <div className="row" style={{ gap: 8, alignItems: "center" }}>
+                <label
+                  style={{ display: "flex", alignItems: "center", gap: 6 }}
+                >
+                  <span>{t("amount_label")}</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.000001"
+                    value={editAmount}
+                    onChange={(e) => setEditAmount(e.target.value)}
+                    placeholder={t("amount_placeholder")}
+                    aria-label={t("amount_label")}
+                  />
+                </label>
+                <select
+                  value={editCurrency}
+                  onChange={(e) => setEditCurrency(e.target.value)}
+                  title={
+                    currencyOptions.find((o) => o.code === editCurrency)
+                      ?.desc || ""
+                  }
+                >
+                  {currencyOptions.map((opt) => (
+                    <option key={opt.code} value={opt.code} title={opt.desc}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {currencyOptions.find((o) => o.code === editCurrency)?.desc && (
+                <div className="muted" style={{ marginTop: 6 }}>
+                  {currencyOptions.find((o) => o.code === editCurrency)?.desc}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </Modal>
+
       {data &&
         !data?.invoice?.deeplink &&
         !data?.invoice?.qr &&
@@ -235,7 +302,8 @@ export default function PaymentCheckout() {
           <IssuedCurrencyGuide currency={data.currency} />
         )}
       <p>
-        <a href={`/payments/${id}`}>{t("payment_status_title")}</a>
+        {t("payment_status_title")}{" "}
+        <a href={`/payments/${id}`}>{`/payments/${id}`}</a>
       </p>
     </div>
   );

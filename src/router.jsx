@@ -9,7 +9,7 @@ import CompanyInputForm from "./pages/CompanyInputForm.jsx";
 import Matches from "./pages/Matches.jsx";
 import PaymentsPage from "./pages/PaymentsPage.jsx";
 import SchedulePage from "./pages/SchedulePage.jsx";
-import PaymentCheckout from "./pages/PaymentCheckout2.jsx";
+import PaymentCheckout from "./pages/PaymentCheckout.jsx";
 import PaymentStatus from "./pages/PaymentStatus.jsx";
 import AdminPayments from "./pages/AdminPayments.jsx";
 import AdminMatches from "./pages/AdminMatches.jsx";
