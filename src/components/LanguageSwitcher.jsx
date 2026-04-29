@@ -1,16 +1,16 @@
-import { useI18n } from '../i18n/I18nProvider'
+import { useI18n } from "../lib/i18n/I18nProvider";
 
 const languageOptions = [
-  { code: 'ko', label: '한국어' },
-  { code: 'en', label: 'English' },
-  { code: 'ja', label: '日本語' },
-  { code: 'zh-Hans', label: '简体中文' },
-  { code: 'zh-Hant', label: '繁體中文' },
-  { code: 'de', label: 'Deutsch' },
-]
+  { code: "ko", label: "한국어" },
+  { code: "en", label: "English" },
+  { code: "ja", label: "日本語" },
+  { code: "zh-Hans", label: "简体中文" },
+  { code: "zh-Hant", label: "繁體中文" },
+  { code: "de", label: "Deutsch" },
+];
 
 export default function LanguageSwitcher() {
-  const { lang, setLang } = useI18n()
+  const { lang, setLang } = useI18n();
   return (
     <select
       className="language-select"
@@ -24,5 +24,5 @@ export default function LanguageSwitcher() {
         </option>
       ))}
     </select>
-  )
+  );
 }

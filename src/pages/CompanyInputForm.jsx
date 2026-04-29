@@ -1,10 +1,12 @@
 ﻿import { useState } from "react";
-import Button from "../ui/Button";
-import { Field, TextInput, TextArea } from "../ui/Input";
+import Button from "../components/Button";
+import { Field, TextInput, TextArea } from "../components/Input";
 
 // Hardcoded fallback for production
-const PROD_API = 'https://web-production-9ceeb.up.railway.app';
-const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? PROD_API : "http://localhost:4000");
+const PROD_API = "https://web-production-9ceeb.up.railway.app";
+const API_BASE =
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.PROD ? PROD_API : "http://localhost:4000");
 
 async function uploadCompanyImage(companyId, file, companyName) {
   const formData = new FormData();
@@ -19,7 +21,7 @@ async function uploadCompanyImage(companyId, file, companyName) {
   let data = {};
   try {
     data = await res.json();
-  } catch (_) { }
+  } catch (_) {}
   if (!res.ok) {
     throw new Error(data.message || "Image upload failed");
   }
@@ -57,10 +59,14 @@ export default function CompanyInputForm() {
   function validate() {
     const e = {};
     if (!form.name.trim()) e.name = "Name is required.";
-    if (form.offerings && /,,/.test(form.offerings)) e.offerings = "Remove duplicate commas (,).";
-    if (form.needs && /,,/.test(form.needs)) e.needs = "Remove duplicate commas (,).";
-    if (form.tags && /,,/.test(form.tags)) e.tags = "Remove duplicate commas (,).";
-    if (form.videoUrl && !/^https?:\/\//i.test(form.videoUrl.trim())) e.videoUrl = "Use a valid http(s) link.";
+    if (form.offerings && /,,/.test(form.offerings))
+      e.offerings = "Remove duplicate commas (,).";
+    if (form.needs && /,,/.test(form.needs))
+      e.needs = "Remove duplicate commas (,).";
+    if (form.tags && /,,/.test(form.tags))
+      e.tags = "Remove duplicate commas (,).";
+    if (form.videoUrl && !/^https?:\/\//i.test(form.videoUrl.trim()))
+      e.videoUrl = "Use a valid http(s) link.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -98,7 +104,7 @@ export default function CompanyInputForm() {
       let created = {};
       try {
         created = await res.json();
-      } catch (_) { }
+      } catch (_) {}
       if (!res.ok) throw new Error(created.message || "failed");
       if (!created || !created._id) {
         throw new Error("Invalid response from server");
@@ -114,9 +120,9 @@ export default function CompanyInputForm() {
       } else if (form.imageUrl) {
         try {
           await fetch(`${API_BASE}/companies/${created._id}/images`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: form.imageUrl })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: form.imageUrl }),
           });
           successMsg = "회사 정보와 이미지 URL이 저장되었습니다.";
         } catch (err) {
@@ -137,24 +143,58 @@ export default function CompanyInputForm() {
       <h2>Company</h2>
       <form onSubmit={onSubmit} className="form">
         <Field label="Name" error={errors.name}>
-          <TextInput name="name" value={form.name} onChange={onChange} required error={!!errors.name} />
+          <TextInput
+            name="name"
+            value={form.name}
+            onChange={onChange}
+            required
+            error={!!errors.name}
+          />
         </Field>
         <Field label="Industry">
-          <TextInput name="industry" value={form.industry} onChange={onChange} />
+          <TextInput
+            name="industry"
+            value={form.industry}
+            onChange={onChange}
+          />
         </Field>
         <Field label="Offerings (comma separated)" error={errors.offerings}>
-          <TextInput name="offerings" value={form.offerings} onChange={onChange} error={!!errors.offerings} />
+          <TextInput
+            name="offerings"
+            value={form.offerings}
+            onChange={onChange}
+            error={!!errors.offerings}
+          />
         </Field>
         <Field label="Needs (comma separated)" error={errors.needs}>
-          <TextInput name="needs" value={form.needs} onChange={onChange} error={!!errors.needs} />
+          <TextInput
+            name="needs"
+            value={form.needs}
+            onChange={onChange}
+            error={!!errors.needs}
+          />
         </Field>
         <Field label="Tags (comma separated)" error={errors.tags}>
-          <TextInput name="tags" value={form.tags} onChange={onChange} error={!!errors.tags} />
+          <TextInput
+            name="tags"
+            value={form.tags}
+            onChange={onChange}
+            error={!!errors.tags}
+          />
         </Field>
         <Field label="Profile">
-          <TextArea name="profileText" rows={4} value={form.profileText} onChange={onChange} />
+          <TextArea
+            name="profileText"
+            rows={4}
+            value={form.profileText}
+            onChange={onChange}
+          />
         </Field>
-        <Field label="Video URL (YouTube or similar)" hint="Optional" error={errors.videoUrl}>
+        <Field
+          label="Video URL (YouTube or similar)"
+          hint="Optional"
+          error={errors.videoUrl}
+        >
           <TextInput
             name="videoUrl"
             value={form.videoUrl}
@@ -163,11 +203,24 @@ export default function CompanyInputForm() {
             placeholder="https://www.youtube.com/watch?v=..."
           />
         </Field>
-        <Field label="대표 상품 이미지 업로드" hint="가능하면 최신 이미지를 첨부해 주세요. 미첨부 시 기본 이미지가 사용됩니다.">
-          <input name="imageFile" type="file" accept="image/*" onChange={onImageChange} />
+        <Field
+          label="대표 상품 이미지 업로드"
+          hint="가능하면 최신 이미지를 첨부해 주세요. 미첨부 시 기본 이미지가 사용됩니다."
+        >
+          <input
+            name="imageFile"
+            type="file"
+            accept="image/*"
+            onChange={onImageChange}
+          />
         </Field>
         <Field label="Or Image URL" hint="Direct link to an image">
-          <TextInput name="imageUrl" value={form.imageUrl || ''} onChange={onChange} placeholder="https://example.com/image.jpg" />
+          <TextInput
+            name="imageUrl"
+            value={form.imageUrl || ""}
+            onChange={onChange}
+            placeholder="https://example.com/image.jpg"
+          />
         </Field>
         {msg && <div className="muted">{msg}</div>}
         <Button loading={saving} disabled={saving}>

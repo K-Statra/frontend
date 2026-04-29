@@ -1,132 +1,149 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { api } from '../api.js'
-import CompanyCard from '../ui/CompanyCard.jsx'
-import Modal from '../ui/Modal.jsx'
-import Button from '../ui/Button.jsx'
-import Badge from '../ui/Badge.jsx'
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { api } from "../api.js";
+import CompanyCard from "../components/CompanyCard.jsx";
+import Modal from "../components/Modal.jsx";
+import Button from "../components/Button.jsx";
+import Badge from "../components/Badge.jsx";
 
-const PAGE_SIZE = 9
+const PAGE_SIZE = 9;
 
-function getVideoEmbedUrl(url = '') {
-  const trimmed = url.trim()
-  if (!trimmed) return ''
-  const yt = trimmed.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/i)
+function getVideoEmbedUrl(url = "") {
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  const yt = trimmed.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/i,
+  );
   if (yt) {
-    return `https://www.youtube.com/embed/${yt[1]}`
+    return `https://www.youtube.com/embed/${yt[1]}`;
   }
-  const embed = trimmed.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/i)
-  if (embed) return trimmed
-  return ''
+  const embed = trimmed.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/i);
+  if (embed) return trimmed;
+  return "";
 }
 
 export default function CompanyList() {
-  const [form, setForm] = useState({ q: '', industry: '', tag: '', sortBy: 'updatedAt', order: 'desc' })
-  const [filters, setFilters] = useState(form)
-  const [page, setPage] = useState(1)
-  const [companies, setCompanies] = useState([])
-  const [meta, setMeta] = useState({ total: 0, totalPages: 1 })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [selected, setSelected] = useState(null)
-  const [pendingHighlight, setPendingHighlight] = useState('')
-  const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
+  const [form, setForm] = useState({
+    q: "",
+    industry: "",
+    tag: "",
+    sortBy: "updatedAt",
+    order: "desc",
+  });
+  const [filters, setFilters] = useState(form);
+  const [page, setPage] = useState(1);
+  const [companies, setCompanies] = useState([]);
+  const [meta, setMeta] = useState({ total: 0, totalPages: 1 });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState(null);
+  const [pendingHighlight, setPendingHighlight] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const highlight = searchParams.get('companyId') || ''
-    if (highlight) setPendingHighlight(highlight)
-  }, [])
+    const highlight = searchParams.get("companyId") || "";
+    if (highlight) setPendingHighlight(highlight);
+  }, []);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
     async function load() {
-      setLoading(true)
-      setError('')
+      setLoading(true);
+      setError("");
       try {
         const res = await api.listCompanies({
           ...filters,
           page,
           limit: PAGE_SIZE,
-        })
-        if (cancelled) return
-        setCompanies(res?.data || [])
+        });
+        if (cancelled) return;
+        setCompanies(res?.data || []);
         setMeta({
           total: Number(res?.total || 0),
           totalPages: Math.max(1, Number(res?.totalPages || 1)),
-        })
+        });
       } catch (err) {
-        if (!cancelled) setError(err.message || 'Failed to load companies')
+        if (!cancelled) setError(err.message || "Failed to load companies");
       } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) setLoading(false);
       }
     }
-    load()
+    load();
     return () => {
-      cancelled = true
-    }
-  }, [filters, page])
+      cancelled = true;
+    };
+  }, [filters, page]);
 
   useEffect(() => {
-    if (!pendingHighlight) return
-    const match = companies.find((c) => c._id === pendingHighlight)
+    if (!pendingHighlight) return;
+    const match = companies.find((c) => c._id === pendingHighlight);
     if (match) {
-      setSelected(match)
-      setPendingHighlight('')
+      setSelected(match);
+      setPendingHighlight("");
     }
-  }, [companies, pendingHighlight])
+  }, [companies, pendingHighlight]);
 
   function onSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     setFilters({
       q: form.q.trim(),
       industry: form.industry.trim(),
       tag: form.tag.trim(),
       sortBy: form.sortBy,
       order: form.order,
-    })
-    setPage(1)
+    });
+    setPage(1);
   }
 
   function resetFilters() {
-    const next = { q: '', industry: '', tag: '', sortBy: 'updatedAt', order: 'desc' }
-    setForm(next)
-    setFilters(next)
-    setPage(1)
+    const next = {
+      q: "",
+      industry: "",
+      tag: "",
+      sortBy: "updatedAt",
+      order: "desc",
+    };
+    setForm(next);
+    setFilters(next);
+    setPage(1);
   }
 
   const totalLabel = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE + 1
-    const end = Math.min(meta.total, page * PAGE_SIZE)
-    if (meta.total === 0) return 'No companies yet.'
-    return `Showing ${start}-${end} of ${meta.total}`
-  }, [meta.total, page])
+    const start = (page - 1) * PAGE_SIZE + 1;
+    const end = Math.min(meta.total, page * PAGE_SIZE);
+    if (meta.total === 0) return "No companies yet.";
+    return `Showing ${start}-${end} of ${meta.total}`;
+  }, [meta.total, page]);
 
   function openDetails(company) {
-    setSelected(company)
+    setSelected(company);
     setSearchParams((prev) => {
-      const next = new URLSearchParams(prev)
-      next.set('companyId', company._id)
-      return next
-    })
+      const next = new URLSearchParams(prev);
+      next.set("companyId", company._id);
+      return next;
+    });
   }
 
   function closeDetails() {
-    setSelected(null)
+    setSelected(null);
     setSearchParams((prev) => {
-      const next = new URLSearchParams(prev)
-      next.delete('companyId')
-      return next
-    })
+      const next = new URLSearchParams(prev);
+      next.delete("companyId");
+      return next;
+    });
   }
 
-  const selectedVideoEmbed = useMemo(() => getVideoEmbedUrl(selected?.videoUrl || ''), [selected?.videoUrl])
+  const selectedVideoEmbed = useMemo(
+    () => getVideoEmbedUrl(selected?.videoUrl || ""),
+    [selected?.videoUrl],
+  );
 
   return (
     <div>
       <h2>Companies</h2>
       <form className="form" onSubmit={onSubmit}>
-        <div className="row gap-4" style={{ flexWrap: 'wrap' }}>
+        <div className="row gap-4" style={{ flexWrap: "wrap" }}>
           <input
             placeholder="Search name or profile"
             value={form.q}
@@ -135,19 +152,27 @@ export default function CompanyList() {
           <input
             placeholder="Industry"
             value={form.industry}
-            onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, industry: e.target.value }))
+            }
           />
           <input
             placeholder="Tag"
             value={form.tag}
             onChange={(e) => setForm((f) => ({ ...f, tag: e.target.value }))}
           />
-          <select value={form.sortBy} onChange={(e) => setForm((f) => ({ ...f, sortBy: e.target.value }))}>
+          <select
+            value={form.sortBy}
+            onChange={(e) => setForm((f) => ({ ...f, sortBy: e.target.value }))}
+          >
             <option value="updatedAt">Recently updated</option>
             <option value="name">Name (A-Z)</option>
             <option value="nameNumeric">Name (numeric aware)</option>
           </select>
-          <select value={form.order} onChange={(e) => setForm((f) => ({ ...f, order: e.target.value }))}>
+          <select
+            value={form.order}
+            onChange={(e) => setForm((f) => ({ ...f, order: e.target.value }))}
+          >
             <option value="desc">Desc</option>
             <option value="asc">Asc</option>
           </select>
@@ -156,7 +181,12 @@ export default function CompanyList() {
           <Button type="submit" loading={loading}>
             Search
           </Button>
-          <Button type="button" variant="ghost" onClick={resetFilters} disabled={loading}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={resetFilters}
+            disabled={loading}
+          >
             Reset
           </Button>
         </div>
@@ -179,7 +209,9 @@ export default function CompanyList() {
             key={company._id}
             company={company}
             onDetails={() => openDetails(company)}
-            onRequestPayment={() => navigate(`/matches?companyId=${company._id}`)}
+            onRequestPayment={() =>
+              navigate(`/matches?companyId=${company._id}`)
+            }
           />
         ))}
       </div>
@@ -207,11 +239,18 @@ export default function CompanyList() {
       <Modal open={!!selected} onClose={closeDetails} title={selected?.name}>
         {selected && (
           <div>
-            <div className="muted mb-2">{selected.industry || 'Industry TBD'}</div>
+            <div className="muted mb-2">
+              {selected.industry || "Industry TBD"}
+            </div>
             {selected.images && selected.images.length > 0 && (
-              <div className="row gap-2 mb-3" style={{ overflowX: 'auto' }}>
+              <div className="row gap-2 mb-3" style={{ overflowX: "auto" }}>
                 {selected.images.map((img, i) => (
-                  <img key={i} src={img.url} alt={img.alt || selected.name} style={{ height: 150, borderRadius: 8 }} />
+                  <img
+                    key={i}
+                    src={img.url}
+                    alt={img.alt || selected.name}
+                    style={{ height: 150, borderRadius: 8 }}
+                  />
                 ))}
               </div>
             )}
@@ -235,7 +274,7 @@ export default function CompanyList() {
             {(selected.tags || []).length > 0 && (
               <section className="mt-3">
                 <strong>Tags</strong>
-                <div className="row gap-2" style={{ flexWrap: 'wrap' }}>
+                <div className="row gap-2" style={{ flexWrap: "wrap" }}>
                   {selected.tags.map((tag) => (
                     <Badge key={tag} tone="primary">
                       {tag}
@@ -266,7 +305,11 @@ export default function CompanyList() {
               </section>
             )}
             <div className="row gap-4 mt-4">
-              <Button onClick={() => navigate(`/matches?companyId=${selected._id}`)}>See matches</Button>
+              <Button
+                onClick={() => navigate(`/matches?companyId=${selected._id}`)}
+              >
+                See matches
+              </Button>
               <Button variant="secondary" onClick={closeDetails}>
                 Close
               </Button>
@@ -275,5 +318,5 @@ export default function CompanyList() {
         )}
       </Modal>
     </div>
-  )
+  );
 }
