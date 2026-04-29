@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import { api } from "../api.js";
+import {
+  analyticsDashboard,
+  analyticsTopIndustries,
+  analyticsRecentTransactions,
+} from "../apis/analytics";
 import { track } from "../lib/analytics.js";
 
 const statSeed = [
@@ -109,7 +113,7 @@ export default function Overview() {
     let mounted = true;
 
     // Fetch Dashboard Stats
-    api.analyticsDashboard().then((data) => {
+    analyticsDashboard().then((data) => {
       if (!mounted || !data) return;
       setStats((prev) =>
         prev.map((card) => ({
@@ -120,7 +124,7 @@ export default function Overview() {
     });
 
     // Fetch Top Industries
-    api.analyticsTopIndustries().then((data) => {
+    analyticsTopIndustries().then((data) => {
       if (!mounted || !Array.isArray(data) || data.length === 0) return;
       setIndustries(
         data.slice(0, 3).map((item, index) => ({
@@ -136,7 +140,7 @@ export default function Overview() {
     });
 
     // Fetch Recent Transactions
-    api.analyticsRecentTransactions().then((data) => {
+    analyticsRecentTransactions().then((data) => {
       if (!mounted || !Array.isArray(data)) return;
       setTransactions(
         data.slice(0, 5).map((item) => ({

@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { api, newIdemKey } from "../api";
+import { getPayment, createPayment, refreshPayment } from "../apis/payments";
+import { newIdemKey } from "../apis/client";
 import Modal from "../components/Modal";
 import { buildGuideFromInvoice } from "../lib/guide";
 import { useCountdown } from "../hooks/useCountdown";
@@ -62,7 +63,7 @@ export default function PaymentCheckout2() {
     async function load() {
       setLoading(true);
       try {
-        const res = await api.getPayment(id);
+        const res = await getPayment(id);
         setData(res);
       } finally {
         setLoading(false);
@@ -76,7 +77,7 @@ export default function PaymentCheckout2() {
     if (left != null && left <= 0) return;
     const tmr = setInterval(async () => {
       try {
-        const res = await api.getPayment(id);
+        const res = await getPayment(id);
         setData(res);
       } catch (_) {}
     }, pollMs);
@@ -110,7 +111,7 @@ export default function PaymentCheckout2() {
         memo: data.memo,
       };
       const idem = newIdemKey();
-      const res = await api.createPayment(payload, idem);
+      const res = await createPayment(payload, idem);
       const newId = res?._id;
       if (newId)
         navigate(`/payments/checkout/${newId}`, { state: { prevId: id } });
@@ -137,7 +138,7 @@ export default function PaymentCheckout2() {
     setRefreshing(true);
     setMsg("");
     try {
-      const res = await api.refreshPayment(id);
+      const res = await refreshPayment(id);
       setData(res);
     } catch (e) {
       setMsg(`${t("refresh_failed")}: ${e?.message || ""}`.trim());

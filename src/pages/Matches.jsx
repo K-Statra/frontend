@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api, newIdemKey } from "../api.js";
+import { getMatches } from "../apis/matches";
+import { createPayment } from "../apis/payments";
+import { newIdemKey } from "../apis/client";
 import CurrencySelect from "../components/CurrencySelect.jsx";
 import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
@@ -53,7 +55,7 @@ export default function Matches() {
       setError("");
       setMessage("");
       try {
-        const res = await api.getMatches(buyerIdValue, limitValue);
+        const res = await getMatches(buyerIdValue, limitValue);
         setMatches(res?.data || []);
         setActiveBuyerId(buyerIdValue);
         if (
@@ -111,7 +113,7 @@ export default function Matches() {
         buyerId: activeBuyerId,
         companyId,
       };
-      const res = await api.createPayment(payload, newIdemKey());
+      const res = await createPayment(payload, newIdemKey());
       const pid = res?._id;
       if (pid) navigate(`/payments/checkout/${pid}`);
     } catch (err) {

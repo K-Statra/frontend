@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { api } from "../api";
+import {
+  listConsultations,
+  createConsultation,
+  updateConsultationStatus,
+} from "../apis/consultants";
 import { useI18n } from "../lib/i18n/I18nProvider";
 import Button from "../components/Button";
 
@@ -9,15 +13,12 @@ export default function SchedulePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Optionally fetch by buyerId if logged in, fetching all for admin demo
-    api
-      .listConsultations()
+    listConsultations()
       .then((res) => {
         setConsultations(Array.isArray(res) ? res : []);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Consultation API error:", err);
+      .catch(() => {
         setLoading(false);
       });
   }, []);

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { api, newIdemKey } from "../api";
+import { getMatches } from "../apis/matches";
+import { createPayment } from "../apis/payments";
+import { newIdemKey } from "../apis/client";
 import CurrencySelect from "../components/CurrencySelect";
 import Button from "../components/Button";
 
@@ -21,7 +23,7 @@ export default function ContactPage() {
       if (!valid) return;
       setLoading(true);
       try {
-        const res = await api.getMatches(buyerId, 50);
+        const res = await getMatches(buyerId, 50);
         let arr = res?.data || [];
         if (companyId && /^[a-f0-9]{24}$/i.test(companyId)) {
           arr = arr.filter((r) => r.company && r.company._id === companyId);
@@ -111,7 +113,7 @@ export default function ContactPage() {
                       ? companyId
                       : r.company._id;
                   setErrorMsg("");
-                  const res = await api.createPayment(
+                  const res = await createPayment(
                     {
                       amount: 1,
                       currency,

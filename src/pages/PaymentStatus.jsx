@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "../api";
+import { getPayment, refreshPayment } from "../apis/payments";
 import { useI18n } from "../lib/i18n/I18nProvider";
 
 export default function PaymentStatus() {
@@ -14,7 +14,7 @@ export default function PaymentStatus() {
     setLoading(true);
     setError("");
     try {
-      const res = await api.getPayment(id);
+      const res = await getPayment(id);
       setData(res);
     } catch (e) {
       setError(e.message);
@@ -29,7 +29,7 @@ export default function PaymentStatus() {
 
   async function refresh() {
     try {
-      const res = await api.refreshPayment(id);
+      const res = await refreshPayment(id);
       setData(res);
     } catch (e) {
       alert(e.message);

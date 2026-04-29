@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api.js";
+import { createBuyer } from "../apis/buyers";
 import Button from "../components/Button.jsx";
 import { Field, TextArea, TextInput } from "../components/Input.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
@@ -50,7 +50,7 @@ export default function BuyerForm() {
         tags: toList(values.tags),
         profileText: values.profileText.trim(),
       };
-      const res = await api.createBuyer(payload);
+      const res = await createBuyer(payload);
       const id = res?._id;
       setSuccess("Saved. Redirecting to matches...");
       setValues(initialState);

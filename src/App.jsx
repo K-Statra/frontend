@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "./api.js";
+import { listBuyers } from "./apis/buyers.js";
 import {
   Link,
   NavLink,
@@ -180,7 +180,7 @@ export default function App() {
 
     try {
       // Demo: fetch the first buyer to simulate login
-      const res = await api.listBuyers({ limit: 1 });
+      const res = await listBuyers({ limit: 1 });
       const buyer = res.data?.[0];
 
       if (buyer) {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { api } from "../api.js";
+import { listCompanies } from "../apis/companies";
 import CompanyCard from "../components/CompanyCard.jsx";
 import Modal from "../components/Modal.jsx";
 import Button from "../components/Button.jsx";
@@ -52,7 +52,7 @@ export default function CompanyList() {
       setLoading(true);
       setError("");
       try {
-        const res = await api.listCompanies({
+        const res = await listCompanies({
           ...filters,
           page,
           limit: PAGE_SIZE,

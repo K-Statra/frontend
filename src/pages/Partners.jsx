@@ -3,7 +3,8 @@ import Button from "../components/Button.jsx";
 import Modal from "../components/Modal.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import { track } from "../lib/analytics.js";
-import { api } from "../api.js";
+import { listBuyers } from "../apis/buyers";
+import { getMatches } from "../apis/matches";
 
 function formatLocation(company = {}) {
   const loc = company.location || {};
@@ -39,8 +40,7 @@ export default function Partners() {
 
   useEffect(() => {
     let cancelled = false;
-    api
-      .listBuyers({ limit: 5 })
+    listBuyers({ limit: 5 })
       .then((res) => {
         if (cancelled) return;
         const items = res?.data || [];
@@ -71,8 +71,7 @@ export default function Partners() {
     }
     let cancelled = false;
     setLoadingMatches(true);
-    api
-      .getMatches(selectedBuyerId, 6)
+    getMatches(selectedBuyerId, 6)
       .then((res) => {
         if (cancelled) return;
         setMatches(res?.data || []);

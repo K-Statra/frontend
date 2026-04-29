@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useI18n } from "../lib/i18n/I18nProvider";
 import { useDatePreset } from "../hooks/useDatePreset";
 import { useSearchParams } from "react-router-dom";
-import { api } from "../api";
+import {
+  adminListPayments,
+  adminExportPayments,
+  adminGetPaymentStats,
+} from "../apis/admin";
 
 export default function AdminPayments() {
   const { t } = useI18n();
@@ -68,7 +72,7 @@ export default function AdminPayments() {
     setLoading(true);
     setError("");
     try {
-      const res = await api.adminListPayments({
+      const res = await adminListPayments({
         token,
         page: p,
         limit: 20,
@@ -91,7 +95,7 @@ export default function AdminPayments() {
   async function exportCsv() {
     if (!token) return;
     try {
-      const blob = await api.adminExportPayments({
+      const blob = await adminExportPayments({
         token,
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)),
       });
@@ -345,7 +349,7 @@ export default function AdminPayments() {
             updateQuery({ preset: presetSel });
             await load(1);
             try {
-              const s = await api.adminGetPaymentStats({
+              const s = await adminGetPaymentStats({
                 token,
                 from: filters.from,
                 to: filters.to,
@@ -391,7 +395,7 @@ export default function AdminPayments() {
             const r = preset(1);
             await load(1);
             try {
-              const s = await api.adminGetPaymentStats({
+              const s = await adminGetPaymentStats({
                 token,
                 from: r.from,
                 to: r.to,
@@ -416,7 +420,7 @@ export default function AdminPayments() {
             const r = preset(7);
             await load(1);
             try {
-              const s = await api.adminGetPaymentStats({
+              const s = await adminGetPaymentStats({
                 token,
                 from: r.from,
                 to: r.to,
@@ -441,7 +445,7 @@ export default function AdminPayments() {
             const r = preset(30);
             await load(1);
             try {
-              const s = await api.adminGetPaymentStats({
+              const s = await adminGetPaymentStats({
                 token,
                 from: r.from,
                 to: r.to,
@@ -472,7 +476,7 @@ export default function AdminPayments() {
             updateQuery({});
             await load(1);
             try {
-              const s = await api.adminGetPaymentStats({
+              const s = await adminGetPaymentStats({
                 token,
                 from,
                 to,

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import { track } from "../lib/analytics.js";
-import { api } from "../api.js";
+import { analyticsDashboard } from "../apis/analytics";
+import { getPaymentSummary, getRecentPayments } from "../apis/payments";
 
 const paymentStatSeed = [
   {
@@ -95,7 +96,7 @@ export default function PaymentsPage() {
 
   useEffect(() => {
     let mounted = true;
-    api.analyticsDashboard().then((data) => {
+    analyticsDashboard().then((data) => {
       if (!mounted || !data) return;
       setPaymentStats((prev) =>
         prev.map((card) => {
@@ -109,7 +110,7 @@ export default function PaymentsPage() {
         }),
       );
     });
-    api.getPaymentSummary().then((data) => {
+    getPaymentSummary().then((data) => {
       if (!mounted || !data) return;
       setTransactionStats((prev) =>
         prev.map((card) => {
@@ -126,7 +127,7 @@ export default function PaymentsPage() {
         }),
       );
     });
-    api.getRecentPayments().then((data) => {
+    getRecentPayments().then((data) => {
       if (!mounted || !Array.isArray(data)) return;
       setTransactions(
         data.map((item) => ({
