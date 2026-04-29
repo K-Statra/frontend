@@ -6,6 +6,7 @@ import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
 import { useCreatePayment } from "../hooks/usePayments";
 import { useMatches } from "../hooks/useMatches";
+import { useAuthStore } from "../stores/authStore";
 
 function isObjectId(value) {
   return /^[a-f0-9]{24}$/i.test(String(value || "").trim());
@@ -13,10 +14,9 @@ function isObjectId(value) {
 
 export default function Matches() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { buyerId: storedBuyerId } = useAuthStore();
   const [buyerInput, setBuyerInput] = useState(
-    searchParams.get("buyerId") ||
-      localStorage.getItem("kstatra_buyer_id") ||
-      "",
+    searchParams.get("buyerId") || storedBuyerId || "",
   );
   const [limitInput, setLimitInput] = useState(() => {
     const raw = Number(searchParams.get("limit") || 5);
@@ -28,8 +28,7 @@ export default function Matches() {
   const [currency, setCurrency] = useState("XRP");
   const [message, setMessage] = useState("");
   const [submittedParams, setSubmittedParams] = useState(() => {
-    const buyerId =
-      searchParams.get("buyerId") || localStorage.getItem("kstatra_buyer_id");
+    const buyerId = searchParams.get("buyerId") || storedBuyerId;
     return isObjectId(buyerId) ? { buyerId, limit: 5 } : null;
   });
   const [creatingPaymentId, setCreatingPaymentId] = useState("");

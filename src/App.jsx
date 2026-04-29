@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { listBuyers } from "./apis/buyers.js";
+import { useAuthStore } from "./stores/authStore.js";
 import {
   Link,
   NavLink,
@@ -53,8 +54,8 @@ function NotFound() {
 }
 
 export default function App() {
-  console.log("K-Statra v1.0.2 - Production Build (Env Check)");
   const { t, lang } = useI18n();
+  const { setAuth } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -184,8 +185,7 @@ export default function App() {
       const buyer = res.data?.[0];
 
       if (buyer) {
-        localStorage.setItem("kstatra_buyer_id", buyer._id);
-        localStorage.setItem("kstatra_buyer_name", buyer.name);
+        setAuth(buyer._id, buyer.name);
         setLoginStatus({ submitting: false, success: true, error: "" });
         setTimeout(() => {
           setLoginOpen(false);
