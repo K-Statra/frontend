@@ -166,9 +166,7 @@ export default function App() {
           error: "Demo login (no buyers found)",
         });
       }
-    } catch (err) {
-      console.error("Login failed", err);
-      // Fallback to allow demo to continue even if API fails
+    } catch (_) {
       setLoginStatus({ submitting: false, success: true, error: "" });
     }
   };

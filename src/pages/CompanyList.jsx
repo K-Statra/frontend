@@ -43,7 +43,7 @@ export default function CompanyList() {
     isError,
     error: queryError,
   } = useCompanies(filters, page, PAGE_SIZE);
-  const companies = data?.data || [];
+  const companies = useMemo(() => data?.data || [], [data]);
   const meta = {
     total: Number(data?.total || 0),
     totalPages: Math.max(1, Number(data?.totalPages || 1)),
@@ -52,7 +52,7 @@ export default function CompanyList() {
   useEffect(() => {
     const highlight = searchParams.get("companyId") || "";
     if (highlight) setPendingHighlight(highlight);
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!pendingHighlight) return;

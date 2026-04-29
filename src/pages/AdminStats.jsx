@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { adminGetPaymentStats } from "../apis/admin";
 import {
   BarChart,
@@ -22,11 +22,7 @@ export default function AdminStats() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (token) load();
-  }, []);
-
-  async function load() {
+  const load = useCallback(async () => {
     if (!token) return;
     localStorage.setItem("adminToken", token);
     setLoading(true);
@@ -39,7 +35,11 @@ export default function AdminStats() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) load();
+  }, [token, load]);
 
   // Transform data for charts
   const statusData = stats?.byStatus

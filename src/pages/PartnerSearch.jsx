@@ -4,7 +4,6 @@ import { submitMatchFeedback } from "../apis/matches";
 import { createConsultantRequest } from "../apis/consultants";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import CompanyResultCard from "../components/CompanyResultCard.jsx";
 import Modal from "../components/Modal.jsx";
 import { track } from "../lib/analytics.js";
 
@@ -62,13 +61,6 @@ const sidebarPresets = {
     { value: "51-200", label: "51-200" },
     { value: "200+", label: "200+" },
   ],
-};
-
-const consultantServices = {
-  "matching-assistant": "Matching assistant",
-  "regional-consulting": "Regional expert consulting",
-  "origin-support": "Certificate of origin support",
-  aftercare: "Deal aftercare",
 };
 
 const consultantOptions = [
@@ -222,7 +214,6 @@ async function searchAntigravity(payload) {
     throw new Error(message);
   }
   const json = await response.json();
-  console.log("[PartnerSearch] searchAntigravity raw json:", json);
   const raw = Array.isArray(json?.data)
     ? json.data
     : Array.isArray(json?.results)
@@ -231,7 +222,6 @@ async function searchAntigravity(payload) {
   const mapped = raw
     .map(normalizeAntigravityCompany)
     .filter((c) => c._id && c.name);
-  console.log("[PartnerSearch] mapped data:", mapped);
   return { provider: "antigravity", data: mapped, aiResponse: json.aiResponse };
 }
 
@@ -258,7 +248,7 @@ async function searchPartners(payload) {
       const ag = await searchAntigravity(payload);
       const cx = await searchCodex(payload);
       return { provider: "hybrid", data: mergeHybrid(cx.data, ag.data) };
-    } catch (err) {
+    } catch (_) {
       const cx = await searchCodex(payload);
       return { provider: "codex", data: cx.data, fallback: "antigravity" };
     }
@@ -306,16 +296,6 @@ export default function PartnerSearch() {
   );
 
   const { t, lang } = useI18n();
-  const hasRealResults = preview.length > 0;
-  const handleCompanyDetails = (company) => {
-    setSelectedCompany(company);
-    setFeedback({ rating: 0, comments: "" });
-    setFeedbackStatus({ submitting: false, submitted: false, error: "" });
-    track("partner_detail_opened", {
-      companyId: company?._id,
-      name: company?.name,
-    });
-  };
 
   const closeCompanyDetails = () => {
     setSelectedCompany(null);
@@ -415,11 +395,6 @@ export default function PartnerSearch() {
         fallback,
         aiResponse: aiMsg,
       } = await searchPartners(payload);
-      console.log("[PartnerSearch] searchPartners result:", {
-        dataLength: data?.length,
-        provider,
-        fallback,
-      });
       setPreview(data || []);
       setAiResponse(aiMsg || "");
       setSearchProviderUsed(provider || SEARCH_PROVIDER);

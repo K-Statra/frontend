@@ -44,9 +44,13 @@ export default [
       ...reactHooks.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       'no-console': 'warn',
       'no-empty': ['warn', { allowEmptyCatch: true }],
     },
+  },
+  {
+    files: ['src/lib/analytics.js'],
+    rules: { 'no-console': 'off' },
   },
 ];

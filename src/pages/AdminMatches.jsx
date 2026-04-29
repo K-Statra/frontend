@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { adminListMatches } from "../apis/admin";
 
@@ -9,12 +9,13 @@ export default function AdminMatches() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [buyerId, setBuyerId] = useState(searchParams.get("buyerId") || "");
+  const loadRef = useRef(null);
 
   useEffect(() => {
-    if (token) load(1);
-  }, []);
+    if (token) loadRef.current?.(1);
+  }, [token]);
 
   async function load(p = 1) {
     if (!token) return;
@@ -32,6 +33,7 @@ export default function AdminMatches() {
       setLoading(false);
     }
   }
+  loadRef.current = load;
 
   return (
     <div>

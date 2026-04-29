@@ -30,7 +30,7 @@ export function I18nProvider({ children }) {
     const fallback = dict.en || {};
     return (key) => current[key] ?? fallback[key] ?? key;
   }, [lang]);
-  const value = useMemo(() => ({ lang, setLang, t }), [lang]);
+  const value = useMemo(() => ({ lang, setLang, t }), [lang, t]);
   return <I18nCtx.Provider value={value}>{children}</I18nCtx.Provider>;
 }
 

@@ -81,7 +81,7 @@ export default function PaymentCheckout2() {
       const timer = setTimeout(() => navigate(target), 1500);
       return () => clearTimeout(timer);
     }
-  }, [left]);
+  }, [left, t, id, configuredRedirect, navigate]);
 
   async function recreatePayment() {
     if (!data) return;

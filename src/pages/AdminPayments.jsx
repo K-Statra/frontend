@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "../lib/i18n/I18nProvider";
 import { useDatePreset } from "../hooks/useDatePreset";
 import { useSearchParams } from "react-router-dom";
@@ -36,16 +36,20 @@ export default function AdminPayments() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clearUrlOnReset, setClearUrlOnReset] = useState(false);
 
-  // Restore tzMode from localStorage
+  const initSearchParamsRef = useRef(searchParams);
+  const applyPresetRef = useRef(applyPreset);
+  applyPresetRef.current = applyPreset;
+  const markCustomRef = useRef(markCustom);
+  markCustomRef.current = markCustom;
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem("admin_tz_mode");
       if (saved === "utc" || saved === "local") setTzMode(saved);
     } catch (_) {}
-    // Initialize filters from URL query if present
     try {
-      const p = Object.fromEntries([...searchParams]);
-      const f = { ...filters };
+      const p = Object.fromEntries([...initSearchParamsRef.current]);
+      const f = { status: "", buyerId: "", companyId: "", from: "", to: "" };
       if (p.status) f.status = p.status;
       if (p.buyerId) f.buyerId = p.buyerId;
       if (p.companyId) f.companyId = p.companyId;
@@ -53,11 +57,11 @@ export default function AdminPayments() {
         f.from = p.from;
         f.to = p.to;
         setFilters(f);
-        markCustom();
+        markCustomRef.current();
       } else if (p.preset) {
-        if (p.preset === "24h") applyPreset(1, setFilters);
-        else if (p.preset === "7d") applyPreset(7, setFilters);
-        else if (p.preset === "30d") applyPreset(30, setFilters);
+        if (p.preset === "24h") applyPresetRef.current(1, setFilters);
+        else if (p.preset === "7d") applyPresetRef.current(7, setFilters);
+        else if (p.preset === "30d") applyPresetRef.current(30, setFilters);
         else setFilters(f);
       } else {
         setFilters(f);
@@ -87,10 +91,6 @@ export default function AdminPayments() {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    /* noop */
-  }, []);
 
   async function exportCsv() {
     if (!token) return;
@@ -123,23 +123,26 @@ export default function AdminPayments() {
     return new Date(from).getTime() <= new Date(to).getTime();
   }
 
-  function updateQuery(extra = {}) {
-    try {
-      const base = {
-        ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)),
-        tz: tzMode,
-        ...extra,
-      };
-      if (base.preset) {
-        delete base.from;
-        delete base.to;
-      } else {
-        delete base.preset;
-      }
-      const params = new URLSearchParams(base);
-      setSearchParams(params);
-    } catch (_) {}
-  }
+  const updateQuery = useCallback(
+    (extra = {}) => {
+      try {
+        const base = {
+          ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)),
+          tz: tzMode,
+          ...extra,
+        };
+        if (base.preset) {
+          delete base.from;
+          delete base.to;
+        } else {
+          delete base.preset;
+        }
+        const params = new URLSearchParams(base);
+        setSearchParams(params);
+      } catch (_) {}
+    },
+    [filters, tzMode, setSearchParams],
+  );
 
   function preset(days) {
     const range = applyPreset(days, setFilters);
@@ -147,21 +150,12 @@ export default function AdminPayments() {
     return range;
   }
 
-  // Keep URL query in sync when filters/tz/preset change (debounced)
   useEffect(() => {
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       updateQuery({ preset: presetSel });
     }, 300);
-    return () => clearTimeout(t);
-  }, [
-    filters.status,
-    filters.buyerId,
-    filters.companyId,
-    filters.from,
-    filters.to,
-    tzMode,
-    presetSel,
-  ]);
+    return () => clearTimeout(timer);
+  }, [updateQuery, presetSel]);
 
   // Helpers: ISO <-> datetime-local
   function isoToLocalInput(v) {

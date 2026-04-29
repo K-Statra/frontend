@@ -36,7 +36,7 @@ export default function Partners() {
   const { data: buyersData, isLoading: loadingBuyers } = useBuyers({
     limit: 5,
   });
-  const buyers = buyersData?.data || [];
+  const buyers = useMemo(() => buyersData?.data || [], [buyersData]);
 
   useEffect(() => {
     if (buyers.length > 0 && !selectedBuyerId) {
@@ -50,7 +50,7 @@ export default function Partners() {
     isError,
     error,
   } = useMatches(selectedBuyerId, 6);
-  const matches = matchesData?.data || [];
+  const matches = useMemo(() => matchesData?.data || [], [matchesData]);
 
   const selectedBuyer = useMemo(
     () => buyers.find((buyer) => buyer._id === selectedBuyerId),

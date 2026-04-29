@@ -14,29 +14,11 @@ function getWebsite(company) {
   return company.website || company.url || company.site || company.domain || "";
 }
 
-function getPrimaryContact(company) {
-  if (company.primaryContact?.name) return company.primaryContact.name;
-  if (company.contact?.name) return company.contact.name;
-  return company.contactName || "";
-}
-
-function getContactEmail(company) {
-  return (
-    company.primaryContact?.email ||
-    company.contact?.email ||
-    company.email ||
-    company.contactEmail ||
-    ""
-  );
-}
-
 export default function CompanyResultCard({ company, onDetails }) {
   const c = company || {};
   const { t } = useI18n();
   const location = getLocation(c);
   const website = getWebsite(c);
-  const contactName = getPrimaryContact(c);
-  const contactEmail = getContactEmail(c);
   const tags = c.tags || c.offerings || c.needs || [];
 
   return (

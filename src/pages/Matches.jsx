@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { newIdemKey } from "../apis/client";
 import CurrencySelect from "../components/CurrencySelect.jsx";
@@ -43,7 +43,7 @@ export default function Matches() {
     enabled: !!submittedParams,
   });
 
-  const matches = matchesData?.data || [];
+  const matches = useMemo(() => matchesData?.data || [], [matchesData]);
 
   const filteredMatches = useMemo(() => {
     if (!companyFilter) return matches;
@@ -52,7 +52,7 @@ export default function Matches() {
     );
   }, [matches, companyFilter]);
 
-  useMemo(() => {
+  useEffect(() => {
     if (
       companyFilter &&
       matches.length > 0 &&
