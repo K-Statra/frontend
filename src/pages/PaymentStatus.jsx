@@ -1,36 +1,17 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPayment, refreshPayment } from "../apis/payments";
+import { usePayment, useRefreshPayment } from "../hooks/usePayments";
 import { useI18n } from "../lib/i18n/I18nProvider";
 
 export default function PaymentStatus() {
   const { id } = useParams();
   const { t } = useI18n();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  async function load() {
-    setLoading(true);
-    setError("");
+  const { data, isLoading: loading, error } = usePayment(id);
+  const { mutateAsync: refresh } = useRefreshPayment();
+
+  async function handleRefresh() {
     try {
-      const res = await getPayment(id);
-      setData(res);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    load();
-  }, [id]);
-
-  async function refresh() {
-    try {
-      const res = await refreshPayment(id);
-      setData(res);
+      await refresh(id);
     } catch (e) {
       alert(e.message);
     }
@@ -40,7 +21,7 @@ export default function PaymentStatus() {
     <div>
       <h2>{t("payment_status_title")}</h2>
       {loading && <div>{t("loading")}</div>}
-      {error && <div className="error">{error}</div>}
+      {error && <div className="error">{error.message}</div>}
       {data && (
         <div className="card">
           <div>ID: {data._id}</div>
@@ -53,7 +34,7 @@ export default function PaymentStatus() {
               {new Date(data.quote.expiresAt).toLocaleString()}
             </div>
           )}
-          <button onClick={refresh}>{t("manual_refresh")}</button>
+          <button onClick={handleRefresh}>{t("manual_refresh")}</button>
         </div>
       )}
     </div>

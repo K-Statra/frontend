@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import {
-  analyticsDashboard,
-  analyticsTopIndustries,
-  analyticsRecentTransactions,
-} from "../apis/analytics";
+  useAnalyticsDashboard,
+  useTopIndustries,
+  useRecentTransactions,
+} from "../hooks/useAnalytics";
 import { track } from "../lib/analytics.js";
 
 const statSeed = [
@@ -104,64 +104,48 @@ const activitiesSeed = [
 export default function Overview() {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const [stats, setStats] = useState(statSeed);
-  const [industries, setIndustries] = useState(industriesSeed);
-  const [transactions, setTransactions] = useState([]);
-  const [requests, setRequests] = useState(recentRequestsSeed);
 
-  useEffect(() => {
-    let mounted = true;
+  const { data: dashboardData } = useAnalyticsDashboard();
+  const { data: industriesData } = useTopIndustries();
+  const { data: transactionsData } = useRecentTransactions();
 
-    // Fetch Dashboard Stats
-    analyticsDashboard().then((data) => {
-      if (!mounted || !data) return;
-      setStats((prev) =>
-        prev.map((card) => ({
-          ...card,
-          value: String(data[card.id] ?? card.value),
-        })),
-      );
-    });
+  const stats = useMemo(() => {
+    if (!dashboardData) return statSeed;
+    return statSeed.map((card) => ({
+      ...card,
+      value: String(dashboardData[card.id] ?? card.value),
+    }));
+  }, [dashboardData]);
 
-    // Fetch Top Industries
-    analyticsTopIndustries().then((data) => {
-      if (!mounted || !Array.isArray(data) || data.length === 0) return;
-      setIndustries(
-        data.slice(0, 3).map((item, index) => ({
-          rank: index + 1,
-          name: item.name,
-          partners: item.partners,
-          revenue: item.revenue
-            ? `$${Number(item.revenue).toLocaleString()}`
-            : "$-",
-          change: "",
-        })),
-      );
-    });
+  const industries = useMemo(() => {
+    if (!Array.isArray(industriesData) || industriesData.length === 0)
+      return industriesSeed;
+    return industriesData.slice(0, 3).map((item, index) => ({
+      rank: index + 1,
+      name: item.name,
+      partners: item.partners,
+      revenue: item.revenue
+        ? `$${Number(item.revenue).toLocaleString()}`
+        : "$-",
+      change: "",
+    }));
+  }, [industriesData]);
 
-    // Fetch Recent Transactions
-    analyticsRecentTransactions().then((data) => {
-      if (!mounted || !Array.isArray(data)) return;
-      setTransactions(
-        data.slice(0, 5).map((item) => ({
-          id: item.id,
-          company: item.company,
-          description: item.memo || item.description || "",
-          date: item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
-          amount: `${item.amount >= 0 ? "+" : "-"}$${Math.abs(item.amount || 0).toLocaleString()}`,
-          xrpl: `${(item.amount || 0).toLocaleString()} ${item.currency || ""}`,
-          status:
-            item.status?.toLowerCase() === "paid"
-              ? "completed"
-              : item.status?.toLowerCase() || "pending",
-        })),
-      );
-    });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const transactions = useMemo(() => {
+    if (!Array.isArray(transactionsData)) return [];
+    return transactionsData.slice(0, 5).map((item) => ({
+      id: item.id,
+      company: item.company,
+      description: item.memo || item.description || "",
+      date: item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
+      amount: `${item.amount >= 0 ? "+" : "-"}$${Math.abs(item.amount || 0).toLocaleString()}`,
+      xrpl: `${(item.amount || 0).toLocaleString()} ${item.currency || ""}`,
+      status:
+        item.status?.toLowerCase() === "paid"
+          ? "completed"
+          : item.status?.toLowerCase() || "pending",
+    }));
+  }, [transactionsData]);
 
   return (
     <div className="overview container">
@@ -180,7 +164,6 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* Top Stats */}
       <section className="stat-grid">
         {stats.map((card) => (
           <article key={card.id} className={`stat-card ${card.tone}`}>
@@ -196,7 +179,6 @@ export default function Overview() {
         ))}
       </section>
 
-      {/* Middle Section: Split View */}
       <section
         className="dashboard-panels"
         style={{
@@ -206,7 +188,6 @@ export default function Overview() {
           marginTop: "2rem",
         }}
       >
-        {/* Left: Market Insights */}
         <div className="panel">
           <h3>{t("analytics_top_industries")}</h3>
           <ul className="industry-list">
@@ -228,11 +209,10 @@ export default function Overview() {
           </ul>
         </div>
 
-        {/* Right: My Activity */}
         <div className="panel">
           <h3>{t("dashboard_recent_requests")}</h3>
           <ul className="request-list">
-            {requests.map((item) => (
+            {recentRequestsSeed.map((item) => (
               <li key={item.id}>
                 <div>
                   <strong>{item.company}</strong>
@@ -247,7 +227,6 @@ export default function Overview() {
         </div>
       </section>
 
-      {/* Bottom Section: Recent Transactions */}
       <section className="panel" style={{ marginTop: "2rem" }}>
         <h3>{t("payments_recent_transactions")}</h3>
         <ul className="activity-list">

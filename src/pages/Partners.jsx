@@ -3,8 +3,8 @@ import Button from "../components/Button.jsx";
 import Modal from "../components/Modal.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import { track } from "../lib/analytics.js";
-import { listBuyers } from "../apis/buyers";
-import { getMatches } from "../apis/matches";
+import { useBuyers } from "../hooks/useBuyers";
+import { useMatches } from "../hooks/useMatches";
 
 function formatLocation(company = {}) {
   const loc = company.location || {};
@@ -30,63 +30,32 @@ function getAccuracyPercent(match) {
 
 export default function Partners() {
   const { t } = useI18n();
-  const [buyers, setBuyers] = useState([]);
   const [selectedBuyerId, setSelectedBuyerId] = useState("");
-  const [matches, setMatches] = useState([]);
   const [selectedMatch, setSelectedMatch] = useState(null);
-  const [loadingBuyers, setLoadingBuyers] = useState(true);
-  const [loadingMatches, setLoadingMatches] = useState(false);
-  const [error, setError] = useState("");
+
+  const { data: buyersData, isLoading: loadingBuyers } = useBuyers({
+    limit: 5,
+  });
+  const buyers = buyersData?.data || [];
 
   useEffect(() => {
-    let cancelled = false;
-    listBuyers({ limit: 5 })
-      .then((res) => {
-        if (cancelled) return;
-        const items = res?.data || [];
-        setBuyers(items);
-        if (items.length > 0) setSelectedBuyerId(items[0]._id);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setError(err?.message || "바이어 정보를 불러오지 못했습니다.");
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingBuyers(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    if (buyers.length > 0 && !selectedBuyerId) {
+      setSelectedBuyerId(buyers[0]._id);
+    }
+  }, [buyers, selectedBuyerId]);
+
+  const {
+    data: matchesData,
+    isFetching: loadingMatches,
+    isError,
+    error,
+  } = useMatches(selectedBuyerId, 6);
+  const matches = matchesData?.data || [];
 
   const selectedBuyer = useMemo(
     () => buyers.find((buyer) => buyer._id === selectedBuyerId),
     [buyers, selectedBuyerId],
   );
-
-  useEffect(() => {
-    if (!selectedBuyerId) {
-      setMatches([]);
-      return;
-    }
-    let cancelled = false;
-    setLoadingMatches(true);
-    getMatches(selectedBuyerId, 6)
-      .then((res) => {
-        if (cancelled) return;
-        setMatches(res?.data || []);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setError(err?.message || "추천 파트너를 불러오지 못했습니다.");
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingMatches(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedBuyerId]);
 
   const handleBuyerChange = (event) => {
     setSelectedBuyerId(event.target.value);
@@ -201,7 +170,7 @@ export default function Partners() {
       </div>
 
       <div className="partner-card-list">
-        {error && <div className="error">{error}</div>}
+        {isError && <div className="error">{error?.message}</div>}
         {loadingMatches && <p>추천 파트너를 불러오는 중입니다...</p>}
         {!loadingMatches && matches.length === 0 && (
           <p>표시할 추천 파트너가 없습니다.</p>

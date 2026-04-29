@@ -1,34 +1,49 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { getPayment, createPayment, refreshPayment } from "../apis/payments";
 import { newIdemKey } from "../apis/client";
 import Modal from "../components/Modal";
 import { buildGuideFromInvoice } from "../lib/guide";
 import { useCountdown } from "../hooks/useCountdown";
 import IssuedCurrencyGuide from "../components/IssuedCurrencyGuide";
 import { useI18n } from "../lib/i18n/I18nProvider";
+import {
+  usePayment,
+  useRefreshPayment,
+  useCreatePayment,
+} from "../hooks/usePayments";
 
 export default function PaymentCheckout2() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useI18n();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [msg, setMsg] = useState("");
-  const [creating, setCreating] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [editAmount, setEditAmount] = useState("");
   const [editCurrency, setEditCurrency] = useState("");
-  const guide = data?.invoice
-    ? buildGuideFromInvoice(data.invoice, navigator.language)
-    : null;
-  const left = useCountdown(data?.invoice?.expiresAt);
-  const deeplink = data?.invoice?.deeplink || "";
+
+  const pollMs = Math.max(
+    1000,
+    Number(import.meta?.env?.VITE_PAYMENT_POLL_MS || 3000),
+  );
+  const configuredRedirect =
+    import.meta?.env?.VITE_PAYMENT_EXPIRED_REDIRECT || "";
   const qrBase =
     import.meta?.env?.VITE_QR_IMG_BASE ||
     "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=";
+
+  const { data, isLoading: loading } = usePayment(id, {
+    refetchInterval: (query) =>
+      query.state.data?.status === "PENDING" ? pollMs : false,
+  });
+
+  const left = useCountdown(data?.invoice?.expiresAt);
+  const deeplink = data?.invoice?.deeplink || "";
+
+  const guide = data?.invoice
+    ? buildGuideFromInvoice(data.invoice, navigator.language)
+    : null;
+
   const qrUrl = useMemo(
     () =>
       deeplink && qrBase !== "none"
@@ -36,19 +51,15 @@ export default function PaymentCheckout2() {
         : "",
     [deeplink, qrBase],
   );
-  const pollMs = Math.max(
-    1000,
-    Number(import.meta?.env?.VITE_PAYMENT_POLL_MS || 3000),
-  );
-  const configuredRedirect =
-    import.meta?.env?.VITE_PAYMENT_EXPIRED_REDIRECT || "";
-  const [currencies, setCurrencies] = useState(() => {
+
+  const currencies = useMemo(() => {
     const raw = import.meta?.env?.VITE_PAYMENT_CURRENCIES || "XRP,USD,KRW";
     return String(raw)
       .split(",")
       .map((s) => s.trim().toUpperCase())
       .filter(Boolean);
-  });
+  }, []);
+
   const currencyOptions = useMemo(
     () =>
       currencies.map((c) => ({
@@ -59,30 +70,8 @@ export default function PaymentCheckout2() {
     [currencies, t],
   );
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await getPayment(id);
-        setData(res);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [id]);
-
-  useEffect(() => {
-    if (!data || data.status !== "PENDING") return;
-    if (left != null && left <= 0) return;
-    const tmr = setInterval(async () => {
-      try {
-        const res = await getPayment(id);
-        setData(res);
-      } catch (_) {}
-    }, pollMs);
-    return () => clearInterval(tmr);
-  }, [data?.status, left, id, pollMs]);
+  const { mutateAsync: doRefresh, isPending: refreshing } = useRefreshPayment();
+  const { mutateAsync: doCreate, isPending: creating } = useCreatePayment();
 
   useEffect(() => {
     if (left != null && left <= 0) {
@@ -96,7 +85,6 @@ export default function PaymentCheckout2() {
 
   async function recreatePayment() {
     if (!data) return;
-    setCreating(true);
     setMsg("");
     try {
       const amt = Number(editAmount || data.amount);
@@ -110,15 +98,12 @@ export default function PaymentCheckout2() {
         companyId: data.companyId,
         memo: data.memo,
       };
-      const idem = newIdemKey();
-      const res = await createPayment(payload, idem);
+      const res = await doCreate({ payload, idemKey: newIdemKey() });
       const newId = res?._id;
       if (newId)
         navigate(`/payments/checkout/${newId}`, { state: { prevId: id } });
     } catch (e) {
       setMsg(`${t("refresh_failed")}: ${e?.message || ""}`.trim());
-    } finally {
-      setCreating(false);
     }
   }
 
@@ -135,15 +120,11 @@ export default function PaymentCheckout2() {
 
   async function manualRefresh() {
     if (!id) return;
-    setRefreshing(true);
     setMsg("");
     try {
-      const res = await refreshPayment(id);
-      setData(res);
+      await doRefresh(id);
     } catch (e) {
       setMsg(`${t("refresh_failed")}: ${e?.message || ""}`.trim());
-    } finally {
-      setRefreshing(false);
     }
   }
 

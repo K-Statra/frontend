@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from "react";
-import {
-  listConsultations,
-  createConsultation,
-  updateConsultationStatus,
-} from "../apis/consultants";
+import React from "react";
+import { useConsultations } from "../hooks/useConsultations";
 import { useI18n } from "../lib/i18n/I18nProvider";
 import Button from "../components/Button";
 
 export default function SchedulePage() {
-  const { t, lang } = useI18n();
-  const [consultations, setConsultations] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    listConsultations()
-      .then((res) => {
-        setConsultations(Array.isArray(res) ? res : []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, []);
+  const { lang } = useI18n();
+  const { data, isLoading } = useConsultations();
+  const consultations = Array.isArray(data) ? data : [];
 
   return (
     <div className="inner" style={{ padding: "2rem 1rem" }}>
@@ -34,7 +19,7 @@ export default function SchedulePage() {
           : "Start with online video meetings, then meet at global exhibitions (CES, MWC, etc.) to confirm your partnerships."}
       </p>
 
-      {loading ? (
+      {isLoading ? (
         <p>{lang === "ko" ? "불러오는 중..." : "Loading..."}</p>
       ) : consultations.length === 0 ? (
         <div

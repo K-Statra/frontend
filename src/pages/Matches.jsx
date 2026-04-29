@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { getMatches } from "../apis/matches";
-import { createPayment } from "../apis/payments";
 import { newIdemKey } from "../apis/client";
 import CurrencySelect from "../components/CurrencySelect.jsx";
 import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
+import { useCreatePayment } from "../hooks/usePayments";
+import { useMatches } from "../hooks/useMatches";
 
 function isObjectId(value) {
   return /^[a-f0-9]{24}$/i.test(String(value || "").trim());
@@ -26,17 +26,25 @@ export default function Matches() {
     searchParams.get("companyId") || "",
   );
   const [currency, setCurrency] = useState("XRP");
-  const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [creatingPayment, setCreatingPayment] = useState("");
-  const [activeBuyerId, setActiveBuyerId] = useState(
-    searchParams.get("buyerId") ||
-      localStorage.getItem("kstatra_buyer_id") ||
-      "",
-  );
+  const [submittedParams, setSubmittedParams] = useState(() => {
+    const buyerId =
+      searchParams.get("buyerId") || localStorage.getItem("kstatra_buyer_id");
+    return isObjectId(buyerId) ? { buyerId, limit: 5 } : null;
+  });
+  const [creatingPaymentId, setCreatingPaymentId] = useState("");
   const navigate = useNavigate();
+
+  const {
+    data: matchesData,
+    isFetching: loading,
+    isError,
+    error,
+  } = useMatches(submittedParams?.buyerId, submittedParams?.limit, {
+    enabled: !!submittedParams,
+  });
+
+  const matches = matchesData?.data || [];
 
   const filteredMatches = useMemo(() => {
     if (!companyFilter) return matches;
@@ -45,44 +53,17 @@ export default function Matches() {
     );
   }, [matches, companyFilter]);
 
-  const loadMatches = useCallback(
-    async (buyerIdValue, limitValue) => {
-      if (!isObjectId(buyerIdValue)) {
-        setError("Valid buyerId (24 hex) required.");
-        return;
-      }
-      setLoading(true);
-      setError("");
-      setMessage("");
-      try {
-        const res = await getMatches(buyerIdValue, limitValue);
-        setMatches(res?.data || []);
-        setActiveBuyerId(buyerIdValue);
-        if (
-          companyFilter &&
-          res &&
-          Array.isArray(res.data) &&
-          res.data.every((r) => r.company?._id !== companyFilter)
-        ) {
-          setMessage("Selected company is not in the latest top results.");
-        }
-      } catch (err) {
-        setError(err.message || "Failed to load matches");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [companyFilter],
-  );
-
-  useEffect(() => {
-    const initialBuyerId =
-      searchParams.get("buyerId") || localStorage.getItem("kstatra_buyer_id");
-    if (isObjectId(initialBuyerId)) {
-      setBuyerInput(initialBuyerId);
-      loadMatches(initialBuyerId, limitInput);
+  useMemo(() => {
+    if (
+      companyFilter &&
+      matches.length > 0 &&
+      matches.every((r) => r.company?._id !== companyFilter)
+    ) {
+      setMessage("Selected company is not in the latest top results.");
     }
-  }, []);
+  }, [matches, companyFilter]);
+
+  const { mutateAsync: executeCreatePayment } = useCreatePayment();
 
   function updateParams(nextBuyerId, nextLimit, nextCompanyId) {
     const next = new URLSearchParams();
@@ -92,34 +73,37 @@ export default function Matches() {
     setSearchParams(next);
   }
 
-  async function onSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
     if (!isObjectId(buyerInput)) {
-      setError("Valid buyerId (24 hex) required.");
+      setMessage("Valid buyerId (24 hex) required.");
       return;
     }
+    setMessage("");
     updateParams(buyerInput.trim(), limitInput, companyFilter.trim() || "");
-    await loadMatches(buyerInput.trim(), limitInput);
+    setSubmittedParams({ buyerId: buyerInput.trim(), limit: limitInput });
   }
 
-  async function createPayment(companyId) {
-    if (!activeBuyerId) return;
-    setCreatingPayment(companyId);
+  async function handleCreatePayment(companyId) {
+    if (!submittedParams?.buyerId) return;
+    setCreatingPaymentId(companyId);
     setMessage("");
     try {
-      const payload = {
-        amount: 1,
-        currency,
-        buyerId: activeBuyerId,
-        companyId,
-      };
-      const res = await createPayment(payload, newIdemKey());
+      const res = await executeCreatePayment({
+        payload: {
+          amount: 1,
+          currency,
+          buyerId: submittedParams.buyerId,
+          companyId,
+        },
+        idemKey: newIdemKey(),
+      });
       const pid = res?._id;
       if (pid) navigate(`/payments/checkout/${pid}`);
     } catch (err) {
       setMessage(err.message || "Failed to create payment");
     } finally {
-      setCreatingPayment("");
+      setCreatingPaymentId("");
     }
   }
 
@@ -158,8 +142,7 @@ export default function Matches() {
             onClick={() => {
               setBuyerInput("");
               setCompanyFilter("");
-              setMatches([]);
-              setActiveBuyerId("");
+              setSubmittedParams(null);
               updateParams("", "", "");
             }}
             disabled={loading}
@@ -172,9 +155,9 @@ export default function Matches() {
         <CurrencySelect value={currency} onChange={setCurrency} />
       </div>
 
-      {error && (
+      {isError && (
         <div className="error mt-3" role="alert">
-          {error}
+          {error?.message || "Failed to load matches"}
         </div>
       )}
       {message && (
@@ -183,11 +166,14 @@ export default function Matches() {
         </div>
       )}
 
-      {!loading && filteredMatches.length === 0 && activeBuyerId && !error && (
-        <div className="mt-4 muted">
-          No matches yet. Try increasing the limit or updating company data.
-        </div>
-      )}
+      {!loading &&
+        filteredMatches.length === 0 &&
+        submittedParams &&
+        !isError && (
+          <div className="mt-4 muted">
+            No matches yet. Try increasing the limit or updating company data.
+          </div>
+        )}
 
       <div
         className="grid mt-4"
@@ -251,8 +237,8 @@ export default function Matches() {
                 </Button>
               )}
               <Button
-                loading={creatingPayment === match.company?._id}
-                onClick={() => createPayment(match.company?._id)}
+                loading={creatingPaymentId === match.company?._id}
+                onClick={() => handleCreatePayment(match.company?._id)}
               >
                 Request Payment
               </Button>

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import { track } from "../lib/analytics.js";
-import { analyticsDashboard } from "../apis/analytics";
-import { getPaymentSummary, getRecentPayments } from "../apis/payments";
+import { useAnalyticsDashboard } from "../hooks/useAnalytics";
+import { usePaymentSummary, useRecentPayments } from "../hooks/usePayments";
 
 const paymentStatSeed = [
   {
@@ -90,61 +90,55 @@ const transactionsSeed = [
 
 export default function PaymentsPage() {
   const { t } = useI18n();
-  const [paymentStats, setPaymentStats] = useState(paymentStatSeed);
-  const [transactionStats, setTransactionStats] = useState(transactionStatSeed);
-  const [transactions, setTransactions] = useState(transactionsSeed);
 
-  useEffect(() => {
-    let mounted = true;
-    analyticsDashboard().then((data) => {
-      if (!mounted || !data) return;
-      setPaymentStats((prev) =>
-        prev.map((card) => {
-          if (card.id === "total" && data.totalPartners !== undefined)
-            return { ...card, value: data.totalPartners };
-          if (card.id === "pending" && data.pendingPayments !== undefined)
-            return { ...card, value: data.pendingPayments };
-          if (card.id === "completed" && data.completedDeals !== undefined)
-            return { ...card, value: data.completedDeals };
-          return card;
-        }),
-      );
+  const { data: dashboardData } = useAnalyticsDashboard();
+  const { data: summaryData } = usePaymentSummary();
+  const { data: recentPaymentsData } = useRecentPayments();
+
+  const paymentStats = useMemo(() => {
+    if (!dashboardData) return paymentStatSeed;
+    return paymentStatSeed.map((card) => {
+      if (card.id === "total" && dashboardData.totalPartners !== undefined)
+        return { ...card, value: dashboardData.totalPartners };
+      if (card.id === "pending" && dashboardData.pendingPayments !== undefined)
+        return { ...card, value: dashboardData.pendingPayments };
+      if (card.id === "completed" && dashboardData.completedDeals !== undefined)
+        return { ...card, value: dashboardData.completedDeals };
+      return card;
     });
-    getPaymentSummary().then((data) => {
-      if (!mounted || !data) return;
-      setTransactionStats((prev) =>
-        prev.map((card) => {
-          if (card.id === "totalSent" && data.totalAmount !== undefined)
-            return {
-              ...card,
-              value: `$${Number(data.totalAmount).toLocaleString()}`,
-            };
-          if (card.id === "pendingTransactions" && data.pending !== undefined)
-            return { ...card, value: String(data.pending) };
-          if (card.id === "completedTransactions" && data.paid !== undefined)
-            return { ...card, value: String(data.paid) };
-          return card;
-        }),
-      );
+  }, [dashboardData]);
+
+  const transactionStats = useMemo(() => {
+    if (!summaryData) return transactionStatSeed;
+    return transactionStatSeed.map((card) => {
+      if (card.id === "totalSent" && summaryData.totalAmount !== undefined)
+        return {
+          ...card,
+          value: `$${Number(summaryData.totalAmount).toLocaleString()}`,
+        };
+      if (
+        card.id === "pendingTransactions" &&
+        summaryData.pending !== undefined
+      )
+        return { ...card, value: String(summaryData.pending) };
+      if (card.id === "completedTransactions" && summaryData.paid !== undefined)
+        return { ...card, value: String(summaryData.paid) };
+      return card;
     });
-    getRecentPayments().then((data) => {
-      if (!mounted || !Array.isArray(data)) return;
-      setTransactions(
-        data.map((item) => ({
-          id: item._id,
-          company: item.companyId?.name || "Unknown",
-          description: item.memo || "",
-          date: item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
-          amount: `${item.amount >= 0 ? "+" : "-"}$${Math.abs(item.amount || 0).toLocaleString()}`,
-          xrpl: `${(item.amount || 0).toLocaleString()} ${item.currency || ""}`,
-          status: item.status?.toLowerCase() || "pending",
-        })),
-      );
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  }, [summaryData]);
+
+  const transactions = useMemo(() => {
+    if (!Array.isArray(recentPaymentsData)) return transactionsSeed;
+    return recentPaymentsData.map((item) => ({
+      id: item._id,
+      company: item.companyId?.name || "Unknown",
+      description: item.memo || "",
+      date: item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
+      amount: `${item.amount >= 0 ? "+" : "-"}$${Math.abs(item.amount || 0).toLocaleString()}`,
+      xrpl: `${(item.amount || 0).toLocaleString()} ${item.currency || ""}`,
+      status: item.status?.toLowerCase() || "pending",
+    }));
+  }, [recentPaymentsData]);
 
   return (
     <div className="payments container">

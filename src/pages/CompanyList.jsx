@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { listCompanies } from "../apis/companies";
+import { useCompanies } from "../hooks/useCompanies";
 import CompanyCard from "../components/CompanyCard.jsx";
 import Modal from "../components/Modal.jsx";
 import Button from "../components/Button.jsx";
@@ -32,48 +32,27 @@ export default function CompanyList() {
   });
   const [filters, setFilters] = useState(form);
   const [page, setPage] = useState(1);
-  const [companies, setCompanies] = useState([]);
-  const [meta, setMeta] = useState({ total: 0, totalPages: 1 });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [selected, setSelected] = useState(null);
   const [pendingHighlight, setPendingHighlight] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const {
+    data,
+    isFetching: loading,
+    isError,
+    error: queryError,
+  } = useCompanies(filters, page, PAGE_SIZE);
+  const companies = data?.data || [];
+  const meta = {
+    total: Number(data?.total || 0),
+    totalPages: Math.max(1, Number(data?.totalPages || 1)),
+  };
+
   useEffect(() => {
     const highlight = searchParams.get("companyId") || "";
     if (highlight) setPendingHighlight(highlight);
   }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError("");
-      try {
-        const res = await listCompanies({
-          ...filters,
-          page,
-          limit: PAGE_SIZE,
-        });
-        if (cancelled) return;
-        setCompanies(res?.data || []);
-        setMeta({
-          total: Number(res?.total || 0),
-          totalPages: Math.max(1, Number(res?.totalPages || 1)),
-        });
-      } catch (err) {
-        if (!cancelled) setError(err.message || "Failed to load companies");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [filters, page]);
 
   useEffect(() => {
     if (!pendingHighlight) return;
@@ -193,13 +172,13 @@ export default function CompanyList() {
       </form>
 
       {loading && <div className="mt-3">Loading companies...</div>}
-      {error && (
+      {isError && (
         <div className="error mt-3" role="alert">
-          {error}
+          {queryError?.message || "Failed to load companies"}
         </div>
       )}
 
-      {!loading && companies.length === 0 && !error && (
+      {!loading && companies.length === 0 && !isError && (
         <div className="mt-3 muted">No companies match the filters.</div>
       )}
 
