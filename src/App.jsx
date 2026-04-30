@@ -124,7 +124,7 @@ export default function App() {
 
     try {
       const res = await buyersApi.list({ limit: 1 });
-      const buyer = res.data?.[0];
+      const buyer = res?.data?.[0];
 
       if (buyer) {
         setAuth(buyer._id, buyer.name);
