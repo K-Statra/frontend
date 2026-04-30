@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listBuyers } from "./apis/buyers.js";
+import { buyersApi } from "./apis";
 import { useAuthStore } from "./stores/authStore.js";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./components/LanguageSwitcher.jsx";
@@ -123,7 +123,7 @@ export default function App() {
     track("login_modal_submit");
 
     try {
-      const res = await listBuyers({ limit: 1 });
+      const res = await buyersApi.list({ limit: 1 });
       const buyer = res.data?.[0];
 
       if (buyer) {

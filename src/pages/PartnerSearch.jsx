@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { listCompanies } from "../apis/companies";
-import { submitMatchFeedback } from "../apis/matches";
-import { createConsultantRequest } from "../apis/consultants";
+import { companiesApi, matchesApi, consultationsApi } from "../apis";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import Modal from "../components/Modal.jsx";
@@ -193,7 +191,7 @@ function normalizeAntigravityCompany(item = {}) {
 }
 
 async function searchCodex(payload) {
-  const res = await listCompanies(payload);
+  const res = await companiesApi.list(payload);
   return { provider: "codex", data: res?.data || [] };
 }
 
@@ -357,7 +355,7 @@ export default function PartnerSearch() {
     if (!selectedCompany || !feedback.rating) return;
     setFeedbackStatus({ submitting: true, submitted: false, error: "" });
     try {
-      await submitMatchFeedback(selectedCompany._id, {
+      await matchesApi.submitFeedback(selectedCompany._id, {
         rating: feedback.rating,
         comments: feedback.comments.trim(),
         locale: lang,
@@ -490,7 +488,7 @@ export default function PartnerSearch() {
       filters: activeFilters,
     };
     try {
-      await createConsultantRequest(payload);
+      await consultationsApi.createRequest(payload);
       track("consultant_help_submit", {
         serviceType: payload.serviceType,
         hasDetails: Boolean(payload.details),

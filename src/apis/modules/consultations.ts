@@ -31,4 +31,7 @@ export const consultationsApi = {
 
   updateStatus: (id: string, status: ConsultationStatus) =>
     http.patch(ENDPOINTS.consultations.status(id), { status }),
+
+  createRequest: (data: Record<string, unknown>) =>
+    http.post("/consultants/requests", data),
 };

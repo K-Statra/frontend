@@ -19,4 +19,7 @@ export const buyersApi = {
 
   getById: (id: string) =>
     http.get(ENDPOINTS.buyers.byId(id)),
+
+  create: (data: Record<string, unknown>) =>
+    http.post(ENDPOINTS.buyers.root, data),
 };

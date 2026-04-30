@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { listConsultations } from "../apis/consultants";
+import { consultationsApi } from "../apis";
 
 export function useConsultations() {
   return useQuery({
     queryKey: ["consultations"],
-    queryFn: () => listConsultations(),
+    queryFn: () => consultationsApi.list(),
   });
 }

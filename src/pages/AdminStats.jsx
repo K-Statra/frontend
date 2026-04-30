@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { adminGetPaymentStats } from "../apis/admin";
+import { adminApi } from "../apis";
 import {
   BarChart,
   Bar,
@@ -28,7 +28,7 @@ export default function AdminStats() {
     setLoading(true);
     setError("");
     try {
-      const res = await adminGetPaymentStats({ token });
+      const res = await adminApi.getPaymentStats({ token });
       setStats(res);
     } catch (e) {
       setError(e.message);

@@ -5,6 +5,8 @@ export { partnersApi } from "./modules/partners";
 export { matchesApi } from "./modules/matches";
 export { buyersApi } from "./modules/buyers";
 export { consultationsApi } from "./modules/consultations";
+export { adminApi } from "./modules/admin";
+export { analyticsApi } from "./modules/analytics";
 export { http, newIdemKey } from "./http";
 export * from "./types";
 export * from "./endpoints";
