@@ -240,10 +240,12 @@ export default function PaymentCheckout2() {
             <button onClick={closeConfirm}>{t("cancel")}</button>
             <button
               onClick={async () => {
-                closeConfirm();
                 await recreatePayment();
+                closeConfirm();
               }}
+              disabled={creating}
               aria-busy={creating}
+              type="button"
             >
               {t("confirm")}
             </button>
