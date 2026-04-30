@@ -84,7 +84,7 @@ export default function PaymentCheckout2() {
   }, [left, t, id, configuredRedirect, navigate]);
 
   async function recreatePayment() {
-    if (!data) return;
+    if (!data) return false;
     setMsg("");
     try {
       const amt = Number(editAmount || data.amount);
@@ -102,8 +102,10 @@ export default function PaymentCheckout2() {
       const newId = res?._id;
       if (newId)
         navigate(`/payments/checkout/${newId}`, { state: { prevId: id } });
+      return true;
     } catch (e) {
       setMsg(`${t("refresh_failed")}: ${e?.message || ""}`.trim());
+      return false;
     }
   }
 
@@ -240,8 +242,8 @@ export default function PaymentCheckout2() {
             <button onClick={closeConfirm}>{t("cancel")}</button>
             <button
               onClick={async () => {
-                await recreatePayment();
-                closeConfirm();
+                const ok = await recreatePayment();
+                if (ok) closeConfirm();
               }}
               disabled={creating}
               aria-busy={creating}
