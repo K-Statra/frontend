@@ -10,10 +10,12 @@ export interface CreatePaymentDto {
 }
 
 export const paymentsApi = {
-  create: (data: CreatePaymentDto, idempotencyKey: string) =>
-    http.post(ENDPOINTS.payments.root, data, {
+  create: (data: CreatePaymentDto, idempotencyKey: string) => {
+    if (!idempotencyKey?.trim()) throw new Error("Idempotency-Key is required");
+    return http.post(ENDPOINTS.payments.root, data, {
       headers: { "Idempotency-Key": idempotencyKey },
-    }),
+    });
+  },
 
   getById: (id: string) =>
     http.get(ENDPOINTS.payments.byId(id)),
