@@ -18,8 +18,6 @@ const navItems = [
   { to: "/about", key: "nav_about" },
 ];
 
-const notificationCount = 3;
-
 export default function App() {
   const { t, lang } = useI18n();
   const { setAuth } = useAuthStore();
@@ -38,7 +36,6 @@ export default function App() {
     success: false,
     error: "",
   });
-  const [notifOpen, setNotifOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
 
   useEffect(() => {
@@ -80,44 +77,15 @@ export default function App() {
     lang === "ko"
       ? "임시 로그인 성공! (데모 화면)"
       : "Temporary login success! (demo)";
-  const notifications =
-    lang === "ko"
-      ? [
-          {
-            id: 1,
-            title: "새 매칭 제안",
-            body: "3개의 신규 제안이 도착했습니다.",
-          },
-          {
-            id: 2,
-            title: "결제 알림",
-            body: "어제 생성한 결제 건을 확인하세요.",
-          },
-        ]
-      : [
-          {
-            id: 1,
-            title: "New matches",
-            body: "You have 3 fresh recommendations.",
-          },
-          {
-            id: 2,
-            title: "Payment reminder",
-            body: "Review yesterday's invoice.",
-          },
-        ];
-
   const openLoginModal = () => {
     setLoginStatus({ submitting: false, success: false, error: "" });
     setIpSecure(false);
-    setNotifOpen(false);
     setLoginOpen(true);
     track("login_modal_open");
   };
 
   const openSignupModal = () => {
     setSignupOpen(true);
-    setNotifOpen(false);
     track("signup_modal_open");
   };
 
@@ -147,19 +115,14 @@ export default function App() {
     track("login_modal_submit");
 
     try {
-      // Demo: fetch the first buyer to simulate login
       const res = await listBuyers({ limit: 1 });
       const buyer = res.data?.[0];
 
       if (buyer) {
         setAuth(buyer._id, buyer.name);
         setLoginStatus({ submitting: false, success: true, error: "" });
-        setTimeout(() => {
-          setLoginOpen(false);
-          // Optional: reload or notify other components
-        }, 1000);
+        setTimeout(() => setLoginOpen(false), 1000);
       } else {
-        // Fallback if no buyers exist
         setLoginStatus({
           submitting: false,
           success: true,
@@ -167,7 +130,7 @@ export default function App() {
         });
       }
     } catch (_) {
-      setLoginStatus({ submitting: false, success: true, error: "" });
+      setLoginStatus({ submitting: false, success: false, error: "" });
     }
   };
 
@@ -209,60 +172,6 @@ export default function App() {
                 🌐
               </span>
               <LanguageSwitcher />
-            </div>
-            <div className="notif-wrapper" style={{ position: "relative" }}>
-              <button
-                className="icon-btn"
-                type="button"
-                aria-label="Notifications"
-                onClick={() => setNotifOpen((prev) => !prev)}
-                style={{ borderRadius: "12px", border: "1px solid #eceff3" }}
-              >
-                <span className="bell-icon" aria-hidden="true">
-                  🔔
-                </span>
-                <span
-                  className="notif-badge"
-                  aria-hidden={notificationCount === 0}
-                >
-                  {notificationCount}
-                </span>
-              </button>
-              {notifOpen && (
-                <div
-                  className="notif-dropdown"
-                  style={{
-                    position: "absolute",
-                    top: "120%",
-                    right: 0,
-                    width: 220,
-                    padding: "0.75rem",
-                    borderRadius: "12px",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
-                    background: "#fff",
-                    zIndex: 60,
-                  }}
-                >
-                  {notifications.map((item) => (
-                    <div key={item.id} style={{ marginBottom: "0.5rem" }}>
-                      <strong
-                        style={{ display: "block", marginBottom: "0.15rem" }}
-                      >
-                        {item.title}
-                      </strong>
-                      <span className="muted small">{item.body}</span>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="link-btn"
-                    style={{ padding: 0 }}
-                    onClick={() => setNotifOpen(false)}
-                  >
-                    {lang === "ko" ? "닫기" : "Close"}
-                  </button>
-                </div>
-              )}
             </div>
             <button
               className="avatar-btn"
