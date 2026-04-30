@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { companiesApi, matchesApi, consultationsApi } from "../apis";
+import { companiesApi, matchesApi } from "../apis";
 import Button from "../components/Button.jsx";
 import { useI18n } from "../lib/i18n/I18nProvider.jsx";
 import Modal from "../components/Modal.jsx";
@@ -488,7 +488,6 @@ export default function PartnerSearch() {
       filters: activeFilters,
     };
     try {
-      await consultationsApi.createRequest(payload);
       track("consultant_help_submit", {
         serviceType: payload.serviceType,
         hasDetails: Boolean(payload.details),
