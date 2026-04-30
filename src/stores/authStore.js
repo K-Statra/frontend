@@ -13,6 +13,12 @@ export const useAuthStore = create(
       openLoginModal: () => set({ loginModalOpen: true }),
       closeLoginModal: () => set({ loginModalOpen: false }),
     }),
-    { name: "kstatra-auth" },
+    {
+      name: "kstatra-auth",
+      partialize: (state) => ({
+        buyerId: state.buyerId,
+        buyerName: state.buyerName,
+      }),
+    },
   ),
 );
