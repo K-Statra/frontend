@@ -4,6 +4,6 @@ import { listConsultations } from "../apis/consultants";
 export function useConsultations() {
   return useQuery({
     queryKey: ["consultations"],
-    queryFn: listConsultations,
+    queryFn: () => listConsultations(),
   });
 }
