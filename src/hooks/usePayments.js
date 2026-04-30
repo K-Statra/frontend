@@ -36,6 +36,9 @@ export function useRefreshPayment() {
 
 export function useCreatePayment() {
   return useMutation({
-    mutationFn: ({ payload, idemKey }) => paymentsApi.create(payload, idemKey),
+    mutationFn: ({ payload, idemKey }) => {
+      if (!idemKey?.trim()) throw new Error("Idempotency-Key is required");
+      return paymentsApi.create(payload, idemKey);
+    },
   });
 }
