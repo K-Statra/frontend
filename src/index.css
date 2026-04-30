@@ -2,15 +2,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #F5F6F8;
+  --color-primary: #2F2FE4;
+  --color-secondary-001: #162E93;
+  --color-secondary-002: #1A1953;
+  --color-black: #080616;
+  --color-gray: #A2A0A0;
+  --color-divider: #DADADA;
+  --color-white: #FAFAFA;
+
+  --color-bg: #FAFAFA;
   --color-card: #FFFFFF;
-  --color-fg: #222222;
-  --color-fg-secondary: #666666;
-  --color-accent: #004C99;
-  --color-accent-dark: #00366D;
-  --color-muted: #888888;
+  --color-fg: #080616;
+  --color-fg-secondary: #A2A0A0;
+  --color-accent: #2F2FE4;
+  --color-accent-dark: #162E93;
+  --color-muted: #A2A0A0;
   --color-danger: #FF4B4B;
-  --color-border: #E8EBEF;
+  --color-border: #DADADA;
 
   --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
@@ -21,15 +29,24 @@
 }
 
 :root {
-  --bg: #F5F6F8;
+  --primary: #2F2FE4;
+  --secondary-001: #162E93;
+  --secondary-002: #1A1953;
+  --black: #080616;
+  --gray: #A2A0A0;
+  --divider: #DADADA;
+  --white: #FAFAFA;
+
+  --bg: #FAFAFA;
   --card: #FFFFFF;
-  --fg: #222222;
-  --fg-secondary: #666666;
-  --accent: #004C99;
-  --accent-dark: #00366D;
-  --muted: #888888;
+  --fg: #080616;
+  --fg-secondary: #A2A0A0;
+  --accent: #2F2FE4;
+  --accent-dark: #162E93;
+  --muted: #A2A0A0;
   --danger: #FF4B4B;
-  --border: #E8EBEF;
+  --border: #DADADA;
+  --gradient-statra: linear-gradient(90deg, #2F2FE4 0%, #162E93 35.6%, #1A1953 67.8%, #080616 95.7%);
   --radius: 0px;
   --radius-sm: 0px;
   --radius-lg: 0px;
