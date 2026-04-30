@@ -172,15 +172,14 @@ export default function PaymentCheckout2() {
             >
               {t("copy_link")}
             </button>
-            <a href={deeplink} target="_blank" rel="noreferrer">
-              <button
-                disabled={!deeplink}
-                aria-disabled={!deeplink}
-                aria-label={t("open_wallet")}
-              >
-                {t("open_wallet")}
-              </button>
-            </a>
+            <button
+              onClick={() => window.open(deeplink, "_blank", "noreferrer")}
+              disabled={!deeplink}
+              aria-disabled={!deeplink}
+              aria-label={t("open_wallet")}
+            >
+              {t("open_wallet")}
+            </button>
             <button
               onClick={manualRefresh}
               disabled={refreshing}
