@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { adminListMatches } from "../apis/admin";
+import { adminApi } from "../apis";
 
 export default function AdminMatches() {
   const [token, setToken] = useState(localStorage.getItem("adminToken") || "");
@@ -23,7 +23,7 @@ export default function AdminMatches() {
     setLoading(true);
     setError("");
     try {
-      const res = await adminListMatches({ token, page: p, buyerId });
+      const res = await adminApi.listMatches({ token, page: p, buyerId });
       setItems(res?.data || []);
       setTotalPages(res?.totalPages || 1);
       setPage(res?.page || p);

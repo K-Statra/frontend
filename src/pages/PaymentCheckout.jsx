@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { newIdemKey } from "../apis/client";
+import { newIdemKey } from "../apis";
 import Modal from "../components/Modal";
 import { buildGuideFromInvoice } from "../lib/guide";
 import { useCountdown } from "../hooks/useCountdown";

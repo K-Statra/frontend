@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listBuyers } from "./apis/buyers.js";
+import { buyersApi } from "./apis";
 import { useAuthStore } from "./stores/authStore.js";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./components/LanguageSwitcher.jsx";
@@ -8,6 +8,7 @@ import Modal from "./components/Modal.jsx";
 import Footer from "./components/Footer.jsx";
 import { useI18n } from "./lib/i18n/I18nProvider.jsx";
 import { track } from "./lib/analytics.js";
+import { Toaster } from "react-hot-toast";
 import AppRouter from "./router.jsx";
 
 const navItems = [
@@ -20,11 +21,18 @@ const navItems = [
 
 export default function App() {
   const { t, lang } = useI18n();
-  const { setAuth } = useAuthStore();
+  const { setAuth, loginModalOpen, closeLoginModal } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
 
   const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    if (loginModalOpen) {
+      setLoginOpen(true);
+      closeLoginModal();
+    }
+  }, [loginModalOpen, closeLoginModal]);
   const [loginForm, setLoginForm] = useState({
     username: "",
     password: "",
@@ -115,8 +123,8 @@ export default function App() {
     track("login_modal_submit");
 
     try {
-      const res = await listBuyers({ limit: 1 });
-      const buyer = res.data?.[0];
+      const res = await buyersApi.list({ limit: 1 });
+      const buyer = res?.data?.[0];
 
       if (buyer) {
         setAuth(buyer._id, buyer.name);
@@ -236,6 +244,7 @@ export default function App() {
         <AppRouter />
       </main>
       <Footer />
+      <Toaster position="top-right" />
 
       <Modal
         open={loginOpen}

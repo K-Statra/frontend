@@ -18,9 +18,11 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.6",
+    "axios": "^1.15.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.74.0",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.26.1",
     "recharts": "^3.5.0",
     "zustand": "^5.0.12"

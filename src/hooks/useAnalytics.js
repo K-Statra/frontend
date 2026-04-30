@@ -1,27 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  analyticsDashboard,
-  analyticsTopIndustries,
-  analyticsRecentTransactions,
-} from "../apis/analytics";
+import { analyticsApi } from "../apis";
 
 export function useAnalyticsDashboard() {
   return useQuery({
     queryKey: ["analytics", "dashboard"],
-    queryFn: analyticsDashboard,
+    queryFn: () => analyticsApi.dashboard(),
   });
 }
 
 export function useTopIndustries() {
   return useQuery({
     queryKey: ["analytics", "industries"],
-    queryFn: analyticsTopIndustries,
+    queryFn: () => analyticsApi.topIndustries(),
   });
 }
 
 export function useRecentTransactions() {
   return useQuery({
     queryKey: ["analytics", "transactions"],
-    queryFn: analyticsRecentTransactions,
+    queryFn: () => analyticsApi.recentTransactions(),
   });
 }
