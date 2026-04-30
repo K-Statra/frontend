@@ -212,10 +212,10 @@ export default function App() {
                 fontSize: "0.8rem",
                 textTransform: "none",
                 fontWeight: 600,
-                background: "#0066CC",
+                background: "var(--accent)",
                 color: "#fff",
                 border: "none",
-                boxShadow: "0 2px 8px rgba(0, 102, 204, 0.2)",
+                boxShadow: "0 2px 8px rgba(47, 47, 228, 0.2)",
               }}
             >
               <span

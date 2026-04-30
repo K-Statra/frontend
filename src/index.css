@@ -716,7 +716,7 @@ h3 {
 }
 
 .search-submit-btn {
-  background: #0066CC;
+  background: var(--accent);
   color: white;
   border: none;
   padding: 0 40px;
