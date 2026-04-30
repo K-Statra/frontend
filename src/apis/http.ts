@@ -15,7 +15,7 @@ export const http = axios.create({
 });
 
 http.interceptors.response.use(
-  (res) => res,
+  (res) => res.data,
   (error) => {
     const status = error.response?.status;
     const message = error.response?.data?.message;
