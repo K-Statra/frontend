@@ -28,7 +28,7 @@ export default function Footer() {
         color: "var(--fg-secondary)",
         fontSize: "13px",
         width: "100%",
-        fontFamily: "'NanumSquare', -apple-system, sans-serif",
+        fontFamily: "'Pretendard', -apple-system, sans-serif",
       }}
     >
       <div
