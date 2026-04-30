@@ -9,7 +9,9 @@ export function normalizeLocale(loc) {
 
 export function computeExpiresInSec(expiresAt) {
   if (!expiresAt) return null;
-  const ms = new Date(expiresAt).getTime() - Date.now();
+  const ts = new Date(expiresAt).getTime();
+  if (!Number.isFinite(ts)) return null;
+  const ms = ts - Date.now();
   return Math.max(0, Math.floor(ms / 1000));
 }
 
