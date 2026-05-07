@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { analyticsApi } from "../apis";
+import { analyticsApi } from "@/apis";
 
 export function useAnalyticsDashboard() {
   return useQuery({

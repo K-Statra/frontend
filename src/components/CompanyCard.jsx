@@ -1,6 +1,6 @@
-﻿import Card from "./Card";
-import Badge from "./Badge";
-import Button from "./Button";
+import Card from "@/components/Card";
+import Badge from "@/components/Badge";
+import Button from "@/components/Button";
 
 const PLACEHOLDER_IMAGE = "https://placehold.co/320x160?text=K-Statra";
 

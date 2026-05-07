@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { matchesApi, paymentsApi, newIdemKey } from "../apis";
-import CurrencySelect from "../components/CurrencySelect";
-import Button from "../components/Button";
+import { matchesApi, paymentsApi, newIdemKey } from "@/apis";
+import CurrencySelect from "@/components/CurrencySelect";
+import Button from "@/components/Button";
 
 export default function ContactPage() {
   const [params] = useSearchParams();

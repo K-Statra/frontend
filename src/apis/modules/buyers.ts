@@ -1,6 +1,6 @@
-import { http } from "../http";
-import { ENDPOINTS } from "../endpoints";
-import type { PaginatedResponse } from "../types";
+import { http } from "@/apis/http";
+import { ENDPOINTS } from "@/apis/endpoints";
+import type { PaginatedResponse } from "@/apis/types";
 
 export interface BuyerListParams {
   q?: string;

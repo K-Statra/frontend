@@ -1,7 +1,7 @@
 import React from "react";
-import { useConsultations } from "../hooks/useConsultations";
-import { useI18n } from "../lib/i18n/I18nProvider";
-import Button from "../components/Button";
+import { useConsultations } from "@/hooks/useConsultations";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import Button from "@/components/Button";
 
 export default function SchedulePage() {
   const { lang } = useI18n();

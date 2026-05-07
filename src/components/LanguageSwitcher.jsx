@@ -1,4 +1,4 @@
-import { useI18n } from "../lib/i18n/I18nProvider";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 const languageOptions = [
   { code: "ko", label: "한국어" },

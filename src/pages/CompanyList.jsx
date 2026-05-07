@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useCompanies } from "../hooks/useCompanies";
-import CompanyCard from "../components/CompanyCard.jsx";
-import Modal from "../components/Modal.jsx";
-import Button from "../components/Button.jsx";
-import Badge from "../components/Badge.jsx";
+import { useCompanies } from "@/hooks/useCompanies";
+import CompanyCard from "@/components/CompanyCard.jsx";
+import Modal from "@/components/Modal.jsx";
+import Button from "@/components/Button.jsx";
+import Badge from "@/components/Badge.jsx";
 
 const PAGE_SIZE = 9;
 

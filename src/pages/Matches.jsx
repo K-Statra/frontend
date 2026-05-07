@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { newIdemKey } from "../apis";
-import CurrencySelect from "../components/CurrencySelect.jsx";
-import Button from "../components/Button.jsx";
-import Card from "../components/Card.jsx";
-import { useCreatePayment } from "../hooks/usePayments";
-import { useMatches } from "../hooks/useMatches";
-import { useAuthStore } from "../stores/authStore";
+import { newIdemKey } from "@/apis";
+import CurrencySelect from "@/components/CurrencySelect.jsx";
+import Button from "@/components/Button.jsx";
+import Card from "@/components/Card.jsx";
+import { useCreatePayment } from "@/hooks/usePayments";
+import { useMatches } from "@/hooks/useMatches";
+import { useAuthStore } from "@/stores/authStore";
 
 function isObjectId(value) {
   return /^[a-f0-9]{24}$/i.test(String(value || "").trim());

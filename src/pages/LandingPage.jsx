@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import SquareButton from "../components/SquareButton.jsx";
-import worldMap from "../assets/world-map.png";
+import SquareButton from "@/components/SquareButton.jsx";
+import worldMap from "@/assets/world-map.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();

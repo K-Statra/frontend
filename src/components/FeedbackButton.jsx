@@ -1,5 +1,5 @@
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import { track } from "../lib/analytics.js";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
+import { track } from "@/lib/analytics.js";
 
 const FALLBACK_LINK = "mailto:support@k-statra.com?subject=K-Statra%20Feedback";
 

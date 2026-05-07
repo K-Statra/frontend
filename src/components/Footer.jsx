@@ -1,5 +1,5 @@
 import React from "react";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
 
 export default function Footer() {
   const { lang } = useI18n();

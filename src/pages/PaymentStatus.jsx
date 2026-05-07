@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import { usePayment, useRefreshPayment } from "../hooks/usePayments";
-import { useI18n } from "../lib/i18n/I18nProvider";
+import { usePayment, useRefreshPayment } from "@/hooks/usePayments";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 export default function PaymentStatus() {
   const { id } = useParams();

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
-import { dict } from "./dict";
+import { dict } from "@/lib/i18n/dict";
 
 const I18nCtx = createContext({ lang: "en", t: (k) => k, setLang: () => {} });
 

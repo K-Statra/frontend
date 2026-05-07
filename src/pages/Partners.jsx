@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import Button from "../components/Button.jsx";
-import Modal from "../components/Modal.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import { track } from "../lib/analytics.js";
-import { useBuyers } from "../hooks/useBuyers";
-import { useMatches } from "../hooks/useMatches";
+import Button from "@/components/Button.jsx";
+import Modal from "@/components/Modal.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
+import { track } from "@/lib/analytics.js";
+import { useBuyers } from "@/hooks/useBuyers";
+import { useMatches } from "@/hooks/useMatches";
 
 function formatLocation(company = {}) {
   const loc = company.location || {};

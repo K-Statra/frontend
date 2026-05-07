@@ -1,6 +1,6 @@
-﻿import { useState } from "react";
-import Button from "../components/Button";
-import { Field, TextInput, TextArea } from "../components/Input";
+import { useState } from "react";
+import Button from "@/components/Button";
+import { Field, TextInput, TextArea } from "@/components/Input";
 
 // Hardcoded fallback for production
 const PROD_API = "https://web-production-9ceeb.up.railway.app";

@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
+import Button from "@/components/Button.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
 import {
   useAnalyticsDashboard,
   useTopIndustries,
   useRecentTransactions,
-} from "../hooks/useAnalytics";
-import { track } from "../lib/analytics.js";
+} from "@/hooks/useAnalytics";
+import { track } from "@/lib/analytics.js";
 
 const statSeed = [
   {

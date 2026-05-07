@@ -1,6 +1,6 @@
-import Button from "../components/Button.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import { track } from "../lib/analytics.js";
+import Button from "@/components/Button.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
+import { track } from "@/lib/analytics.js";
 
 const milestones = [
   {

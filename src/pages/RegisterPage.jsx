@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthInput from "../components/AuthInput.jsx";
-import AuthDropdown from "../components/AuthDropdown.jsx";
-import SquareButton from "../components/SquareButton.jsx";
-import PillButton from "../components/PillButton.jsx";
-import worldMap from "../assets/world-map.png";
+import AuthInput from "@/components/AuthInput.jsx";
+import AuthDropdown from "@/components/AuthDropdown.jsx";
+import SquareButton from "@/components/SquareButton.jsx";
+import PillButton from "@/components/PillButton.jsx";
+import worldMap from "@/assets/world-map.png";
 
 const COMPANY_TYPES = [
   { value: "buyer", label: "Buyer" },

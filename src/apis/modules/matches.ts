@@ -1,5 +1,5 @@
-import { http } from "../http";
-import { ENDPOINTS } from "../endpoints";
+import { http } from "@/apis/http";
+import { ENDPOINTS } from "@/apis/endpoints";
 
 export interface SubmitFeedbackDto {
   rating: number;

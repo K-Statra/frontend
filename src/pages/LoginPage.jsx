@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthInput from "../components/AuthInput.jsx";
-import SquareButton from "../components/SquareButton.jsx";
-import PillButton from "../components/PillButton.jsx";
-import worldMap from "../assets/world-map.png";
+import AuthInput from "@/components/AuthInput.jsx";
+import SquareButton from "@/components/SquareButton.jsx";
+import PillButton from "@/components/PillButton.jsx";
+import worldMap from "@/assets/world-map.png";
 
 function HeroText() {
   return (

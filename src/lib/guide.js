@@ -1,4 +1,4 @@
-import { dict } from "./i18n/dict";
+import { dict } from "@/lib/i18n/dict";
 
 export function normalizeLocale(loc) {
   const l = String(loc || "").toLowerCase();

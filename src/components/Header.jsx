@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
-import LanguageSwitcher from "./LanguageSwitcher.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import { track } from "../lib/analytics.js";
+import LanguageSwitcher from "@/components/LanguageSwitcher.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
+import { track } from "@/lib/analytics.js";
 
 const navItems = [
   { to: "/partners", key: "nav_partner_matching" },
