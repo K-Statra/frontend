@@ -14,7 +14,7 @@ function isObjectId(value) {
 
 export default function Matches() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { buyerId: storedBuyerId } = useAuthStore();
+  const { companyId: storedBuyerId } = useAuthStore();
   const [buyerInput, setBuyerInput] = useState(
     searchParams.get("buyerId") || storedBuyerId || "",
   );
