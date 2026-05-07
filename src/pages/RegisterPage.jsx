@@ -352,7 +352,7 @@ export default function RegisterPage() {
                   gap: 12,
                 }}
               >
-                <PillButton variant="primary">Re Search</PillButton>
+                <PillButton variant="primary">Add Company</PillButton>
                 <PillButton variant="dark">Next</PillButton>
               </div>
             </div>

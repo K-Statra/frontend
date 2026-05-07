@@ -27,7 +27,7 @@ export default function AuthDropdown({
         onClick={() => setOpen((v) => !v)}
         style={{
           background: "#fafafa",
-          border: "1px solid #dadada",
+          border: open ? "1px solid #3e83ff" : "1px solid #dadada",
           borderRadius: 12,
           padding: "8px 12px",
           display: "flex",
@@ -37,6 +37,7 @@ export default function AuthDropdown({
           cursor: "pointer",
           textAlign: "left",
           boxSizing: "border-box",
+          transition: "border-color 0.15s",
         }}
       >
         <div

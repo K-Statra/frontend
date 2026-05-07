@@ -8,13 +8,14 @@ export default function AuthInput({
   onChange,
 }) {
   const [showPw, setShowPw] = useState(false);
+  const [focused, setFocused] = useState(false);
   const isPassword = type === "password";
 
   return (
     <div
       style={{
         background: "#fafafa",
-        border: "1px solid #dadada",
+        border: focused ? "1px solid #3e83ff" : "1px solid #dadada",
         borderRadius: 12,
         padding: "8px 12px",
         display: "flex",
@@ -22,6 +23,7 @@ export default function AuthInput({
         gap: 8,
         width: "100%",
         boxSizing: "border-box",
+        transition: "border-color 0.15s",
       }}
     >
       <div
@@ -48,6 +50,8 @@ export default function AuthInput({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           style={{
             background: "transparent",
             border: "none",
