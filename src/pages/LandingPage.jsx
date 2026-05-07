@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import SquareButton from "../components/SquareButton.jsx";
+import worldMap from "../assets/world-map.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ export default function LandingPage() {
       <img
         alt=""
         aria-hidden
-        src="/world-map.png"
+        src={worldMap}
         style={{
           position: "absolute",
           inset: 0,
@@ -159,38 +161,12 @@ export default function LandingPage() {
         </div>
 
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          <button
-            onClick={() => navigate("/login")}
-            style={{
-              background: "#fafafa",
-              color: "#080616",
-              border: "1px solid #080616",
-              borderRadius: 8,
-              width: 200,
-              padding: "12px 0",
-              fontSize: 16,
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-          >
+          <SquareButton variant="outline" onClick={() => navigate("/login")}>
             Log in
-          </button>
-          <button
-            onClick={() => navigate("/register")}
-            style={{
-              background: "#080616",
-              color: "#fafafa",
-              border: "none",
-              borderRadius: 8,
-              width: 200,
-              padding: "12px 0",
-              fontSize: 16,
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-          >
+          </SquareButton>
+          <SquareButton variant="solid" onClick={() => navigate("/register")}>
             Join us
-          </button>
+          </SquareButton>
         </div>
       </div>
     </div>

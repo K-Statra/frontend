@@ -23,7 +23,11 @@ export default function App() {
       <Header />
       <main
         id="main-content"
-        className={location.pathname === "/" ? "" : "container"}
+        className={
+          ["/", "/login", "/register"].includes(location.pathname)
+            ? ""
+            : "container"
+        }
       >
         <AppRouter />
       </main>

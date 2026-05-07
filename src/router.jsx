@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import LandingPage from "./pages/LandingPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 import Overview from "./pages/Overview.jsx";
 import PartnerSearch from "./pages/PartnerSearch.jsx";
 import Partners from "./pages/Partners.jsx";
@@ -32,6 +34,8 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/overview" element={<Overview />} />
       <Route path="/dashboard" element={<Overview />} />
       <Route path="/analytics" element={<Overview />} />
