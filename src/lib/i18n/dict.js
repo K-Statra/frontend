@@ -287,7 +287,7 @@ Object.assign(en, {
   landing_hero_highlight: "Trusted Sellers",
   landing_hero_suffix: "",
   landing_description:
-    "Find trusted partners with AI-powered matching and experience faster, more efficient B2B transactions with XRP.",
+    "Find trusted partners with AI-powered matching and experience faster,\nmore efficient B2B transactions with XRP.",
   landing_login: "Log in",
   landing_join: "Join us",
   nav_overview: "Overview",

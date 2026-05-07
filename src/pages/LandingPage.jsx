@@ -168,6 +168,7 @@ export default function LandingPage() {
               margin: 0,
               lineHeight: 1.4,
               textAlign: "center",
+              whiteSpace: "pre-line",
             }}
           >
             {t("landing_description")}
