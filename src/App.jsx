@@ -21,7 +21,10 @@ export default function App() {
         {t("skip_to_content")}
       </a>
       <Header />
-      <main id="main-content" className="container">
+      <main
+        id="main-content"
+        className={location.pathname === "/" ? "" : "container"}
+      >
         <AppRouter />
       </main>
       <Footer />
