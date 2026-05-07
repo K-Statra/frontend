@@ -8,6 +8,7 @@ export default function SquareButton({
     <button
       type={type}
       onClick={onClick}
+      className="hover:shadow-md transition-shadow duration-150"
       style={{
         background: variant === "solid" ? "#080616" : "#fafafa",
         color: variant === "solid" ? "#fafafa" : "#080616",
