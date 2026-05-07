@@ -14,6 +14,7 @@ import AuthInput from "@/components/AuthInput.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
+import { useRegister } from "@/hooks/useAuth";
 
 function HeroText() {
   return (
@@ -167,6 +168,7 @@ function TypeToggle({ value, onChange }) {
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { mutate: register, isPending, error } = useRegister();
   const [companyType, setCompanyType] = useState("buyer");
   const [form, setForm] = useState({
     companyName: "",
@@ -416,8 +418,36 @@ export default function RegisterPage() {
             </div>
 
             {/* Submit button */}
-            <PillButton variant="primary" disabled={!isValid}>
-              회원가입
+            {error && (
+              <p style={{ color: "#e53e3e", fontSize: 14 }}>
+                회원가입에 실패했습니다. 입력 정보를 확인해주세요.
+              </p>
+            )}
+            <PillButton
+              variant="primary"
+              disabled={!isValid || isPending}
+              onClick={() => {
+                const keywords = form.keywords
+                  .split(",")
+                  .map((s) => s.trim())
+                  .filter(Boolean);
+                register({
+                  type: companyType,
+                  companyName: form.companyName,
+                  representativeName: form.representativeName,
+                  representativeEmail: form.email,
+                  representativePhone: form.phone,
+                  password: form.password,
+                  companyIntroduction: form.companyIntro,
+                  productIntroduction: form.productIntro,
+                  websiteUrl: form.websiteUrl || undefined,
+                  ...(isBuyer
+                    ? { needs: keywords }
+                    : { exportItems: keywords }),
+                });
+              }}
+            >
+              {isPending ? "처리 중..." : "회원가입"}
             </PillButton>
           </div>
         </div>

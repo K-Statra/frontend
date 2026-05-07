@@ -5,8 +5,7 @@ import AuthInput from "@/components/AuthInput.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
-import { authApi } from "@/apis/modules/auth";
-import { useAuthStore } from "@/stores/authStore";
+import { useLogin } from "@/hooks/useAuth";
 
 function HeroText() {
   return (
@@ -121,23 +120,11 @@ function HeroText() {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { setAuth } = useAuthStore();
+  const { mutate: login, isPending, error } = useLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const isValid = email.trim() && password.trim();
-
-  const handleLogin = async () => {
-    try {
-      const res = await authApi.login({ email, password });
-      const { companyId, companyName, role } = res.data;
-      setAuth(companyId, companyName, role);
-      navigate("/");
-    } catch {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
-    }
-  };
 
   return (
     <div
@@ -294,15 +281,15 @@ export default function LoginPage() {
           <div style={{ marginTop: "auto", paddingTop: 40, width: 520 }}>
             {error && (
               <p style={{ color: "#e53e3e", fontSize: 14, marginBottom: 12 }}>
-                {error}
+                이메일 또는 비밀번호가 올바르지 않습니다.
               </p>
             )}
             <PillButton
               variant="primary"
-              disabled={!isValid}
-              onClick={handleLogin}
+              disabled={!isValid || isPending}
+              onClick={() => login({ email, password })}
             >
-              Log in
+              {isPending ? "로그인 중..." : "Log in"}
             </PillButton>
           </div>
         </div>
