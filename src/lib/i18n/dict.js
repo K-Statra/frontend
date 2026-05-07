@@ -245,6 +245,15 @@ const en = {};
 for (const key of keys) en[key] = humanize(key);
 
 Object.assign(en, {
+  landing_tagline: "Find faster, Trade safer",
+  landing_hero_line1: "Match Buyers",
+  landing_hero_prefix: "with",
+  landing_hero_highlight: "Trusted Sellers",
+  landing_hero_suffix: "",
+  landing_description:
+    "Find trusted partners with AI-powered matching and experience faster, more efficient B2B transactions with XRP.",
+  landing_login: "Log in",
+  landing_join: "Join us",
   nav_overview: "Overview",
   nav_dashboard: "Dashboard",
   nav_analytics: "Analytics",
@@ -477,6 +486,15 @@ Object.assign(en, {
 
 const ko = {
   ...en,
+  landing_tagline: "빠른 발굴, 안전한 거래",
+  landing_hero_line1: "바이어와",
+  landing_hero_prefix: "",
+  landing_hero_highlight: "셀러",
+  landing_hero_suffix: "를 연결합니다",
+  landing_description:
+    "AI 매칭으로 신뢰할 수 있는 파트너를 찾고, XRP로 더 빠르고 효율적인 B2B 거래를 경험하세요.",
+  landing_login: "로그인",
+  landing_join: "회원가입",
   nav_overview: "개요",
   nav_dashboard: "대시보드",
   nav_analytics: "분석",

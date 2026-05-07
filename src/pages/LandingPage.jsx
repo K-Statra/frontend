@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import SquareButton from "@/components/SquareButton.jsx";
 import worldMap from "@/assets/world-map.png";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <div
@@ -81,7 +83,7 @@ export default function LandingPage() {
                 textAlign: "center",
               }}
             >
-              Find faster, Trade safer
+              {t("landing_tagline")}
             </p>
 
             <div
@@ -102,21 +104,23 @@ export default function LandingPage() {
                   textAlign: "center",
                 }}
               >
-                Match Buyers
+                {t("landing_hero_line1")}
               </p>
 
               <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <p
-                  style={{
-                    fontSize: 56,
-                    fontWeight: 700,
-                    color: "#080616",
-                    margin: 0,
-                    lineHeight: 1.4,
-                  }}
-                >
-                  with
-                </p>
+                {t("landing_hero_prefix") && (
+                  <p
+                    style={{
+                      fontSize: 56,
+                      fontWeight: 700,
+                      color: "#080616",
+                      margin: 0,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {t("landing_hero_prefix")}
+                  </p>
+                )}
                 <div
                   style={{
                     background: "#0056ee",
@@ -137,9 +141,22 @@ export default function LandingPage() {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    Trusted Sellers
+                    {t("landing_hero_highlight")}
                   </p>
                 </div>
+                {t("landing_hero_suffix") && (
+                  <p
+                    style={{
+                      fontSize: 56,
+                      fontWeight: 700,
+                      color: "#080616",
+                      margin: 0,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {t("landing_hero_suffix")}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -153,19 +170,16 @@ export default function LandingPage() {
               textAlign: "center",
             }}
           >
-            Find trusted partners with AI-powered matching and experience
-            faster,
-            <br />
-            more efficient B2B transactions with XRP.
+            {t("landing_description")}
           </p>
         </div>
 
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
           <SquareButton variant="outline" onClick={() => navigate("/login")}>
-            Log in
+            {t("landing_login")}
           </SquareButton>
           <SquareButton variant="solid" onClick={() => navigate("/register")}>
-            Join us
+            {t("landing_join")}
           </SquareButton>
         </div>
       </div>
