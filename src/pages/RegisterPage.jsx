@@ -182,6 +182,21 @@ export default function RegisterPage() {
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const handleTypeChange = (type) => {
+    setCompanyType(type);
+    setForm({
+      companyName: "",
+      representativeName: "",
+      email: "",
+      phone: "",
+      password: "",
+      keywords: "",
+      companyIntro: "",
+      productIntro: "",
+      websiteUrl: "",
+    });
+  };
+
   const isBuyer = companyType === "buyer";
 
   const isValid =
@@ -321,7 +336,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Type toggle */}
-            <TypeToggle value={companyType} onChange={setCompanyType} />
+            <TypeToggle value={companyType} onChange={handleTypeChange} />
 
             {/* Form fields */}
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
