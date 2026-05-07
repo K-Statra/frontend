@@ -6,8 +6,10 @@ import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useLogin } from "@/hooks/useAuth";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 function HeroText() {
+  const { t } = useI18n();
   return (
     <div
       style={{
@@ -40,7 +42,7 @@ function HeroText() {
             textAlign: "center",
           }}
         >
-          Find faster, Trade safer
+          {t("landing_tagline")}
         </p>
 
         <div
@@ -61,20 +63,22 @@ function HeroText() {
               textAlign: "center",
             }}
           >
-            Match Buyers
+            {t("landing_hero_line1")}
           </p>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <p
-              style={{
-                fontSize: 56,
-                fontWeight: 700,
-                color: "#080616",
-                margin: 0,
-                lineHeight: 1.4,
-              }}
-            >
-              with
-            </p>
+            {t("landing_hero_prefix") && (
+              <p
+                style={{
+                  fontSize: 56,
+                  fontWeight: 700,
+                  color: "#080616",
+                  margin: 0,
+                  lineHeight: 1.4,
+                }}
+              >
+                {t("landing_hero_prefix")}
+              </p>
+            )}
             <div
               style={{
                 background: "#0056ee",
@@ -94,9 +98,22 @@ function HeroText() {
                   whiteSpace: "nowrap",
                 }}
               >
-                Trusted Sellers
+                {t("landing_hero_highlight")}
               </p>
             </div>
+            {t("landing_hero_suffix") && (
+              <p
+                style={{
+                  fontSize: 56,
+                  fontWeight: 700,
+                  color: "#080616",
+                  margin: 0,
+                  lineHeight: 1.4,
+                }}
+              >
+                {t("landing_hero_suffix")}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -110,9 +127,7 @@ function HeroText() {
           textAlign: "center",
         }}
       >
-        Find trusted partners with AI-powered matching and experience faster,
-        <br />
-        more efficient B2B transactions with XRP.
+        {t("landing_description")}
       </p>
     </div>
   );
@@ -121,6 +136,7 @@ function HeroText() {
 export default function LoginPage() {
   const navigate = useNavigate();
   const { mutate: login, isPending, error } = useLogin();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -200,13 +216,13 @@ export default function LoginPage() {
                 whiteSpace: "nowrap",
               }}
             >
-              Don&apos;t have an account?
+              {t("login_no_account")}
             </span>
             <SquareButton
               variant="outline"
               onClick={() => navigate("/register")}
             >
-              Join us
+              {t("landing_join")}
             </SquareButton>
           </div>
         </div>
@@ -238,7 +254,7 @@ export default function LoginPage() {
                 lineHeight: "58px",
               }}
             >
-              welcome back!
+              {t("login_title")}
             </h1>
             <p
               style={{
@@ -248,7 +264,7 @@ export default function LoginPage() {
                 lineHeight: "30px",
               }}
             >
-              Log in to your account
+              {t("login_subtitle")}
             </p>
           </div>
 
@@ -262,7 +278,7 @@ export default function LoginPage() {
             }}
           >
             <AuthInput
-              label="이메일"
+              label={t("login_email_label")}
               placeholder="kstatra@gmail.com"
               type="email"
               value={email}
@@ -270,8 +286,8 @@ export default function LoginPage() {
               icon={Mail}
             />
             <AuthInput
-              label="Password"
-              placeholder="Enter your password"
+              label={t("login_password_label")}
+              placeholder={t("login_password_placeholder")}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -281,7 +297,7 @@ export default function LoginPage() {
           <div style={{ marginTop: "auto", paddingTop: 40, width: 520 }}>
             {error && (
               <p style={{ color: "#e53e3e", fontSize: 14, marginBottom: 12 }}>
-                이메일 또는 비밀번호가 올바르지 않습니다.
+                {t("login_error")}
               </p>
             )}
             <PillButton
@@ -289,7 +305,7 @@ export default function LoginPage() {
               disabled={!isValid || isPending}
               onClick={() => login({ email, password })}
             >
-              {isPending ? "로그인 중..." : "Log in"}
+              {isPending ? t("login_pending") : t("landing_login")}
             </PillButton>
           </div>
         </div>

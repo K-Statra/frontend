@@ -15,8 +15,10 @@ import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useRegister } from "@/hooks/useAuth";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 function HeroText() {
+  const { t } = useI18n();
   return (
     <div
       style={{
@@ -49,7 +51,7 @@ function HeroText() {
             textAlign: "center",
           }}
         >
-          Find faster, Trade safer
+          {t("landing_tagline")}
         </p>
         <div
           style={{
@@ -69,20 +71,22 @@ function HeroText() {
               textAlign: "center",
             }}
           >
-            Match Buyers
+            {t("landing_hero_line1")}
           </p>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <p
-              style={{
-                fontSize: 56,
-                fontWeight: 700,
-                color: "#080616",
-                margin: 0,
-                lineHeight: 1.4,
-              }}
-            >
-              with
-            </p>
+            {t("landing_hero_prefix") && (
+              <p
+                style={{
+                  fontSize: 56,
+                  fontWeight: 700,
+                  color: "#080616",
+                  margin: 0,
+                  lineHeight: 1.4,
+                }}
+              >
+                {t("landing_hero_prefix")}
+              </p>
+            )}
             <div
               style={{
                 background: "#0056ee",
@@ -102,9 +106,22 @@ function HeroText() {
                   whiteSpace: "nowrap",
                 }}
               >
-                Trusted Sellers
+                {t("landing_hero_highlight")}
               </p>
             </div>
+            {t("landing_hero_suffix") && (
+              <p
+                style={{
+                  fontSize: 56,
+                  fontWeight: 700,
+                  color: "#080616",
+                  margin: 0,
+                  lineHeight: 1.4,
+                }}
+              >
+                {t("landing_hero_suffix")}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -117,18 +134,17 @@ function HeroText() {
           textAlign: "center",
         }}
       >
-        Find trusted partners with AI-powered matching and experience faster,
-        <br />
-        more efficient B2B transactions with XRP.
+        {t("landing_description")}
       </p>
     </div>
   );
 }
 
 function TypeToggle({ value, onChange }) {
+  const { t } = useI18n();
   const options = [
-    { value: "buyer", label: "바이어" },
-    { value: "seller", label: "국내수출 업체" },
+    { value: "buyer", label: t("register_type_buyer") },
+    { value: "seller", label: t("register_type_seller") },
   ];
   return (
     <div
@@ -169,6 +185,7 @@ function TypeToggle({ value, onChange }) {
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { mutate: register, isPending, error } = useRegister();
+  const { t } = useI18n();
   const [companyType, setCompanyType] = useState("buyer");
   const [form, setForm] = useState({
     companyName: "",
@@ -285,10 +302,10 @@ export default function RegisterPage() {
                 whiteSpace: "nowrap",
               }}
             >
-              Already have an account?
+              {t("register_has_account")}
             </span>
             <SquareButton variant="outline" onClick={() => navigate("/login")}>
-              Log in
+              {t("landing_login")}
             </SquareButton>
           </div>
         </div>
@@ -323,7 +340,7 @@ export default function RegisterPage() {
                   lineHeight: "58px",
                 }}
               >
-                welcome to K-Statra!
+                {t("register_title")}
               </h1>
               <p
                 style={{
@@ -333,7 +350,7 @@ export default function RegisterPage() {
                   lineHeight: "30px",
                 }}
               >
-                Register your account
+                {t("register_subtitle")}
               </p>
             </div>
 
@@ -343,28 +360,28 @@ export default function RegisterPage() {
             {/* Form fields */}
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <AuthInput
-                label="회사명"
-                placeholder="K-Statra Inc."
+                label={t("register_company_label")}
+                placeholder={t("register_company_placeholder")}
                 value={form.companyName}
                 onChange={set("companyName")}
                 icon={Building2}
               />
               <AuthInput
-                label="비밀번호"
-                placeholder="8자 이상 입력해주세요"
+                label={t("register_password_label")}
+                placeholder={t("register_password_placeholder")}
                 type="password"
                 value={form.password}
                 onChange={set("password")}
               />
               <AuthInput
-                label="대표자명"
-                placeholder="홍길동"
+                label={t("register_rep_label")}
+                placeholder={t("register_rep_placeholder")}
                 value={form.representativeName}
                 onChange={set("representativeName")}
                 icon={User}
               />
               <AuthInput
-                label="이메일"
+                label={t("register_email_label")}
                 placeholder="kstatra@gmail.com"
                 type="email"
                 value={form.email}
@@ -372,43 +389,47 @@ export default function RegisterPage() {
                 icon={Mail}
               />
               <AuthInput
-                label="전화번호"
-                placeholder="+82 10-0000-0000"
+                label={t("register_phone_label")}
+                placeholder={t("register_phone_placeholder")}
                 value={form.phone}
                 onChange={set("phone")}
                 icon={Phone}
               />
               <AuthInput
-                label={isBuyer ? "관심 소싱 품목" : "수출 희망 품목"}
+                label={
+                  isBuyer
+                    ? t("register_keywords_buyer_label")
+                    : t("register_keywords_seller_label")
+                }
                 placeholder={
                   isBuyer
-                    ? "예: K-Beauty, 화장품, 스킨케어"
-                    : "예: 스마트팩토리, Industrial IoT"
+                    ? t("register_keywords_buyer_placeholder")
+                    : t("register_keywords_seller_placeholder")
                 }
                 value={form.keywords}
                 onChange={set("keywords")}
                 icon={Tag}
               />
               <AuthInput
-                label="회사 소개서"
-                placeholder="회사에 대해 간략히 소개해주세요"
+                label={t("register_company_intro_label")}
+                placeholder={t("register_company_intro_placeholder")}
                 value={form.companyIntro}
                 onChange={set("companyIntro")}
                 icon={FileText}
               />
               <AuthInput
-                label="제품 소개서"
+                label={t("register_product_intro_label")}
                 placeholder={
                   isBuyer
-                    ? "관심 있는 제품/서비스를 설명해주세요"
-                    : "주력 제품/서비스를 설명해주세요"
+                    ? t("register_product_buyer_placeholder")
+                    : t("register_product_seller_placeholder")
                 }
                 value={form.productIntro}
                 onChange={set("productIntro")}
                 icon={Package}
               />
               <AuthInput
-                label="웹사이트 URL"
+                label={t("register_website_label")}
                 placeholder="https://www.k-statra.com"
                 type="url"
                 value={form.websiteUrl}
@@ -420,7 +441,7 @@ export default function RegisterPage() {
             {/* Submit button */}
             {error && (
               <p style={{ color: "#e53e3e", fontSize: 14 }}>
-                회원가입에 실패했습니다. 입력 정보를 확인해주세요.
+                {t("register_error")}
               </p>
             )}
             <PillButton
@@ -447,7 +468,7 @@ export default function RegisterPage() {
                 });
               }}
             >
-              {isPending ? "처리 중..." : "회원가입"}
+              {isPending ? t("register_pending") : t("register_button")}
             </PillButton>
           </div>
         </div>
