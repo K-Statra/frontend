@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2 } from "lucide-react";
+import { Mail } from "lucide-react";
 import AuthInput from "@/components/AuthInput.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
+import { authApi } from "@/apis/modules/auth";
+import { useAuthStore } from "@/stores/authStore";
 
 function HeroText() {
   return (
@@ -119,10 +121,23 @@ function HeroText() {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [companyId, setCompanyId] = useState("");
+  const { setAuth } = useAuthStore();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const isValid = companyId.trim() && password.trim();
+  const isValid = email.trim() && password.trim();
+
+  const handleLogin = async () => {
+    try {
+      const res = await authApi.login({ email, password });
+      const { companyId, companyName, role } = res.data;
+      setAuth(companyId, companyName, role);
+      navigate("/");
+    } catch {
+      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+    }
+  };
 
   return (
     <div
@@ -260,11 +275,12 @@ export default function LoginPage() {
             }}
           >
             <AuthInput
-              label="Company ID"
-              placeholder="Enter your company ID"
-              value={companyId}
-              onChange={(e) => setCompanyId(e.target.value)}
-              icon={Building2}
+              label="이메일"
+              placeholder="kstatra@gmail.com"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              icon={Mail}
             />
             <AuthInput
               label="Password"
@@ -276,7 +292,16 @@ export default function LoginPage() {
           </div>
 
           <div style={{ marginTop: "auto", paddingTop: 40, width: 520 }}>
-            <PillButton variant="primary" disabled={!isValid}>
+            {error && (
+              <p style={{ color: "#e53e3e", fontSize: 14, marginBottom: 12 }}>
+                {error}
+              </p>
+            )}
+            <PillButton
+              variant="primary"
+              disabled={!isValid}
+              onClick={handleLogin}
+            >
               Log in
             </PillButton>
           </div>
