@@ -1,6 +1,5 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useAuthStore } from "../stores/authStore";
 
 const BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
@@ -21,7 +20,7 @@ http.interceptors.response.use(
     const message = error.response?.data?.message;
 
     if (status === 401) {
-      useAuthStore.getState().openLoginModal();
+      window.location.href = "/login";
     } else if (status === 403) {
       toast.error(message || "접근 권한이 없습니다.");
     } else if (status >= 500) {

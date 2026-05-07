@@ -6,12 +6,8 @@ export const useAuthStore = create(
     (set) => ({
       buyerId: "",
       buyerName: "",
-      loginModalOpen: false,
       setAuth: (buyerId, buyerName) => set({ buyerId, buyerName }),
-      clearAuth: () =>
-        set({ buyerId: "", buyerName: "", loginModalOpen: false }),
-      openLoginModal: () => set({ loginModalOpen: true }),
-      closeLoginModal: () => set({ loginModalOpen: false }),
+      clearAuth: () => set({ buyerId: "", buyerName: "" }),
     }),
     {
       name: "kstatra-auth",
