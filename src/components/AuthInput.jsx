@@ -6,6 +6,7 @@ export default function AuthInput({
   type = "text",
   value,
   onChange,
+  icon: Icon,
 }) {
   const [showPw, setShowPw] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -38,9 +39,10 @@ export default function AuthInput({
         <span
           style={{
             fontSize: 12,
-            color: "#a2a0a0",
+            color: focused ? "#0056ee" : "#a2a0a0",
             fontWeight: 500,
             lineHeight: "16px",
+            transition: "color 0.15s",
           }}
         >
           {label}
@@ -64,6 +66,14 @@ export default function AuthInput({
           }}
         />
       </div>
+      {Icon && !isPassword && (
+        <Icon
+          size={20}
+          color={focused ? "#0056ee" : "#a2a0a0"}
+          strokeWidth={1.5}
+          style={{ flexShrink: 0, transition: "color 0.15s" }}
+        />
+      )}
       {isPassword && (
         <button
           type="button"

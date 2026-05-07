@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Building2 } from "lucide-react";
 import AuthInput from "@/components/AuthInput.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
@@ -263,6 +264,7 @@ export default function LoginPage() {
               placeholder="Enter your company ID"
               value={companyId}
               onChange={(e) => setCompanyId(e.target.value)}
+              icon={Building2}
             />
             <AuthInput
               label="Password"

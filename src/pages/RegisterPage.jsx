@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Building2, Phone, Mail, FileText, Link } from "lucide-react";
 import AuthInput from "@/components/AuthInput.jsx";
 import AuthDropdown from "@/components/AuthDropdown.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
@@ -298,12 +299,14 @@ export default function RegisterPage() {
                   placeholder="statra company"
                   value={form.companyName}
                   onChange={set("companyName")}
+                  icon={Building2}
                 />
                 <AuthInput
                   label="call"
                   placeholder="+82 00-0000-0000"
                   value={form.phone}
                   onChange={set("phone")}
+                  icon={Phone}
                 />
                 <AuthInput
                   label="Email Address"
@@ -311,6 +314,7 @@ export default function RegisterPage() {
                   type="email"
                   value={form.email}
                   onChange={set("email")}
+                  icon={Mail}
                 />
                 <div style={{ display: "flex", gap: 16 }}>
                   <AuthDropdown
@@ -333,6 +337,7 @@ export default function RegisterPage() {
                   placeholder="statra company"
                   value={form.companyProfile}
                   onChange={set("companyProfile")}
+                  icon={FileText}
                 />
                 <AuthInput
                   label="Website URL"
@@ -340,6 +345,7 @@ export default function RegisterPage() {
                   type="url"
                   value={form.websiteUrl}
                   onChange={set("websiteUrl")}
+                  icon={Link}
                 />
               </div>
 
