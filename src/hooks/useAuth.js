@@ -11,8 +11,9 @@ export function useLogin() {
   return useMutation({
     mutationFn: (data) => authApi.login(data),
     onSuccess: (res) => {
-      const { _id: companyId, name: companyName, type: role } = res;
+      const { _id: companyId, name: companyName, type: role } = res.user;
       setAuth(companyId, companyName, role);
+      toast.success("로그인됐습니다.");
       navigate("/");
     },
     onError: (err) => {
