@@ -16,7 +16,7 @@ export default function Header() {
   return (
     <header className="header">
       <div className="inner">
-        <div className="header-top">
+        <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
           <Link to="/" className="brand-link">
             <img src={logoTypo} alt="K-Statra" style={{ height: 28 }} />
           </Link>
@@ -32,10 +32,8 @@ export default function Header() {
               </NavLink>
             ))}
           </nav>
-          <div className="control-group" aria-label="Language selector">
-            <LanguageSwitcher />
-          </div>
         </div>
+        <LanguageSwitcher />
       </div>
     </header>
   );
