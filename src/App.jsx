@@ -32,7 +32,7 @@ export default function App() {
         <AppRouter />
       </main>
       <Footer />
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
     </div>
   );
 }

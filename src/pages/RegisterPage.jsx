@@ -184,7 +184,7 @@ function TypeToggle({ value, onChange }) {
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const { mutate: register, isPending, error } = useRegister();
+  const { mutate: register, isPending } = useRegister();
   const { t } = useI18n();
   const [companyType, setCompanyType] = useState("buyer");
   const [form, setForm] = useState({
@@ -217,22 +217,6 @@ export default function RegisterPage() {
   };
 
   const isBuyer = companyType === "buyer";
-
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-  const passwordValid = form.password.length >= 8;
-  const websiteValid =
-    !form.websiteUrl.trim() || /^https?:\/\/.+/.test(form.websiteUrl.trim());
-
-  const isValid =
-    form.companyName.trim() &&
-    form.representativeName.trim() &&
-    emailValid &&
-    form.phone.trim() &&
-    passwordValid &&
-    form.keywords.trim() &&
-    form.companyIntro.trim() &&
-    form.productIntro.trim() &&
-    websiteValid;
 
   return (
     <div
@@ -445,14 +429,9 @@ export default function RegisterPage() {
             </div>
 
             {/* Submit button */}
-            {error && (
-              <p style={{ color: "#e53e3e", fontSize: 14 }}>
-                {t("register_error")}
-              </p>
-            )}
             <PillButton
               variant="primary"
-              disabled={!isValid || isPending}
+              disabled={isPending}
               onClick={() => {
                 const keywords = form.keywords
                   .split(",")

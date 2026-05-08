@@ -135,7 +135,7 @@ function HeroText() {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { mutate: login, isPending, error } = useLogin();
+  const { mutate: login, isPending } = useLogin();
   const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -295,11 +295,6 @@ export default function LoginPage() {
           </div>
 
           <div style={{ marginTop: "auto", paddingTop: 40, width: 520 }}>
-            {error && (
-              <p style={{ color: "#e53e3e", fontSize: 14, marginBottom: 12 }}>
-                {t("login_error")}
-              </p>
-            )}
             <PillButton
               variant="primary"
               disabled={!isValid || isPending}
