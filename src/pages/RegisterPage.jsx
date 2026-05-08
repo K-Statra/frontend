@@ -218,15 +218,21 @@ export default function RegisterPage() {
 
   const isBuyer = companyType === "buyer";
 
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+  const passwordValid = form.password.length >= 8;
+  const websiteValid =
+    !form.websiteUrl.trim() || /^https?:\/\/.+/.test(form.websiteUrl.trim());
+
   const isValid =
     form.companyName.trim() &&
     form.representativeName.trim() &&
-    form.email.trim() &&
+    emailValid &&
     form.phone.trim() &&
-    form.password.trim() &&
+    passwordValid &&
     form.keywords.trim() &&
     form.companyIntro.trim() &&
-    form.productIntro.trim();
+    form.productIntro.trim() &&
+    websiteValid;
 
   return (
     <div
