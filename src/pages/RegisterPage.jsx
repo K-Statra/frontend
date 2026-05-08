@@ -178,6 +178,26 @@ export default function RegisterPage() {
   const isBuyer = companyType === "buyer";
 
   const handleSubmit = () => {
+    if (isPending) return;
+    const {
+      companyName,
+      representativeName,
+      email,
+      phone,
+      password,
+      companyIntro,
+      productIntro,
+    } = form;
+    if (
+      !companyName.trim() ||
+      !representativeName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !password.trim() ||
+      !companyIntro.trim() ||
+      !productIntro.trim()
+    )
+      return;
     const keywords = form.keywords
       .split(",")
       .map((s) => s.trim())

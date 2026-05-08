@@ -141,6 +141,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
+    if (isPending || !email.trim() || !password.trim()) return;
     login({ email, password });
   };
 
