@@ -2,6 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import LanguageSwitcher from "@/components/LanguageSwitcher.jsx";
 import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
 import { track } from "@/lib/analytics.js";
+import logoTypo from "@/assets/logo_typo.png";
 
 const navItems = [
   { to: "/partners", key: "nav_partner_matching" },
@@ -17,7 +18,7 @@ export default function Header() {
       <div className="inner">
         <div className="header-top">
           <Link to="/" className="brand-link">
-            K-Statra
+            <img src={logoTypo} alt="K-Statra" style={{ height: 28 }} />
           </Link>
           <nav className="nav" aria-label="Primary">
             {navItems.map((item) => (
