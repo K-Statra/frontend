@@ -87,8 +87,9 @@ export default function AuthInput({
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            color: "#a2a0a0",
+            color: focused ? "#0056ee" : "#a2a0a0",
             flexShrink: 0,
+            transition: "color 0.15s",
           }}
         >
           {showPw ? (
