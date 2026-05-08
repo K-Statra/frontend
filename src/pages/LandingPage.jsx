@@ -33,14 +33,6 @@ export default function LandingPage() {
 
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          backdropFilter: "blur(2.5px)",
-        }}
-      />
-
-      <div
-        style={{
           position: "relative",
           zIndex: 1,
           maxWidth: 1440,
