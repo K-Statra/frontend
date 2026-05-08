@@ -14,7 +14,7 @@ export function useLogin() {
       const { _id: companyId, name: companyName, type: role } = res.user;
       setAuth(companyId, companyName, role);
       toast.success("로그인됐습니다.");
-      navigate("/");
+      navigate("/matches");
     },
     onError: (err) => {
       const messages = err?.response?.data?.message?.message;
