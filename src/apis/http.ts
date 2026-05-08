@@ -19,7 +19,7 @@ http.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data?.message;
 
-    if (status === 401) {
+    if (status === 401 && window.location.pathname !== "/login") {
       window.location.href = "/login";
     } else if (status === 403) {
       toast.error(message || "접근 권한이 없습니다.");

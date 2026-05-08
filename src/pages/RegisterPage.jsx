@@ -218,6 +218,29 @@ export default function RegisterPage() {
 
   const isBuyer = companyType === "buyer";
 
+  const handleSubmit = () => {
+    const keywords = form.keywords
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    register({
+      type: companyType,
+      sellerName: form.companyName,
+      representativeName: form.representativeName,
+      representativeEmail: form.email,
+      representativePhone: form.phone,
+      password: form.password,
+      sellerIntroduction: form.companyIntro,
+      productIntroduction: form.productIntro,
+      websiteUrl: form.websiteUrl || undefined,
+      ...(isBuyer ? { needs: keywords } : { exportItems: keywords }),
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSubmit();
+  };
+
   return (
     <div
       style={{
@@ -347,13 +370,13 @@ export default function RegisterPage() {
             {/* Type toggle */}
             <TypeToggle value={companyType} onChange={handleTypeChange} />
 
-            {/* Form fields */}
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <AuthInput
                 label={t("register_company_label")}
                 placeholder={t("register_company_placeholder")}
                 value={form.companyName}
                 onChange={set("companyName")}
+                onKeyDown={handleKeyDown}
                 icon={Building2}
               />
               <AuthInput
@@ -362,12 +385,14 @@ export default function RegisterPage() {
                 type="password"
                 value={form.password}
                 onChange={set("password")}
+                onKeyDown={handleKeyDown}
               />
               <AuthInput
                 label={t("register_rep_label")}
                 placeholder={t("register_rep_placeholder")}
                 value={form.representativeName}
                 onChange={set("representativeName")}
+                onKeyDown={handleKeyDown}
                 icon={User}
               />
               <AuthInput
@@ -376,6 +401,7 @@ export default function RegisterPage() {
                 type="email"
                 value={form.email}
                 onChange={set("email")}
+                onKeyDown={handleKeyDown}
                 icon={Mail}
               />
               <AuthInput
@@ -383,6 +409,7 @@ export default function RegisterPage() {
                 placeholder={t("register_phone_placeholder")}
                 value={form.phone}
                 onChange={set("phone")}
+                onKeyDown={handleKeyDown}
                 icon={Phone}
               />
               <AuthInput
@@ -398,6 +425,7 @@ export default function RegisterPage() {
                 }
                 value={form.keywords}
                 onChange={set("keywords")}
+                onKeyDown={handleKeyDown}
                 icon={Tag}
               />
               <AuthInput
@@ -405,6 +433,7 @@ export default function RegisterPage() {
                 placeholder={t("register_company_intro_placeholder")}
                 value={form.companyIntro}
                 onChange={set("companyIntro")}
+                onKeyDown={handleKeyDown}
                 icon={FileText}
               />
               <AuthInput
@@ -416,6 +445,7 @@ export default function RegisterPage() {
                 }
                 value={form.productIntro}
                 onChange={set("productIntro")}
+                onKeyDown={handleKeyDown}
                 icon={Package}
               />
               <AuthInput
@@ -424,34 +454,15 @@ export default function RegisterPage() {
                 type="url"
                 value={form.websiteUrl}
                 onChange={set("websiteUrl")}
+                onKeyDown={handleKeyDown}
                 icon={Link}
               />
             </div>
 
-            {/* Submit button */}
             <PillButton
               variant="primary"
+              onClick={handleSubmit}
               disabled={isPending}
-              onClick={() => {
-                const keywords = form.keywords
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean);
-                register({
-                  type: companyType,
-                  sellerName: form.companyName,
-                  representativeName: form.representativeName,
-                  representativeEmail: form.email,
-                  representativePhone: form.phone,
-                  password: form.password,
-                  sellerIntroduction: form.companyIntro,
-                  productIntroduction: form.productIntro,
-                  websiteUrl: form.websiteUrl || undefined,
-                  ...(isBuyer
-                    ? { needs: keywords }
-                    : { exportItems: keywords }),
-                });
-              }}
             >
               {isPending ? t("register_pending") : t("register_button")}
             </PillButton>

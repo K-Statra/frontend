@@ -140,7 +140,13 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const isValid = email.trim() && password.trim();
+  const handleSubmit = () => {
+    login({ email, password });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSubmit();
+  };
 
   return (
     <div
@@ -283,6 +289,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyDown}
               icon={Mail}
             />
             <AuthInput
@@ -291,14 +298,15 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
 
           <div style={{ marginTop: "auto", paddingTop: 40, width: 520 }}>
             <PillButton
               variant="primary"
-              disabled={!isValid || isPending}
-              onClick={() => login({ email, password })}
+              onClick={handleSubmit}
+              disabled={isPending}
             >
               {isPending ? t("login_pending") : t("landing_login")}
             </PillButton>

@@ -6,6 +6,7 @@ export default function AuthInput({
   type = "text",
   value,
   onChange,
+  onKeyDown,
   icon: Icon,
 }) {
   const [showPw, setShowPw] = useState(false);
@@ -52,6 +53,7 @@ export default function AuthInput({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onKeyDown={onKeyDown}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={{
