@@ -8,7 +8,7 @@ export interface RegisterSellerDto {
   representativePhone: string;
   password: string;
   exportItems: string[];
-  industry?: string;
+  industries?: string[];
   tags?: string[];
   sellerIntroduction: string;
   productIntroduction: string;
