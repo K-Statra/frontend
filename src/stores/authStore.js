@@ -4,20 +4,22 @@ import { persist } from "zustand/middleware";
 export const useAuthStore = create(
   persist(
     (set) => ({
-      buyerId: "",
-      buyerName: "",
-      loginModalOpen: false,
-      setAuth: (buyerId, buyerName) => set({ buyerId, buyerName }),
+      companyId: "",
+      companyName: "",
+      role: "",
+      isLoggedIn: false,
+      setAuth: (companyId, companyName, role) =>
+        set({ companyId, companyName, role, isLoggedIn: true }),
       clearAuth: () =>
-        set({ buyerId: "", buyerName: "", loginModalOpen: false }),
-      openLoginModal: () => set({ loginModalOpen: true }),
-      closeLoginModal: () => set({ loginModalOpen: false }),
+        set({ companyId: "", companyName: "", role: "", isLoggedIn: false }),
     }),
     {
       name: "kstatra-auth",
       partialize: (state) => ({
-        buyerId: state.buyerId,
-        buyerName: state.buyerName,
+        companyId: state.companyId,
+        companyName: state.companyName,
+        role: state.role,
+        isLoggedIn: state.isLoggedIn,
       }),
     },
   ),

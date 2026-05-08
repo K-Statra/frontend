@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import Button from "../components/Button.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import { track } from "../lib/analytics.js";
-import { useAnalyticsDashboard } from "../hooks/useAnalytics";
-import { usePaymentSummary, useRecentPayments } from "../hooks/usePayments";
+import Button from "@/components/Button.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
+import { track } from "@/lib/analytics.js";
+import { useAnalyticsDashboard } from "@/hooks/useAnalytics";
+import { usePaymentSummary, useRecentPayments } from "@/hooks/usePayments";
 
 const paymentStatSeed = [
   {

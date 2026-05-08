@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { adminApi } from "../apis";
+import { adminApi } from "@/apis";
 import {
   BarChart,
   Bar,

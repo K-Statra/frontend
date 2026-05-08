@@ -1,28 +1,33 @@
-import { useI18n } from "../lib/i18n/I18nProvider";
-
-const languageOptions = [
-  { code: "ko", label: "한국어" },
-  { code: "en", label: "English" },
-  { code: "ja", label: "日本語" },
-  { code: "zh-Hans", label: "简体中文" },
-  { code: "zh-Hant", label: "繁體中文" },
-  { code: "de", label: "Deutsch" },
-];
+import { Globe } from "lucide-react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 export default function LanguageSwitcher() {
   const { lang, setLang } = useI18n();
+
+  const toggle = () => setLang(lang === "ko" ? "en" : "ko");
+
   return (
-    <select
-      className="language-select"
-      value={lang}
-      onChange={(event) => setLang(event.target.value)}
-      aria-label="Select language"
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label="Toggle language"
+      style={{
+        width: 40,
+        height: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "transparent",
+        border: "none",
+        borderRadius: 8,
+        cursor: "pointer",
+        color: "#080616",
+        transition: "background 0.15s",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = "#e8edf5")}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
     >
-      {languageOptions.map((option) => (
-        <option key={option.code} value={option.code}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+      <Globe size={32} strokeWidth={1.5} />
+    </button>
   );
 }

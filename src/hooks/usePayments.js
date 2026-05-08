@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { paymentsApi } from "../apis";
+import { paymentsApi } from "@/apis";
 
 export function usePaymentSummary() {
   return useQuery({

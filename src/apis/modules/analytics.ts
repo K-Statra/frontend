@@ -1,4 +1,4 @@
-import { http } from "../http";
+import { http } from "@/apis/http";
 
 export const analyticsApi = {
   dashboard: () => http.get("/analytics/dashboard"),

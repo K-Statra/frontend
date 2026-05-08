@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { companiesApi } from "../apis";
+import { companiesApi } from "@/apis";
 
 export function useCompanies(filters, page, limit) {
   return useQuery({

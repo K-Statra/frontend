@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { companiesApi, matchesApi } from "../apis";
-import Button from "../components/Button.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
-import Modal from "../components/Modal.jsx";
-import { track } from "../lib/analytics.js";
+import { companiesApi, matchesApi } from "@/apis";
+import Button from "@/components/Button.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
+import Modal from "@/components/Modal.jsx";
+import { track } from "@/lib/analytics.js";
 
 const sidebarPresets = {
   partnership: [

@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { newIdemKey } from "../apis";
-import Modal from "../components/Modal";
-import { buildGuideFromInvoice } from "../lib/guide";
-import { useCountdown } from "../hooks/useCountdown";
-import IssuedCurrencyGuide from "../components/IssuedCurrencyGuide";
-import { useI18n } from "../lib/i18n/I18nProvider";
+import { newIdemKey } from "@/apis";
+import Modal from "@/components/Modal";
+import { buildGuideFromInvoice } from "@/lib/guide";
+import { useCountdown } from "@/hooks/useCountdown";
+import IssuedCurrencyGuide from "@/components/IssuedCurrencyGuide";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import {
   usePayment,
   useRefreshPayment,
   useCreatePayment,
-} from "../hooks/usePayments";
+} from "@/hooks/usePayments";
 
 export default function PaymentCheckout2() {
   const { id } = useParams();

@@ -1,4 +1,4 @@
-import { useI18n } from "../lib/i18n/I18nProvider";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 export default function CurrencySelect({ value = "XRP", onChange }) {
   const { t } = useI18n();

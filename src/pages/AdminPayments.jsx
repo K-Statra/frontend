@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useI18n } from "../lib/i18n/I18nProvider";
-import { useDatePreset } from "../hooks/useDatePreset";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import { useDatePreset } from "@/hooks/useDatePreset";
 import { useSearchParams } from "react-router-dom";
-import { adminApi } from "../apis";
+import { adminApi } from "@/apis";
 
 export default function AdminPayments() {
   const { t } = useI18n();

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buyersApi } from "../apis";
-import Button from "../components/Button.jsx";
-import { Field, TextArea, TextInput } from "../components/Input.jsx";
-import { useI18n } from "../lib/i18n/I18nProvider.jsx";
+import { buyersApi } from "@/apis";
+import Button from "@/components/Button.jsx";
+import { Field, TextArea, TextInput } from "@/components/Input.jsx";
+import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
 
 const initialState = {
   name: "",

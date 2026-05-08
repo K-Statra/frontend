@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
-import { dict } from "./dict";
+import { dict } from "@/lib/i18n/dict";
 
 const I18nCtx = createContext({ lang: "en", t: (k) => k, setLang: () => {} });
 
@@ -22,8 +22,17 @@ export function I18nProvider({ children }) {
   const [lang, setLangState] = useState(initial);
   const setLang = (v) => {
     const l = normalize(v);
-    localStorage.setItem("lang", l);
-    setLangState(l);
+    document.body.style.transition = "opacity 0.15s ease";
+    document.body.style.opacity = "0";
+    setTimeout(() => {
+      localStorage.setItem("lang", l);
+      setLangState(l);
+      window.requestAnimationFrame(() =>
+        window.requestAnimationFrame(() => {
+          document.body.style.opacity = "1";
+        }),
+      );
+    }, 150);
   };
   const t = useMemo(() => {
     const current = dict[lang] || {};

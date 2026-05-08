@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { adminApi } from "../apis";
+import { adminApi } from "@/apis";
 
 export default function AdminMatches() {
   const [token, setToken] = useState(localStorage.getItem("adminToken") || "");

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { matchesApi } from "../apis";
+import { matchesApi } from "@/apis";
 
 export function useMatches(buyerId, limit, { enabled = true } = {}) {
   return useQuery({

@@ -63,6 +63,18 @@ body {
   color: var(--fg);
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .container {
@@ -411,10 +423,8 @@ h3 {
 .header {
   position: sticky;
   top: 0;
-  background: #ffffff;
+  background: #f4f7fc;
   z-index: 10;
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .header .inner {
