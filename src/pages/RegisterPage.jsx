@@ -11,6 +11,7 @@ import {
   Link,
 } from "lucide-react";
 import AuthInput from "@/components/AuthInput.jsx";
+import AuthDropdown from "@/components/AuthDropdown.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
@@ -136,48 +137,6 @@ function HeroText() {
       >
         {t("landing_description")}
       </p>
-    </div>
-  );
-}
-
-function TypeToggle({ value, onChange }) {
-  const { t } = useI18n();
-  const options = [
-    { value: "buyer", label: t("register_type_buyer") },
-    { value: "seller", label: t("register_type_seller") },
-  ];
-  return (
-    <div
-      style={{
-        display: "flex",
-        background: "#f0f4ff",
-        borderRadius: 999,
-        padding: 4,
-        gap: 4,
-        width: "100%",
-      }}
-    >
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          style={{
-            flex: 1,
-            padding: "10px 0",
-            borderRadius: 999,
-            background: value === opt.value ? "#0056ee" : "transparent",
-            color: value === opt.value ? "#fafafa" : "#a2a0a0",
-            border: "none",
-            fontSize: 15,
-            fontWeight: 600,
-            cursor: "pointer",
-            transition: "background 0.15s, color 0.15s",
-          }}
-        >
-          {opt.label}
-        </button>
-      ))}
     </div>
   );
 }
@@ -367,9 +326,6 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Type toggle */}
-            <TypeToggle value={companyType} onChange={handleTypeChange} />
-
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <AuthInput
                 label={t("register_company_label")}
@@ -412,22 +368,35 @@ export default function RegisterPage() {
                 onKeyDown={handleKeyDown}
                 icon={Phone}
               />
-              <AuthInput
-                label={
-                  isBuyer
-                    ? t("register_keywords_buyer_label")
-                    : t("register_keywords_seller_label")
-                }
-                placeholder={
-                  isBuyer
-                    ? t("register_keywords_buyer_placeholder")
-                    : t("register_keywords_seller_placeholder")
-                }
-                value={form.keywords}
-                onChange={set("keywords")}
-                onKeyDown={handleKeyDown}
-                icon={Tag}
-              />
+              <div style={{ display: "flex", gap: 16 }}>
+                <AuthDropdown
+                  label={t("register_company_type_label")}
+                  value={companyType}
+                  onChange={handleTypeChange}
+                  options={[
+                    { value: "buyer", label: t("register_type_buyer") },
+                    { value: "seller", label: t("register_type_seller") },
+                  ]}
+                />
+                <div style={{ flex: 1 }}>
+                  <AuthInput
+                    label={
+                      isBuyer
+                        ? t("register_keywords_buyer_label")
+                        : t("register_keywords_seller_label")
+                    }
+                    placeholder={
+                      isBuyer
+                        ? t("register_keywords_buyer_placeholder")
+                        : t("register_keywords_seller_placeholder")
+                    }
+                    value={form.keywords}
+                    onChange={set("keywords")}
+                    onKeyDown={handleKeyDown}
+                    icon={Tag}
+                  />
+                </div>
+              </div>
               <AuthInput
                 label={t("register_company_intro_label")}
                 placeholder={t("register_company_intro_placeholder")}
