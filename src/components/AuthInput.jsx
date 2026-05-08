@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 
 export default function AuthInput({
   label,
@@ -9,6 +9,7 @@ export default function AuthInput({
   onKeyDown,
   icon: Icon,
 }) {
+  const id = useId();
   const [showPw, setShowPw] = useState(false);
   const [focused, setFocused] = useState(false);
   const isPassword = type === "password";
@@ -37,18 +38,21 @@ export default function AuthInput({
           minWidth: 0,
         }}
       >
-        <span
+        <label
+          htmlFor={id}
           style={{
             fontSize: 12,
             color: focused ? "#0056ee" : "#a2a0a0",
             fontWeight: 500,
             lineHeight: "16px",
             transition: "color 0.15s",
+            cursor: "text",
           }}
         >
           {label}
-        </span>
+        </label>
         <input
+          id={id}
           type={isPassword && showPw ? "text" : type}
           placeholder={placeholder}
           value={value}
