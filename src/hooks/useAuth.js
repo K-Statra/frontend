@@ -40,6 +40,7 @@ export function useRegister() {
     onSuccess: (res) => {
       const { _id: companyId, name: companyName, type: role } = res;
       setAuth(companyId, companyName, role);
+      toast.success("회원가입이 완료됐습니다.");
       navigate("/");
     },
     onError: (err) => {
