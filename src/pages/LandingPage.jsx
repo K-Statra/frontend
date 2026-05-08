@@ -2,10 +2,12 @@ import { useNavigate } from "react-router-dom";
 import SquareButton from "@/components/SquareButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useI18n } from "@/lib/i18n/I18nProvider";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { isLoggedIn } = useAuthStore();
 
   return (
     <div
@@ -168,12 +170,26 @@ export default function LandingPage() {
         </div>
 
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          <SquareButton variant="outline" onClick={() => navigate("/login")}>
-            {t("landing_login")}
-          </SquareButton>
-          <SquareButton variant="solid" onClick={() => navigate("/register")}>
-            {t("landing_join")}
-          </SquareButton>
+          {isLoggedIn ? (
+            <SquareButton variant="solid" onClick={() => navigate("/matches")}>
+              {t("nav_partner_matching")}
+            </SquareButton>
+          ) : (
+            <>
+              <SquareButton
+                variant="outline"
+                onClick={() => navigate("/login")}
+              >
+                {t("landing_login")}
+              </SquareButton>
+              <SquareButton
+                variant="solid"
+                onClick={() => navigate("/register")}
+              >
+                {t("landing_join")}
+              </SquareButton>
+            </>
+          )}
         </div>
       </div>
     </div>
