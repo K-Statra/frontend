@@ -454,12 +454,12 @@ export default function RegisterPage() {
                   .filter(Boolean);
                 register({
                   type: companyType,
-                  companyName: form.companyName,
+                  sellerName: form.companyName,
                   representativeName: form.representativeName,
                   representativeEmail: form.email,
                   representativePhone: form.phone,
                   password: form.password,
-                  companyIntroduction: form.companyIntro,
+                  sellerIntroduction: form.companyIntro,
                   productIntroduction: form.productIntro,
                   websiteUrl: form.websiteUrl || undefined,
                   ...(isBuyer

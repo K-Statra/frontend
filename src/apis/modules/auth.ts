@@ -2,7 +2,7 @@ import { http } from "@/apis/http";
 import { ENDPOINTS } from "@/apis/endpoints";
 
 export interface RegisterSellerDto {
-  companyName: string;
+  sellerName: string;
   representativeName: string;
   representativeEmail: string;
   representativePhone: string;
@@ -10,13 +10,13 @@ export interface RegisterSellerDto {
   exportItems: string[];
   industry?: string;
   tags?: string[];
-  companyIntroduction: string;
+  sellerIntroduction: string;
   productIntroduction: string;
   websiteUrl?: string;
 }
 
 export interface RegisterBuyerDto {
-  companyName: string;
+  sellerName: string;
   representativeName: string;
   representativeEmail: string;
   representativePhone: string;
@@ -24,7 +24,7 @@ export interface RegisterBuyerDto {
   needs: string[];
   industries?: string[];
   tags?: string[];
-  companyIntroduction: string;
+  sellerIntroduction: string;
   productIntroduction: string;
   websiteUrl?: string;
 }
