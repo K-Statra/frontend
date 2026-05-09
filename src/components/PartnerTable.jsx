@@ -54,10 +54,11 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
       {partners.map((partner, i) => (
         <PartnerTableRow
           key={partner._id ?? i}
-          name={partner.name ?? partner.sellerName}
-          country={partner.country}
-          industries={partner.industries}
-          profile={partner.sellerIntroduction}
+          name={partner.name}
+          country={partner.location?.country}
+          industries={partner.industry}
+          profile={partner.profileText}
+          websiteUrl={partner.websiteUrl}
           avatarUrl={partner.profileImageUrl}
         />
       ))}

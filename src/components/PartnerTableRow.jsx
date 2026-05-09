@@ -4,6 +4,7 @@ export default function PartnerTableRow({
   industries,
   profile,
   avatarUrl,
+  websiteUrl,
 }) {
   const industryText = Array.isArray(industries)
     ? industries.join(", ")
@@ -64,7 +65,10 @@ export default function PartnerTableRow({
               }}
             />
           )}
-          <span
+          <a
+            href={websiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               fontSize: 12,
               color: "#080616",
@@ -76,7 +80,7 @@ export default function PartnerTableRow({
             }}
           >
             {name}
-          </span>
+          </a>
         </div>
 
         <div
