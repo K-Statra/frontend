@@ -31,7 +31,8 @@ export default function App() {
       >
         <AppRouter />
       </main>
-      <Footer />
+      {!["/", "/login", "/register"].includes(location.pathname) &&
+        !location.pathname.startsWith("/payments") && <Footer />}
       <Toaster position="top-center" />
     </div>
   );
