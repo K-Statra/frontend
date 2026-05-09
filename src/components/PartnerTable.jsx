@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import PartnerTableRow from "@/components/PartnerTableRow";
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.05, duration: 0.3, ease: "easeOut" },
+  }),
+  exit: { opacity: 0, y: -8, transition: { duration: 0.15 } },
+};
 
 const TABLE_HEADERS = [
   { key: "company", width: 417 },
@@ -89,22 +100,32 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
         </div>
       </div>
 
-      {partners.map((partner, i) => {
-        const id = partner._id ?? i;
-        return (
-          <PartnerTableRow
-            key={id}
-            name={partner.name}
-            country={partner.location?.country}
-            industries={partner.industry}
-            profile={partner.profileText}
-            websiteUrl={partner.websiteUrl}
-            avatarUrl={partner.profileImageUrl}
-            checked={checkedIds.has(id)}
-            onToggle={() => toggleOne(id)}
-          />
-        );
-      })}
+      <AnimatePresence mode="wait">
+        {partners.map((partner, i) => {
+          const id = partner._id ?? i;
+          return (
+            <motion.div
+              key={id}
+              custom={i}
+              variants={rowVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <PartnerTableRow
+                name={partner.name}
+                country={partner.location?.country}
+                industries={partner.industry}
+                profile={partner.profileText}
+                websiteUrl={partner.websiteUrl}
+                avatarUrl={partner.profileImageUrl}
+                checked={checkedIds.has(id)}
+                onToggle={() => toggleOne(id)}
+              />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
 
       {!submittedQuery && (
         <div
