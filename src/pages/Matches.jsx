@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
+import PartnerSearchInput from "@/components/PartnerSearchInput";
+import { usePartnerSearch } from "@/hooks/usePartners";
 
 export default function Matches() {
   const { t } = useI18n();
+  const [submittedQuery, setSubmittedQuery] = useState("");
+
+  const { isFetching } = usePartnerSearch(submittedQuery);
 
   return (
     <div style={{ background: "#f4f7fc", minHeight: "calc(100vh - 68px)" }}>
@@ -9,7 +15,7 @@ export default function Matches() {
         style={{
           maxWidth: 1440,
           margin: "0 auto",
-          padding: "40px 80px",
+          padding: "40px 80px 0",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -66,6 +72,19 @@ export default function Matches() {
             {t("matches_subtitle")}
           </p>
         </div>
+      </div>
+
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          padding: "40px 80px 80px",
+        }}
+      >
+        <PartnerSearchInput
+          onSearch={setSubmittedQuery}
+          isLoading={isFetching}
+        />
       </div>
     </div>
   );
