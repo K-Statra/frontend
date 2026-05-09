@@ -530,6 +530,8 @@ Object.assign(en, {
   matches_col_country: "Country",
   matches_col_industries: "Industries",
   matches_col_profile: "Company Profile",
+  matches_empty_prompt: "Enter a keyword to find partners",
+  matches_no_results: "No results found.",
 });
 
 const ko = {
@@ -792,6 +794,8 @@ const ko = {
   matches_col_country: "국가",
   matches_col_industries: "산업",
   matches_col_profile: "업체 소개",
+  matches_empty_prompt: "검색어를 입력하여 파트너를 찾아보세요",
+  matches_no_results: "검색 결과가 없습니다.",
 };
 
 export const dict = {

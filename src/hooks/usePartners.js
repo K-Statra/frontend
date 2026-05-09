@@ -5,7 +5,7 @@ export function usePartnerSearch(q, options = {}) {
   return useQuery({
     queryKey: ["partners", "search", q],
     queryFn: () => partnersApi.search({ q }),
-    enabled: q,
+    enabled: !!q,
     ...options,
   });
 }
