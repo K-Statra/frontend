@@ -1,3 +1,5 @@
+import { Check } from "lucide-react";
+
 export default function PartnerTableRow({
   name,
   country,
@@ -5,6 +7,8 @@ export default function PartnerTableRow({
   profile,
   avatarUrl,
   websiteUrl,
+  checked,
+  onToggle,
 }) {
   const industryText = Array.isArray(industries)
     ? industries.join(", ")
@@ -21,14 +25,22 @@ export default function PartnerTableRow({
       }}
     >
       <div
+        onClick={onToggle}
         style={{
           width: 24,
           height: 24,
           flexShrink: 0,
-          border: "1px solid #a2a0a0",
+          border: checked ? "none" : "1px solid #a2a0a0",
           borderRadius: 4,
+          background: checked ? "#0056ee" : "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
         }}
-      />
+      >
+        {checked && <Check size={16} color="#fafafa" strokeWidth={2.5} />}
+      </div>
 
       <div
         style={{ display: "flex", flex: 1, alignItems: "center", minWidth: 0 }}

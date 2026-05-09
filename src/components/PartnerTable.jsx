@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Check } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import PartnerTableRow from "@/components/PartnerTableRow";
 
@@ -10,6 +12,26 @@ const TABLE_HEADERS = [
 
 export default function PartnerTable({ partners, isFetching, submittedQuery }) {
   const { t } = useI18n();
+  const [checkedIds, setCheckedIds] = useState(new Set());
+
+  const allChecked = partners.length > 0 && checkedIds.size === partners.length;
+
+  const toggleAll = () => {
+    if (allChecked) {
+      setCheckedIds(new Set());
+    } else {
+      setCheckedIds(new Set(partners.map((p, i) => p._id ?? i)));
+    }
+  };
+
+  const toggleOne = (id) => {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
     <div>
@@ -22,7 +44,23 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
           background: "#edf1f4",
         }}
       >
-        <div style={{ width: 24, flexShrink: 0 }} />
+        <div
+          onClick={toggleAll}
+          style={{
+            width: 24,
+            height: 24,
+            flexShrink: 0,
+            border: allChecked ? "none" : "1px solid #a2a0a0",
+            borderRadius: 4,
+            background: allChecked ? "#0056ee" : "transparent",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          {allChecked && <Check size={16} color="#fafafa" strokeWidth={2.5} />}
+        </div>
         <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
           {TABLE_HEADERS.map(({ key, width }) => (
             <div
@@ -51,17 +89,22 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
         </div>
       </div>
 
-      {partners.map((partner, i) => (
-        <PartnerTableRow
-          key={partner._id ?? i}
-          name={partner.name}
-          country={partner.location?.country}
-          industries={partner.industry}
-          profile={partner.profileText}
-          websiteUrl={partner.websiteUrl}
-          avatarUrl={partner.profileImageUrl}
-        />
-      ))}
+      {partners.map((partner, i) => {
+        const id = partner._id ?? i;
+        return (
+          <PartnerTableRow
+            key={id}
+            name={partner.name}
+            country={partner.location?.country}
+            industries={partner.industry}
+            profile={partner.profileText}
+            websiteUrl={partner.websiteUrl}
+            avatarUrl={partner.profileImageUrl}
+            checked={checkedIds.has(id)}
+            onToggle={() => toggleOne(id)}
+          />
+        );
+      })}
 
       {!submittedQuery && (
         <div
