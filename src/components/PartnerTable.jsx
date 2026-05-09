@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import PartnerTableRow from "@/components/PartnerTableRow";
 
@@ -55,23 +56,40 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
           background: "#edf1f4",
         }}
       >
-        <div
+        <motion.div
           onClick={toggleAll}
+          whileTap={{ scale: 0.8 }}
+          animate={{
+            background: allChecked ? "#0056ee" : "transparent",
+            border: allChecked ? "none" : "1px solid #a2a0a0",
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
           style={{
             width: 24,
             height: 24,
             flexShrink: 0,
-            border: allChecked ? "none" : "1px solid #a2a0a0",
             borderRadius: 4,
-            background: allChecked ? "#0056ee" : "transparent",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
           }}
         >
-          {allChecked && <Check size={16} color="#fafafa" strokeWidth={2.5} />}
-        </div>
+          <AnimatePresence>
+            {allChecked && (
+              <motion.span
+                key="check"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 18 }}
+                style={{ display: "flex" }}
+              >
+                <Check size={16} color="#fafafa" strokeWidth={2.5} />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
         <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
           {TABLE_HEADERS.map(({ key, width }) => (
             <div

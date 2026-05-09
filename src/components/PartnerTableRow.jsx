@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PartnerTableRow({
   name,
@@ -24,23 +25,40 @@ export default function PartnerTableRow({
         borderBottom: "0.5px dashed #dadada",
       }}
     >
-      <div
+      <motion.div
         onClick={onToggle}
+        whileTap={{ scale: 0.8 }}
+        animate={{
+          background: checked ? "#0056ee" : "transparent",
+          border: checked ? "none" : "1px solid #a2a0a0",
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
         style={{
           width: 24,
           height: 24,
           flexShrink: 0,
-          border: checked ? "none" : "1px solid #a2a0a0",
           borderRadius: 4,
-          background: checked ? "#0056ee" : "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
         }}
       >
-        {checked && <Check size={16} color="#fafafa" strokeWidth={2.5} />}
-      </div>
+        <AnimatePresence>
+          {checked && (
+            <motion.span
+              key="check"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 18 }}
+              style={{ display: "flex" }}
+            >
+              <Check size={16} color="#fafafa" strokeWidth={2.5} />
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
       <div
         style={{ display: "flex", flex: 1, alignItems: "center", minWidth: 0 }}
