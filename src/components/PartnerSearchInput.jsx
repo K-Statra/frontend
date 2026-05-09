@@ -62,6 +62,8 @@ export default function PartnerSearchInput({ onSearch, isLoading }) {
               fontSize: 16,
               color: "#080616",
               lineHeight: "24px",
+              padding: 0,
+              height: 24,
             }}
           />
         </div>
