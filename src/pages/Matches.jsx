@@ -12,9 +12,10 @@ export default function Matches() {
   const { t } = useI18n();
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [checkedIds, setCheckedIds] = useState(new Set());
+  const [hiddenIds, setHiddenIds] = useState(new Set());
 
   const { data, isFetching } = usePartnerSearch(submittedQuery);
-  const partners = data?.data ?? [];
+  const partners = (data?.data ?? []).filter((p) => !hiddenIds.has(p._id));
 
   const { saveAll, isPending } = useSavePartner();
 
@@ -51,7 +52,11 @@ export default function Matches() {
     }
 
     const skipped = checkedIds.size - validItems.length;
-    const { saved, alreadySaved } = await saveAll(validItems);
+    const { saved, alreadySaved, savedIds } = await saveAll(validItems);
+
+    if (savedIds.length > 0) {
+      setHiddenIds((prev) => new Set([...prev, ...savedIds]));
+    }
 
     if (saved > 0 && skipped === 0 && alreadySaved === 0) {
       toast.success(`${saved}개 파트너가 저장되었습니다.`);
@@ -141,7 +146,10 @@ export default function Matches() {
         }}
       >
         <PartnerSearchInput
-          onSearch={setSubmittedQuery}
+          onSearch={(q) => {
+            setSubmittedQuery(q);
+            setHiddenIds(new Set());
+          }}
           isLoading={isFetching}
         />
       </div>

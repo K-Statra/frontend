@@ -23,8 +23,11 @@ export function useSavePartner() {
     const alreadySaved = results.filter(
       (r) => r.status === "rejected" && r.reason?.response?.status === 409,
     ).length;
+    const savedIds = partnerItems
+      .filter((_, i) => results[i].status === "fulfilled")
+      .map((item) => item.partnerId);
 
-    return { saved, alreadySaved };
+    return { saved, alreadySaved, savedIds };
   };
 
   return { saveAll, isPending };
