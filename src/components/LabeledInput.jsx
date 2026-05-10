@@ -1,6 +1,6 @@
 import { useState, useId } from "react";
 
-export default function AuthInput({
+export default function LabeledInput({
   label,
   placeholder,
   type = "text",
