@@ -1,11 +1,12 @@
 import { Trash2, Plus, X } from "lucide-react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 const MILESTONE_PAYMENT_OPTIONS = [
-  "Advance Payment",
-  "Upon Shipment",
-  "Upon Delivery",
-  "Upon Inspection",
-  "Final Payment",
+  { value: "Advance Payment", key: "payment_milestone_advance" },
+  { value: "Upon Shipment", key: "payment_milestone_upon_shipment" },
+  { value: "Upon Delivery", key: "payment_milestone_upon_delivery" },
+  { value: "Upon Inspection", key: "payment_milestone_upon_inspection" },
+  { value: "Final Payment", key: "payment_milestone_final" },
 ];
 
 const CURRENCY_OPTIONS = ["XRP", "RLUSD"];
@@ -55,6 +56,8 @@ export default function MilestoneCard({
   onChange,
   onDelete,
 }) {
+  const { t } = useI18n();
+
   const update = (field, value) => onChange({ ...milestone, [field]: value });
 
   const addTrigger = () =>
@@ -69,7 +72,9 @@ export default function MilestoneCard({
   const updateTrigger = (i, value) =>
     onChange({
       ...milestone,
-      triggers: milestone.triggers.map((t, idx) => (idx === i ? value : t)),
+      triggers: milestone.triggers.map((trigger, idx) =>
+        idx === i ? value : trigger,
+      ),
     });
 
   return (
@@ -82,7 +87,7 @@ export default function MilestoneCard({
           padding: "0 12px",
         }}
       >
-        Milestone {index + 1}
+        {t("payment_step_request_payment")} {index + 1}
       </span>
       <div
         style={{
@@ -102,16 +107,16 @@ export default function MilestoneCard({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 100 }}>
-            <RowLabel>Milestone Payment</RowLabel>
+            <RowLabel>{t("payment_milestone_payment")}</RowLabel>
             <select
               value={milestone.milestonePayment}
               onChange={(e) => update("milestonePayment", e.target.value)}
               style={{ ...selectStyle, width: 260 }}
             >
-              <option value="">Milestone Payment</option>
+              <option value="">{t("payment_milestone_payment")}</option>
               {MILESTONE_PAYMENT_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
+                <option key={opt.value} value={opt.value}>
+                  {t(opt.key)}
                 </option>
               ))}
             </select>
@@ -136,11 +141,11 @@ export default function MilestoneCard({
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 100 }}>
-          <RowLabel>XRPL Pay</RowLabel>
+          <RowLabel>{t("payment_xrpl_pay")}</RowLabel>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <input
               style={{ ...inputStyle, width: 260 }}
-              placeholder="Amount"
+              placeholder={t("payment_amount_placeholder")}
               value={milestone.xrplAmount}
               onChange={(e) => update("xrplAmount", e.target.value)}
             />
@@ -180,7 +185,7 @@ export default function MilestoneCard({
         </div>
 
         <div style={{ display: "flex", alignItems: "flex-start", gap: 100 }}>
-          <RowLabel>Event Trigger</RowLabel>
+          <RowLabel>{t("payment_event_trigger")}</RowLabel>
           <div
             style={{
               display: "flex",
@@ -237,7 +242,7 @@ export default function MilestoneCard({
               }}
             >
               <Plus size={14} />
-              Add trigger
+              {t("payment_add_trigger")}
             </button>
           </div>
         </div>

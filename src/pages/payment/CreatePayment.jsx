@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import StepProgressBar from "@/components/payment/StepProgressBar";
 import PaymentSelectPartner from "@/pages/payment/PaymentSelectPartner";
 import PaymentVerifyInfo from "@/pages/payment/PaymentVerifyInfo";
@@ -22,6 +23,7 @@ const variants = {
 };
 
 export default function CreatePayment() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [dir, setDir] = useState(1);
@@ -83,7 +85,7 @@ export default function CreatePayment() {
             lineHeight: "30px",
           }}
         >
-          Add Create Payment
+          {t("create_payment_title")}
         </span>
       </div>
 

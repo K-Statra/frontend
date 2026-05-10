@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import SquareButton from "@/components/SquareButton";
 import LabeledInput from "@/components/LabeledInput";
 
 export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
+  const { t } = useI18n();
   const [verified, setVerified] = useState(false);
   const [walletAddress, setWalletAddress] = useState(
     partner?.walletAddress ?? "",
@@ -24,10 +26,10 @@ export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <span style={{ fontSize: 16, fontWeight: 500, color: "#080616" }}>
-            Company Information
+            {t("payment_company_info_title")}
           </span>
           <LabeledInput
-            label="XRP Wallet Address *"
+            label={t("payment_wallet_address_label")}
             value={walletAddress}
             onChange={(e) => setWalletAddress(e.target.value)}
           />
@@ -76,21 +78,21 @@ export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
             </AnimatePresence>
           </motion.div>
           <span style={{ fontSize: 16, fontWeight: 500, color: "#a2a0a0" }}>
-            Company info verified.
+            {t("payment_company_verified")}
           </span>
         </div>
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
         <SquareButton variant="outline" onClick={onBack}>
-          Back
+          {t("payment_back")}
         </SquareButton>
         <SquareButton
           variant="primary"
           disabled={!verified || !walletAddress.trim()}
           onClick={() => onNext(walletAddress)}
         >
-          Next
+          {t("payment_next")}
         </SquareButton>
       </div>
     </div>

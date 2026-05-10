@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import SquareButton from "@/components/SquareButton";
 import MilestoneCard from "@/components/payment/MilestoneCard";
 import { useAuthStore } from "@/stores/authStore";
@@ -15,6 +16,7 @@ export default function PaymentRequestForm({
   onMilestonesChange,
   onBack,
 }) {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(false);
   const { companyId, role } = useAuthStore();
@@ -102,7 +104,7 @@ export default function PaymentRequestForm({
             }}
           >
             <Plus size={16} />
-            Add Milestone
+            {t("payment_add_milestone")}
           </button>
         </div>
 
@@ -117,7 +119,7 @@ export default function PaymentRequestForm({
           <motion.div
             role="checkbox"
             aria-checked={confirmed}
-            aria-label="All payment request details have been confirmed"
+            aria-label={t("payment_confirm_details")}
             tabIndex={0}
             onClick={() => setConfirmed((v) => !v)}
             onKeyDown={(e) =>
@@ -156,21 +158,21 @@ export default function PaymentRequestForm({
             </AnimatePresence>
           </motion.div>
           <span style={{ fontSize: 16, fontWeight: 500, color: "#a2a0a0" }}>
-            All payment request details have been confirmed
+            {t("payment_confirm_details")}
           </span>
         </div>
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
         <SquareButton variant="outline" onClick={onBack} disabled={isPending}>
-          Back
+          {t("payment_back")}
         </SquareButton>
         <SquareButton
           variant="primary"
           disabled={!confirmed || isPending}
           onClick={handleSubmit}
         >
-          {isPending ? "Processing..." : "Next"}
+          {isPending ? t("payment_processing") : t("payment_next")}
         </SquareButton>
       </div>
     </div>

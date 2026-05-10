@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import PartnerTable from "@/components/PartnerTable";
 import PartnerTableSkeleton from "@/components/payment/PartnerTableSkeleton";
 import SquareButton from "@/components/SquareButton";
@@ -11,6 +12,7 @@ export default function PaymentSelectPartner({
   onSelect,
   onNext,
 }) {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const { data, isFetching } = useMyPartners(page);
@@ -52,7 +54,7 @@ export default function PaymentSelectPartner({
           }}
         >
           <span style={{ fontSize: 16, fontWeight: 500, color: "#080616" }}>
-            My Partner List
+            {t("payment_partner_list_title")}
           </span>
         </div>
         <SquareButton
@@ -60,7 +62,7 @@ export default function PaymentSelectPartner({
           onClick={() => navigate("/matches")}
           style={{ width: "auto", padding: "8px 16px" }}
         >
-          Find More Partners
+          {t("payment_find_more_partners")}
         </SquareButton>
       </div>
 
@@ -149,7 +151,7 @@ export default function PaymentSelectPartner({
           disabled={!selectedPartner}
           onClick={onNext}
         >
-          Next
+          {t("payment_next")}
         </SquareButton>
       </div>
     </div>
