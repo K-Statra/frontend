@@ -1,32 +1,6 @@
-import { Trash2, Plus, X } from "lucide-react";
+import { Trash2, Plus, X, Layers } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-
-const MILESTONE_PAYMENT_OPTIONS = [
-  { value: "Advance Payment", key: "payment_milestone_advance" },
-  { value: "Upon Shipment", key: "payment_milestone_upon_shipment" },
-  { value: "Upon Delivery", key: "payment_milestone_upon_delivery" },
-  { value: "Upon Inspection", key: "payment_milestone_upon_inspection" },
-  { value: "Final Payment", key: "payment_milestone_final" },
-];
-
-const CURRENCY_OPTIONS = ["XRP", "RLUSD"];
-
-const selectStyle = {
-  background: "#fafafa",
-  border: "1px solid #dadada",
-  borderRadius: 4,
-  padding: "8px 12px",
-  fontSize: 12,
-  color: "#080616",
-  outline: "none",
-  cursor: "pointer",
-  appearance: "none",
-  WebkitAppearance: "none",
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a2a0a0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "right 8px center",
-  paddingRight: 32,
-};
+import RowLabel from "@/components/payment/RowLabel";
 
 const inputStyle = {
   background: "#fafafa",
@@ -40,17 +14,7 @@ const inputStyle = {
   boxSizing: "border-box",
 };
 
-function RowLabel({ children }) {
-  return (
-    <div style={{ width: 172, flexShrink: 0 }}>
-      <span style={{ fontSize: 14, fontWeight: 500, color: "#080616" }}>
-        {children} <span style={{ color: "#e8014a" }}>*</span>
-      </span>
-    </div>
-  );
-}
-
-export default function MilestoneCard({
+export default function EscrowInfoCard({
   milestone,
   index,
   onChange,
@@ -79,16 +43,19 @@ export default function MilestoneCard({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <span
+      <div
         style={{
-          fontSize: 16,
-          fontWeight: 500,
-          color: "#080616",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
           padding: "0 12px",
         }}
       >
-        {t("payment_step_request_payment")} {index + 1}
-      </span>
+        <Layers size={24} color="#080616" strokeWidth={1.5} />
+        <span style={{ fontSize: 16, fontWeight: 500, color: "#080616" }}>
+          {t("payment_escrow_info_label")} {index + 1}
+        </span>
+      </div>
       <div
         style={{
           background: "#f3f3f3",
@@ -107,19 +74,13 @@ export default function MilestoneCard({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 100 }}>
-            <RowLabel>{t("payment_milestone_payment")}</RowLabel>
-            <select
-              value={milestone.milestonePayment}
-              onChange={(e) => update("milestonePayment", e.target.value)}
-              style={{ ...selectStyle, width: 260 }}
-            >
-              <option value="">{t("payment_milestone_payment")}</option>
-              {MILESTONE_PAYMENT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {t(opt.key)}
-                </option>
-              ))}
-            </select>
+            <RowLabel>{t("payment_memo_label")}</RowLabel>
+            <input
+              style={{ ...inputStyle, width: 260 }}
+              placeholder="ex) 1차 수출 대금"
+              value={milestone.memo}
+              onChange={(e) => update("memo", e.target.value)}
+            />
           </div>
           <button
             onClick={onDelete}
@@ -141,47 +102,48 @@ export default function MilestoneCard({
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 100 }}>
-          <RowLabel>{t("payment_xrpl_pay")}</RowLabel>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <input
-              style={{ ...inputStyle, width: 260 }}
-              placeholder={t("payment_amount_placeholder")}
-              value={milestone.xrplAmount}
-              onChange={(e) => update("xrplAmount", e.target.value)}
-            />
-            <select
-              value={milestone.xrplCurrency}
-              onChange={(e) => update("xrplCurrency", e.target.value)}
-              style={{ ...selectStyle, width: 172 }}
-            >
-              {CURRENCY_OPTIONS.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            <div style={{ position: "relative", width: 172 }}>
-              <input
-                style={{ ...inputStyle, width: "100%", paddingRight: 28 }}
-                placeholder="30"
-                value={milestone.xrplPercent}
-                onChange={(e) => update("xrplPercent", e.target.value)}
-              />
-              <span
+          <RowLabel>{t("payment_escrow_label")}</RowLabel>
+          <input
+            value={milestone.label}
+            onChange={(e) => update("label", e.target.value)}
+            placeholder="ex) 초기금"
+            style={{ ...inputStyle, width: 260 }}
+          />
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 100 }}>
+          <RowLabel>{t("payment_currency_label")}</RowLabel>
+          <div style={{ display: "flex", gap: 8 }}>
+            {["XRP", "RLUSD"].map((c) => (
+              <button
+                key={c}
+                onClick={() => update("currency", c)}
                 style={{
-                  position: "absolute",
-                  right: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
+                  padding: "6px 20px",
+                  borderRadius: 6,
+                  border:
+                    milestone.currency === c ? "none" : "1px solid #dadada",
+                  background: milestone.currency === c ? "#0056ee" : "#fafafa",
+                  color: milestone.currency === c ? "#fafafa" : "#a2a0a0",
                   fontSize: 12,
-                  color: "#a2a0a0",
-                  pointerEvents: "none",
+                  fontWeight: 500,
+                  cursor: "pointer",
                 }}
               >
-                %
-              </span>
-            </div>
+                {c}
+              </button>
+            ))}
           </div>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 100 }}>
+          <RowLabel>{t("payment_xrpl_pay")}</RowLabel>
+          <input
+            style={{ ...inputStyle, width: 260 }}
+            placeholder={t("payment_amount_placeholder")}
+            value={milestone.xrplAmount}
+            onChange={(e) => update("xrplAmount", e.target.value)}
+          />
         </div>
 
         <div style={{ display: "flex", alignItems: "flex-start", gap: 100 }}>
