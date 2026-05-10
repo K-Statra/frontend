@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import StepProgressBar from "@/components/StepProgressBar";
+import StepProgressBar from "@/components/payment/StepProgressBar";
 import PaymentSelectPartner from "@/pages/payment/PaymentSelectPartner";
 import PaymentVerifyInfo from "@/pages/payment/PaymentVerifyInfo";
 import PaymentRequestForm from "@/pages/payment/PaymentRequestForm";

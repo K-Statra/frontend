@@ -4,7 +4,7 @@ import { Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import SquareButton from "@/components/SquareButton";
-import MilestoneCard from "@/components/MilestoneCard";
+import MilestoneCard from "@/components/payment/MilestoneCard";
 import { useAuthStore } from "@/stores/authStore";
 import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment";
 
