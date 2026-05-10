@@ -28,4 +28,7 @@ export const escrowPaymentsApi = {
 
   pay: (id: string) =>
     http.post(ENDPOINTS.escrowPayments.pay(id)),
+
+  findUserByWallet: (address: string) =>
+    http.get(ENDPOINTS.escrowPayments.userByWallet(address)),
 };

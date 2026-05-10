@@ -41,5 +41,7 @@ export const ENDPOINTS = {
     byId: (id: string) => `/escrow-payments/${id}`,
     approve: (id: string) => `/escrow-payments/${id}/approve`,
     pay: (id: string) => `/escrow-payments/${id}/pay`,
+    userByWallet: (address: string) =>
+      `/escrow-payments/users/wallet/${address}`,
   },
 };
