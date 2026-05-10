@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Tooltip from "@/components/Tooltip";
 
 export default function PartnerTableRow({
   name,
@@ -76,22 +77,25 @@ export default function PartnerTableRow({
             gap: 8,
           }}
         >
-          <a
-            href={websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: 12,
-              color: "#080616",
-              textDecoration: "underline",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              cursor: "pointer",
-            }}
-          >
-            {name}
-          </a>
+          <Tooltip content={name}>
+            <a
+              href={websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: 12,
+                color: "#080616",
+                textDecoration: "underline",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+                display: "block",
+              }}
+            >
+              {name}
+            </a>
+          </Tooltip>
         </div>
 
         <div
@@ -103,18 +107,21 @@ export default function PartnerTableRow({
             padding: "8px 12px",
           }}
         >
-          <span
-            style={{
-              fontSize: 12,
-              color: "#080616",
-              textAlign: "center",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {country}
-          </span>
+          <Tooltip content={country}>
+            <span
+              style={{
+                fontSize: 12,
+                color: "#080616",
+                textAlign: "center",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                display: "block",
+              }}
+            >
+              {country}
+            </span>
+          </Tooltip>
         </div>
 
         <div
@@ -126,33 +133,38 @@ export default function PartnerTableRow({
             padding: "8px 12px",
           }}
         >
-          <span
-            style={{
-              fontSize: 12,
-              color: "#080616",
-              textAlign: "center",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {industryText}
-          </span>
+          <Tooltip content={industryText}>
+            <span
+              style={{
+                fontSize: 12,
+                color: "#080616",
+                textAlign: "center",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                display: "block",
+              }}
+            >
+              {industryText}
+            </span>
+          </Tooltip>
         </div>
 
         <div style={{ flex: 1, minWidth: 0, padding: "8px 12px" }}>
-          <span
-            style={{
-              fontSize: 12,
-              color: "#080616",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {profile}
-          </span>
+          <Tooltip content={profile}>
+            <span
+              style={{
+                fontSize: 12,
+                color: "#080616",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {profile}
+            </span>
+          </Tooltip>
         </div>
       </div>
     </div>
