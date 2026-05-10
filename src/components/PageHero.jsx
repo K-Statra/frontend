@@ -1,6 +1,6 @@
 export default function PageHero({ badge, title, subtitle }) {
   return (
-    <div style={{ background: "#f4f7fc" }}>
+    <div style={{ background: "#f4f7fc", padding: "40px 0" }}>
       <div
         style={{
           display: "flex",
