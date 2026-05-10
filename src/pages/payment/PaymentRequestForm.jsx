@@ -45,7 +45,7 @@ export default function PaymentRequestForm({
   const handleSubmit = async () => {
     const isBuyer = role === "buyer";
     const buyerId = isBuyer ? companyId : partner._id;
-    const sellerId = isBuyer ? partner._id : companyId;
+    const sellerWalletAddress = partner.walletAddress ?? "";
 
     const escrows = milestones.map((m, index) => ({
       label: m.milestonePayment,
@@ -56,7 +56,7 @@ export default function PaymentRequestForm({
 
     const currency = milestones[0]?.xrplCurrency === "RLUSD" ? "RLUSD" : "XRP";
 
-    await mutateAsync({ buyerId, sellerId, currency, escrows });
+    await mutateAsync({ buyerId, sellerWalletAddress, currency, escrows });
     toast.success("결제 요청이 생성되었습니다.");
     navigate("/payments");
   };

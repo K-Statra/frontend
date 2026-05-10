@@ -10,7 +10,14 @@ export default function PaymentSelectPartner({
 }) {
   const navigate = useNavigate();
   const { data, isFetching } = useMyPartners();
-  const partners = data?.data ?? [];
+  const partners = (data?.data ?? []).map((p) => ({
+    ...p,
+    name: p.name_en || p.name_kr,
+    location: { country: p.country },
+    industry: (p.industry_en || p.industry_kr || "").split(";").filter(Boolean),
+    profileText: p.intro_en || p.intro_kr,
+    websiteUrl: p.website,
+  }));
 
   const checkedIds = new Set(selectedPartner ? [selectedPartner._id] : []);
 
