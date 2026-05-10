@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import StepProgressBar from "@/components/payment/StepProgressBar";
 import PaymentSelectPartner from "@/pages/payment/PaymentSelectPartner";
@@ -100,7 +101,7 @@ export default function CreatePayment() {
         <StepProgressBar currentStep={step} />
       </div>
 
-      <div style={{ overflow: "hidden" }}>
+      <div>
         <AnimatePresence mode="popLayout" custom={dir}>
           {step === 1 && (
             <motion.div
