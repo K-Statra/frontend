@@ -4,7 +4,7 @@ import { useI18n } from "@/lib/i18n/I18nProvider";
 import PartnerSearchInput from "@/components/PartnerSearchInput";
 import PartnerTable from "@/components/PartnerTable";
 import SquareButton from "@/components/SquareButton";
-import { usePartnerSearch } from "@/hooks/usePartners";
+import { usePartnerSearch } from "@/hooks/matches/usePartners";
 
 export default function Matches() {
   const { t } = useI18n();
