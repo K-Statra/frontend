@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import PartnerTable from "@/components/PartnerTable";
+import PartnerTableSkeleton from "@/components/payment/PartnerTableSkeleton";
 import SquareButton from "@/components/SquareButton";
 import { useMyPartners } from "@/hooks/payments/useMyPartners";
 
@@ -64,16 +65,20 @@ export default function PaymentSelectPartner({
       </div>
 
       <div style={{ maxWidth: 1440, margin: "0 auto", padding: "0 80px" }}>
-        <PartnerTable
-          partners={partners}
-          isFetching={isFetching}
-          submittedQuery={true}
-          checkedIds={checkedIds}
-          onToggleAll={() => {}}
-          onToggleOne={handleToggleOne}
-        />
+        {isFetching ? (
+          <PartnerTableSkeleton />
+        ) : (
+          <PartnerTable
+            partners={partners}
+            isFetching={isFetching}
+            submittedQuery={true}
+            checkedIds={checkedIds}
+            onToggleAll={() => {}}
+            onToggleOne={handleToggleOne}
+          />
+        )}
 
-        {totalPages > 1 && (
+        {!isFetching && totalPages > 1 && (
           <div
             style={{
               display: "flex",
