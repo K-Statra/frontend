@@ -31,4 +31,9 @@ export const ENDPOINTS = {
     root: "/consultations",
     status: (id: string) => `/consultations/${id}/status`,
   },
+  myBusiness: {
+    profile: "/my-business/profile",
+    partners: "/my-business/partners",
+    partnerById: (id: string) => `/my-business/partners/${id}`,
+  },
 };

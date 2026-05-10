@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -22,28 +21,16 @@ const TABLE_HEADERS = [
   { key: "profile", width: null },
 ];
 
-export default function PartnerTable({ partners, isFetching, submittedQuery }) {
+export default function PartnerTable({
+  partners,
+  isFetching,
+  submittedQuery,
+  checkedIds,
+  onToggleAll,
+  onToggleOne,
+}) {
   const { t } = useI18n();
-  const [checkedIds, setCheckedIds] = useState(new Set());
-
   const allChecked = partners.length > 0 && checkedIds.size === partners.length;
-
-  const toggleAll = () => {
-    if (allChecked) {
-      setCheckedIds(new Set());
-    } else {
-      setCheckedIds(new Set(partners.map((p, i) => p._id ?? i)));
-    }
-  };
-
-  const toggleOne = (id) => {
-    setCheckedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
 
   return (
     <div>
@@ -57,7 +44,7 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
         }}
       >
         <motion.div
-          onClick={toggleAll}
+          onClick={onToggleAll}
           whileTap={{ scale: 0.8 }}
           animate={{
             background: allChecked ? "#0056ee" : "transparent",
@@ -138,7 +125,7 @@ export default function PartnerTable({ partners, isFetching, submittedQuery }) {
                 websiteUrl={partner.websiteUrl}
                 avatarUrl={partner.profileImageUrl}
                 checked={checkedIds.has(id)}
-                onToggle={() => toggleOne(id)}
+                onToggle={() => onToggleOne(id)}
               />
             </motion.div>
           );
