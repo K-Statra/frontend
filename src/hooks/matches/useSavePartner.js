@@ -4,19 +4,19 @@ import { myBusinessApi } from "@/apis";
 
 export function useSavePartner() {
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (partnerId) =>
-      myBusinessApi.savePartner({ partnerId, partnerType: "seller" }),
+    mutationFn: ({ partnerId, partnerType }) =>
+      myBusinessApi.savePartner({ partnerId, partnerType }),
     onError: (error) => {
       if (error?.response?.status === 409) return;
       toast.error("파트너 저장에 실패했습니다.");
     },
   });
 
-  const saveAll = async (partnerIds) => {
-    if (partnerIds.length === 0) return { saved: 0, alreadySaved: 0 };
+  const saveAll = async (partnerItems) => {
+    if (partnerItems.length === 0) return { saved: 0, alreadySaved: 0 };
 
     const results = await Promise.allSettled(
-      partnerIds.map((id) => mutateAsync(id)),
+      partnerItems.map((item) => mutateAsync(item)),
     );
 
     const saved = results.filter((r) => r.status === "fulfilled").length;

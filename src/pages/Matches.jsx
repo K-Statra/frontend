@@ -36,10 +36,27 @@ export default function Matches() {
   };
 
   const handleAddPartners = async () => {
-    const { saved, alreadySaved } = await saveAll([...checkedIds]);
+    const validItems = partners
+      .filter(
+        (p) => checkedIds.has(p._id) && /^[a-f0-9]{24}$/i.test(String(p._id)),
+      )
+      .map((p) => ({
+        partnerId: p._id,
+        partnerType: p.tags?.includes("Buyer") ? "buyer" : "seller",
+      }));
 
-    if (saved > 0 && alreadySaved === 0) {
+    if (validItems.length === 0) {
+      toast.error("웹 검색 결과는 파트너로 저장할 수 없습니다.");
+      return;
+    }
+
+    const skipped = checkedIds.size - validItems.length;
+    const { saved, alreadySaved } = await saveAll(validItems);
+
+    if (saved > 0 && skipped === 0 && alreadySaved === 0) {
       toast.success(`${saved}개 파트너가 저장되었습니다.`);
+    } else if (saved > 0 && skipped > 0) {
+      toast.success(`${saved}개 저장 완료 (웹 결과 ${skipped}개 제외)`);
     } else if (saved > 0 && alreadySaved > 0) {
       toast.success(
         `${saved}개 저장 완료 (${alreadySaved}개는 이미 저장된 파트너)`,
