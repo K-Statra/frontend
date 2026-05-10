@@ -130,7 +130,6 @@ export default function PartnerTable({
                 industries={partner.industry}
                 profile={partner.profileText}
                 websiteUrl={partner.websiteUrl}
-                avatarUrl={partner.profileImageUrl}
                 checked={checkedIds.has(id)}
                 onToggle={() => onToggleOne(id)}
               />

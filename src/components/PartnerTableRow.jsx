@@ -6,7 +6,6 @@ export default function PartnerTableRow({
   country,
   industries,
   profile,
-  avatarUrl,
   websiteUrl,
   checked,
   onToggle,
@@ -77,29 +76,6 @@ export default function PartnerTableRow({
             gap: 8,
           }}
         >
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={name}
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                flexShrink: 0,
-                objectFit: "cover",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                background: "#edf1f4",
-                flexShrink: 0,
-              }}
-            />
-          )}
           <a
             href={websiteUrl}
             target="_blank"
