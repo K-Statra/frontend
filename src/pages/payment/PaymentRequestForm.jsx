@@ -1,16 +1,23 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 import SquareButton from "@/components/SquareButton";
 import MilestoneCard from "@/components/MilestoneCard";
+import { useAuthStore } from "@/stores/authStore";
+import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment";
 
 export default function PaymentRequestForm({
-  partner: _partner,
+  partner,
   milestones,
   onMilestonesChange,
   onBack,
 }) {
+  const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(false);
+  const { companyId, role } = useAuthStore();
+  const { mutateAsync, isPending } = useCreateEscrowPayment();
 
   const handleChange = (index, updated) => {
     onMilestonesChange(milestones.map((m, i) => (i === index ? updated : m)));
@@ -33,6 +40,25 @@ export default function PaymentRequestForm({
         triggers: [""],
       },
     ]);
+  };
+
+  const handleSubmit = async () => {
+    const isBuyer = role === "buyer";
+    const buyerId = isBuyer ? companyId : partner._id;
+    const sellerId = isBuyer ? partner._id : companyId;
+
+    const escrows = milestones.map((m, index) => ({
+      label: m.milestonePayment,
+      amountXrp: parseFloat(m.xrplAmount) || 0,
+      order: index,
+      requiredEventTypes: m.triggers.filter((t) => t.trim() !== ""),
+    }));
+
+    const currency = milestones[0]?.xrplCurrency === "RLUSD" ? "RLUSD" : "XRP";
+
+    await mutateAsync({ buyerId, sellerId, currency, escrows });
+    toast.success("결제 요청이 생성되었습니다.");
+    navigate("/payments");
   };
 
   return (
@@ -136,11 +162,15 @@ export default function PaymentRequestForm({
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
-        <SquareButton variant="outline" onClick={onBack}>
+        <SquareButton variant="outline" onClick={onBack} disabled={isPending}>
           Back
         </SquareButton>
-        <SquareButton variant="primary" disabled={!confirmed}>
-          Next
+        <SquareButton
+          variant="primary"
+          disabled={!confirmed || isPending}
+          onClick={handleSubmit}
+        >
+          {isPending ? "Processing..." : "Next"}
         </SquareButton>
       </div>
     </div>

@@ -8,7 +8,7 @@ const MILESTONE_PAYMENT_OPTIONS = [
   "Final Payment",
 ];
 
-const CURRENCY_OPTIONS = ["XRP", "USD", "EUR"];
+const CURRENCY_OPTIONS = ["XRP", "RLUSD"];
 
 const selectStyle = {
   background: "#fafafa",
