@@ -24,7 +24,9 @@ export default function App() {
       <main
         id="main-content"
         className={
-          ["/", "/login", "/register", "/matches"].includes(location.pathname)
+          ["/", "/login", "/register", "/matches", "/my-business"].includes(
+            location.pathname,
+          ) || location.pathname.startsWith("/payments")
             ? ""
             : "container"
         }
