@@ -10,6 +10,7 @@ export default function CreatePayment() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [selectedPartner, setSelectedPartner] = useState(null);
+  const [sellerWalletAddress, setSellerWalletAddress] = useState("");
   const [milestones, setMilestones] = useState([
     {
       id: Date.now(),
@@ -85,12 +86,16 @@ export default function CreatePayment() {
         <PaymentVerifyInfo
           partner={selectedPartner}
           onBack={goBack}
-          onNext={goNext}
+          onNext={(addr) => {
+            setSellerWalletAddress(addr);
+            goNext();
+          }}
         />
       )}
       {step === 3 && (
         <PaymentRequestForm
           partner={selectedPartner}
+          sellerWalletAddress={sellerWalletAddress}
           milestones={milestones}
           onMilestonesChange={setMilestones}
           onBack={goBack}

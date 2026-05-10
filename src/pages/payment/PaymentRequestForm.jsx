@@ -10,6 +10,7 @@ import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment"
 
 export default function PaymentRequestForm({
   partner,
+  sellerWalletAddress,
   milestones,
   onMilestonesChange,
   onBack,
@@ -45,7 +46,6 @@ export default function PaymentRequestForm({
   const handleSubmit = async () => {
     const isBuyer = role === "buyer";
     const buyerId = isBuyer ? companyId : partner._id;
-    const sellerWalletAddress = partner.walletAddress ?? "";
 
     const escrows = milestones.map((m, index) => ({
       label: m.milestonePayment,

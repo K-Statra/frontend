@@ -6,6 +6,9 @@ import LabeledInput from "@/components/LabeledInput";
 
 export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
   const [verified, setVerified] = useState(false);
+  const [walletAddress, setWalletAddress] = useState(
+    partner?.walletAddress ?? "",
+  );
 
   return (
     <div style={{ paddingBottom: 80 }}>
@@ -25,8 +28,8 @@ export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
           </span>
           <LabeledInput
             label="XRP Wallet Address *"
-            value={partner?.walletAddress ?? ""}
-            readOnly
+            value={walletAddress}
+            onChange={(e) => setWalletAddress(e.target.value)}
           />
         </div>
 
@@ -82,7 +85,11 @@ export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
         <SquareButton variant="outline" onClick={onBack}>
           Back
         </SquareButton>
-        <SquareButton variant="primary" disabled={!verified} onClick={onNext}>
+        <SquareButton
+          variant="primary"
+          disabled={!verified || !walletAddress.trim()}
+          onClick={() => onNext(walletAddress)}
+        >
           Next
         </SquareButton>
       </div>
