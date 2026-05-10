@@ -657,7 +657,7 @@ const ko = {
   register_has_account: "이미 계정이 있으신가요?",
   register_type_buyer: "바이어",
   register_type_seller: "셀러",
-  register_company_type_label: "Company Type",
+  register_company_type_label: "회사 유형",
   register_company_label: "회사명",
   register_company_placeholder: "K-Statra Inc.",
   register_rep_label: "대표자명",
