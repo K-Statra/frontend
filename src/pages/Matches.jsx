@@ -67,7 +67,7 @@ export default function Matches() {
         `${saved}개 저장 완료 (${alreadySaved}개는 이미 저장된 파트너)`,
       );
     } else if (alreadySaved > 0) {
-      toast(`이미 저장된 파트너입니다.`, { icon: "ℹ️" });
+      toast(`이미 저장된 파트너입니다.`);
     }
 
     setCheckedIds(new Set());
