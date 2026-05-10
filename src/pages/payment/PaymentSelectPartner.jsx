@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import PartnerTable from "@/components/PartnerTable";
 import SquareButton from "@/components/SquareButton";
 import { useMyPartners } from "@/hooks/payments/useMyPartners";
@@ -9,7 +11,9 @@ export default function PaymentSelectPartner({
   onNext,
 }) {
   const navigate = useNavigate();
-  const { data, isFetching } = useMyPartners();
+  const [page, setPage] = useState(1);
+  const { data, isFetching } = useMyPartners(page);
+
   const partners = (data?.data ?? []).map((p) => ({
     ...p,
     name: p.name_en || p.name_kr,
@@ -19,6 +23,7 @@ export default function PaymentSelectPartner({
     websiteUrl: p.website,
   }));
 
+  const totalPages = data?.totalPages ?? 1;
   const checkedIds = new Set(selectedPartner ? [selectedPartner._id] : []);
 
   const handleToggleOne = (id) => {
@@ -67,6 +72,70 @@ export default function PaymentSelectPartner({
           onToggleAll={() => {}}
           onToggleOne={handleToggleOne}
         />
+
+        {totalPages > 1 && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 12,
+              marginTop: 24,
+            }}
+          >
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: page === 1 ? "default" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                color: page === 1 ? "#dadada" : "#080616",
+                padding: 4,
+              }}
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 6,
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: p === page ? 600 : 400,
+                  background: p === page ? "#0056ee" : "transparent",
+                  color: p === page ? "#fafafa" : "#080616",
+                }}
+              >
+                {p}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: page === totalPages ? "default" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                color: page === totalPages ? "#dadada" : "#080616",
+                padding: 4,
+              }}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
