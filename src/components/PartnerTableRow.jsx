@@ -26,7 +26,12 @@ export default function PartnerTableRow({
       }}
     >
       <motion.div
+        role="checkbox"
+        aria-checked={checked}
+        aria-label={`${name} 선택`}
+        tabIndex={0}
         onClick={onToggle}
+        onKeyDown={(e) => (e.key === " " || e.key === "Enter") && onToggle()}
         whileTap={{ scale: 0.8 }}
         animate={{
           background: checked ? "#0056ee" : "transparent",
