@@ -6,6 +6,7 @@ export default function AuthDropdown({
   onChange,
   options = [],
   placeholder = "Select",
+  disabled = false,
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -24,17 +25,21 @@ export default function AuthDropdown({
     <div ref={ref} style={{ position: "relative", flex: 1 }}>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => !disabled && setOpen((v) => !v)}
         style={{
-          background: "#fafafa",
-          border: open ? "1px solid #3e83ff" : "1px solid #dadada",
+          background: disabled ? "#f4f4f4" : "#fafafa",
+          border: disabled
+            ? "none"
+            : open
+              ? "1px solid #3e83ff"
+              : "1px solid #dadada",
           borderRadius: 12,
           padding: "8px 12px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           width: "100%",
-          cursor: "pointer",
+          cursor: disabled ? "default" : "pointer",
           textAlign: "left",
           boxSizing: "border-box",
           transition: "border-color 0.15s",
@@ -91,7 +96,7 @@ export default function AuthDropdown({
         </svg>
       </button>
 
-      {open && (
+      {open && !disabled && (
         <div
           style={{
             position: "absolute",

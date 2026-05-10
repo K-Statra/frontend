@@ -8,6 +8,7 @@ export default function LabeledInput({
   onChange,
   onKeyDown,
   icon: Icon,
+  readOnly = false,
 }) {
   const id = useId();
   const [showPw, setShowPw] = useState(false);
@@ -17,8 +18,12 @@ export default function LabeledInput({
   return (
     <div
       style={{
-        background: "#fafafa",
-        border: focused ? "1px solid #3e83ff" : "1px solid #dadada",
+        background: readOnly ? "#f4f4f4" : "#fafafa",
+        border: readOnly
+          ? "none"
+          : focused
+            ? "1px solid #3e83ff"
+            : "1px solid #dadada",
         borderRadius: 12,
         padding: "8px 12px",
         display: "flex",
@@ -42,7 +47,7 @@ export default function LabeledInput({
           htmlFor={id}
           style={{
             fontSize: 12,
-            color: focused ? "#0056ee" : "#a2a0a0",
+            color: !readOnly && focused ? "#0056ee" : "#a2a0a0",
             fontWeight: 500,
             lineHeight: "16px",
             transition: "color 0.15s",
@@ -58,8 +63,9 @@ export default function LabeledInput({
           value={value}
           onChange={onChange}
           onKeyDown={onKeyDown}
-          onFocus={() => setFocused(true)}
+          onFocus={() => !readOnly && setFocused(true)}
           onBlur={() => setFocused(false)}
+          readOnly={readOnly}
           style={{
             background: "transparent",
             border: "none",
@@ -69,6 +75,7 @@ export default function LabeledInput({
             lineHeight: "22px",
             padding: 0,
             width: "100%",
+            cursor: readOnly ? "default" : "auto",
           }}
         />
       </div>
