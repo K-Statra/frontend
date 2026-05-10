@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import SquareButton from "@/components/SquareButton";
-import MilestoneCard from "@/components/payment/MilestoneCard";
+import EscrowInfoCard from "@/components/payment/EscrowInfoCard";
+import WalletAddressCard from "@/components/payment/WalletAddressCard";
 import { useAuthStore } from "@/stores/authStore";
 import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment";
 
@@ -34,10 +35,10 @@ export default function PaymentRequestForm({
       ...milestones,
       {
         id: Date.now(),
-        milestonePayment: "",
+        label: "",
         xrplAmount: "",
-        xrplCurrency: "XRP",
-        xrplPercent: "",
+        currency: "XRP",
+        memo: "",
         triggers: [""],
       },
     ]);
@@ -47,17 +48,33 @@ export default function PaymentRequestForm({
     const buyerId = companyId;
 
     const escrows = milestones.map((m, index) => ({
-      label: m.milestonePayment,
+      label: m.label,
       amountXrp: parseFloat(m.xrplAmount) || 0,
       order: index,
       requiredEventTypes: m.triggers.filter((t) => t.trim() !== ""),
     }));
 
-    const currency = milestones[0]?.xrplCurrency === "RLUSD" ? "RLUSD" : "XRP";
-
-    await mutateAsync({ buyerId, sellerWalletAddress, currency, escrows });
-    toast.success("결제 요청이 생성되었습니다.");
-    onNext();
+    const firstMilestone = milestones[0];
+    try {
+      await mutateAsync({
+        buyerId,
+        sellerWalletAddress,
+        memo: firstMilestone?.memo?.trim() || undefined,
+        currency: firstMilestone?.currency || "XRP",
+        escrows,
+      });
+      toast.success("결제 요청이 생성되었습니다.");
+      onNext();
+    } catch (err) {
+      const status = err?.response?.status;
+      if (status === 400) {
+        toast.error("입력 정보를 다시 확인해주세요.");
+      } else if (status === 401) {
+        toast.error("로그인이 필요합니다.");
+      } else {
+        toast.error("결제 요청에 실패했습니다.");
+      }
+    }
   };
 
   return (
@@ -72,9 +89,11 @@ export default function PaymentRequestForm({
           gap: 100,
         }}
       >
+        <WalletAddressCard sellerWalletAddress={sellerWalletAddress} />
+
         <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
           {milestones.map((milestone, index) => (
-            <MilestoneCard
+            <EscrowInfoCard
               key={milestone.id}
               milestone={milestone}
               index={index}

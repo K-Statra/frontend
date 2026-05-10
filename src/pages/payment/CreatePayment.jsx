@@ -32,10 +32,10 @@ export default function CreatePayment() {
   const [milestones, setMilestones] = useState([
     {
       id: Date.now(),
-      milestonePayment: "",
+      label: "",
       xrplAmount: "",
-      xrplCurrency: "",
-      xrplPercent: "",
+      currency: "XRP",
+      memo: "",
       triggers: [""],
     },
   ]);
