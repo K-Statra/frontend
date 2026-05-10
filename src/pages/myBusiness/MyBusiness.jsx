@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import PageHero from "@/components/PageHero";
+import SegmentedControl from "@/components/SegmentedControl";
 import MyInfo from "@/pages/myBusiness/MyInfo";
 import MyPartnerList from "@/pages/myBusiness/MyPartnerList";
 
@@ -17,57 +18,14 @@ export default function MyBusiness() {
       />
 
       <div style={{ padding: "40px 80px 20px" }}>
-        <div
-          style={{
-            background: "#edf1f4",
-            borderRadius: 8,
-            height: 40,
-            width: 247,
-            position: "relative",
-          }}
-        >
-          <button
-            onClick={() => setActiveTab("my-info")}
-            style={{
-              position: "absolute",
-              left: 4,
-              top: 4,
-              width: 104,
-              padding: "4px 12px",
-              borderRadius: 8,
-              border: activeTab === "my-info" ? "1px solid #dadada" : "none",
-              background: activeTab === "my-info" ? "#fafafa" : "transparent",
-              fontSize: 16,
-              fontWeight: 500,
-              color: "#080616",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {t("my_business_tab_my_info")}
-          </button>
-          <button
-            onClick={() => setActiveTab("partner-list")}
-            style={{
-              position: "absolute",
-              left: 108,
-              top: 4,
-              padding: "4px 12px",
-              borderRadius: 8,
-              border:
-                activeTab === "partner-list" ? "1px solid #dadada" : "none",
-              background:
-                activeTab === "partner-list" ? "#fafafa" : "transparent",
-              fontSize: 16,
-              fontWeight: 500,
-              color: "#080616",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {t("my_business_tab_partner_list")}
-          </button>
-        </div>
+        <SegmentedControl
+          tabs={[
+            { value: "my-info", label: t("my_business_tab_my_info") },
+            { value: "partner-list", label: t("my_business_tab_partner_list") },
+          ]}
+          value={activeTab}
+          onChange={setActiveTab}
+        />
       </div>
 
       <div>{activeTab === "my-info" ? <MyInfo /> : <MyPartnerList />}</div>
