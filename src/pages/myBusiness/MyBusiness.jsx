@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import PageHero from "@/components/PageHero";
 import MyInfo from "@/pages/myBusiness/MyInfo";
+import MyPartnerList from "@/pages/myBusiness/MyPartnerList";
 
 export default function MyBusiness() {
   const { t } = useI18n();
@@ -69,7 +70,7 @@ export default function MyBusiness() {
         </div>
       </div>
 
-      <div>{activeTab === "my-info" ? <MyInfo /> : <div />}</div>
+      <div>{activeTab === "my-info" ? <MyInfo /> : <MyPartnerList />}</div>
     </div>
   );
 }
