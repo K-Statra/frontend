@@ -1,4 +1,4 @@
-import { Phone, Mail, Tag, FileText, Link } from "lucide-react";
+import { Phone, Mail, Tag, FileText, Link, Building2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import LabeledInput from "@/components/LabeledInput";
 import AuthDropdown from "@/components/AuthDropdown";
@@ -22,7 +22,13 @@ export default function MyInfo() {
   const websiteUrl = data?.websiteUrl || data?.website || "";
 
   return (
-    <div style={{ padding: "40px 80px 80px" }}>
+    <div
+      style={{
+        padding: "40px 80px 80px",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       <div
         style={{
           width: 520,
@@ -35,10 +41,11 @@ export default function MyInfo() {
           <LabeledInput
             label={t("register_company_label")}
             value={companyName}
+            icon={Building2}
             readOnly
           />
           <LabeledInput
-            label={t("payment_buyer_wallet_label")}
+            label={t("my_info_wallet_label")}
             value={walletAddress}
             readOnly
           />
