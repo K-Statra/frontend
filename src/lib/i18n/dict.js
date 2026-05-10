@@ -519,6 +519,19 @@ Object.assign(en, {
   table_header_reason: "Recommendation Reason",
   no_info: "No Information",
   no_recommendation: "No Recommendation Reason",
+  matches_badge: "Partner matching",
+  matches_title: "AI Insights for Partner Discovery",
+  matches_subtitle:
+    "Describe your target market and partner type—get curated matches with data coverage and match confidence.",
+  matches_search_placeholder:
+    "I want to export K-Beauty products to the US, recommend importers in LA",
+  matches_add_partner: "Add Partner",
+  matches_col_company: "Company Name",
+  matches_col_country: "Country",
+  matches_col_industries: "Industries",
+  matches_col_profile: "Company Profile",
+  matches_empty_prompt: "Enter a keyword to find partners",
+  matches_no_results: "No results found.",
 });
 
 const ko = {
@@ -770,6 +783,19 @@ const ko = {
   table_header_reason: "추천 사유",
   no_info: "정보 없음",
   no_recommendation: "추천 사유 없음",
+  matches_badge: "파트너 매칭",
+  matches_title: "AI로 파트너를 발굴하세요",
+  matches_subtitle:
+    "원하는 시장과 파트너 유형을 설명하면, AI가 최적의 파트너를 추천해 드립니다.",
+  matches_search_placeholder:
+    "예: K-뷰티 제품을 미국으로 수출하고 싶어. LA 수입업체를 추천해줘",
+  matches_add_partner: "파트너 추가",
+  matches_col_company: "업체명",
+  matches_col_country: "국가",
+  matches_col_industries: "산업",
+  matches_col_profile: "업체 소개",
+  matches_empty_prompt: "검색어를 입력하여 파트너를 찾아보세요",
+  matches_no_results: "검색 결과가 없습니다.",
 };
 
 export const dict = {

@@ -5,7 +5,7 @@ import { track } from "@/lib/analytics.js";
 import logoTypo from "@/assets/logo_typo.png";
 
 const navItems = [
-  { to: "/partners", key: "nav_partner_matching" },
+  { to: "/matches", key: "nav_partner_matching" },
   { to: "/payments", key: "nav_xrp_payment" },
   { to: "/overview", key: "nav_my_business" },
 ];

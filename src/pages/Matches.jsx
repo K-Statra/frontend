@@ -1,254 +1,203 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { newIdemKey } from "@/apis";
-import CurrencySelect from "@/components/CurrencySelect.jsx";
-import Button from "@/components/Button.jsx";
-import Card from "@/components/Card.jsx";
-import { useCreatePayment } from "@/hooks/usePayments";
-import { useMatches } from "@/hooks/useMatches";
-import { useAuthStore } from "@/stores/authStore";
-
-function isObjectId(value) {
-  return /^[a-f0-9]{24}$/i.test(String(value || "").trim());
-}
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import toast from "react-hot-toast";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import PartnerSearchInput from "@/components/PartnerSearchInput";
+import PartnerTable from "@/components/PartnerTable";
+import SquareButton from "@/components/SquareButton";
+import { usePartnerSearch } from "@/hooks/matches/usePartners";
+import { useSavePartner } from "@/hooks/matches/useSavePartner";
 
 export default function Matches() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { companyId: storedBuyerId } = useAuthStore();
-  const [buyerInput, setBuyerInput] = useState(
-    searchParams.get("buyerId") || storedBuyerId || "",
-  );
-  const [limitInput, setLimitInput] = useState(() => {
-    const raw = Number(searchParams.get("limit") || 5);
-    return Number.isFinite(raw) ? Math.min(Math.max(raw, 1), 20) : 5;
-  });
-  const [companyFilter, setCompanyFilter] = useState(
-    searchParams.get("companyId") || "",
-  );
-  const [currency, setCurrency] = useState("XRP");
-  const [message, setMessage] = useState("");
-  const [submittedParams, setSubmittedParams] = useState(() => {
-    const buyerId = searchParams.get("buyerId") || storedBuyerId;
-    return isObjectId(buyerId) ? { buyerId, limit: 5 } : null;
-  });
-  const [creatingPaymentId, setCreatingPaymentId] = useState("");
-  const navigate = useNavigate();
+  const { t } = useI18n();
+  const [submittedQuery, setSubmittedQuery] = useState("");
+  const [checkedIds, setCheckedIds] = useState(new Set());
+  const [hiddenIds, setHiddenIds] = useState(new Set());
 
-  const {
-    data: matchesData,
-    isFetching: loading,
-    isError,
-    error,
-  } = useMatches(submittedParams?.buyerId, submittedParams?.limit, {
-    enabled: !!submittedParams,
-  });
+  const { data, isFetching } = usePartnerSearch(submittedQuery);
+  const partners = (data?.data ?? []).filter((p) => !hiddenIds.has(p._id));
 
-  const matches = useMemo(() => matchesData?.data || [], [matchesData]);
+  const { saveAll, isPending } = useSavePartner();
 
-  const filteredMatches = useMemo(() => {
-    if (!companyFilter) return matches;
-    return matches.filter(
-      (item) => item.company && item.company._id === companyFilter,
-    );
-  }, [matches, companyFilter]);
-
-  useEffect(() => {
-    if (
-      companyFilter &&
-      matches.length > 0 &&
-      matches.every((r) => r.company?._id !== companyFilter)
-    ) {
-      setMessage("Selected company is not in the latest top results.");
+  const toggleAll = () => {
+    if (checkedIds.size === partners.length && partners.length > 0) {
+      setCheckedIds(new Set());
+    } else {
+      setCheckedIds(new Set(partners.map((p, i) => p._id ?? i)));
     }
-  }, [matches, companyFilter]);
+  };
 
-  const { mutateAsync: executeCreatePayment } = useCreatePayment();
+  const toggleOne = (id) => {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
-  function updateParams(nextBuyerId, nextLimit, nextCompanyId) {
-    const next = new URLSearchParams();
-    if (nextBuyerId) next.set("buyerId", nextBuyerId);
-    if (nextLimit) next.set("limit", String(nextLimit));
-    if (nextCompanyId) next.set("companyId", nextCompanyId);
-    setSearchParams(next);
-  }
+  const handleAddPartners = async () => {
+    const validItems = partners
+      .filter(
+        (p) => checkedIds.has(p._id) && /^[a-f0-9]{24}$/i.test(String(p._id)),
+      )
+      .map((p) => ({
+        partnerId: p._id,
+        partnerType: p.tags?.includes("Buyer") ? "buyer" : "seller",
+      }));
 
-  function onSubmit(e) {
-    e.preventDefault();
-    if (!isObjectId(buyerInput)) {
-      setMessage("Valid buyerId (24 hex) required.");
+    if (validItems.length === 0) {
+      toast.error("웹 검색 결과는 파트너로 저장할 수 없습니다.");
       return;
     }
-    setMessage("");
-    updateParams(buyerInput.trim(), limitInput, companyFilter.trim() || "");
-    setSubmittedParams({ buyerId: buyerInput.trim(), limit: limitInput });
-  }
 
-  async function handleCreatePayment(companyId) {
-    if (!submittedParams?.buyerId) return;
-    setCreatingPaymentId(companyId);
-    setMessage("");
-    try {
-      const res = await executeCreatePayment({
-        payload: {
-          amount: 1,
-          currency,
-          buyerId: submittedParams.buyerId,
-          companyId,
-        },
-        idemKey: newIdemKey(),
-      });
-      const pid = res?._id;
-      if (pid) navigate(`/payments/checkout/${pid}`);
-    } catch (err) {
-      setMessage(err.message || "Failed to create payment");
-    } finally {
-      setCreatingPaymentId("");
+    const skipped = checkedIds.size - validItems.length;
+    const { saved, alreadySaved, savedIds } = await saveAll(validItems);
+
+    if (savedIds.length > 0) {
+      setHiddenIds((prev) => new Set([...prev, ...savedIds]));
     }
-  }
+
+    if (saved > 0 && skipped === 0 && alreadySaved === 0) {
+      toast.success(`${saved}개 파트너가 저장되었습니다.`);
+    } else if (saved > 0 && skipped > 0) {
+      toast.success(`${saved}개 저장 완료 (웹 결과 ${skipped}개 제외)`);
+    } else if (saved > 0 && alreadySaved > 0) {
+      toast.success(
+        `${saved}개 저장 완료 (${alreadySaved}개는 이미 저장된 파트너)`,
+      );
+    } else if (alreadySaved > 0) {
+      toast(`이미 저장된 파트너입니다.`);
+    }
+
+    setCheckedIds(new Set());
+  };
 
   return (
-    <div>
-      <h2>Matches</h2>
-      <form className="form" onSubmit={onSubmit}>
-        <div className="row gap-4" style={{ flexWrap: "wrap" }}>
-          <input
-            value={buyerInput}
-            onChange={(e) => setBuyerInput(e.target.value)}
-            placeholder="Buyer ID (Mongo ObjectId)"
-          />
-          <input
-            value={companyFilter}
-            onChange={(e) => setCompanyFilter(e.target.value)}
-            placeholder="Optional companyId filter"
-          />
-          <input
-            type="number"
-            min="1"
-            max="20"
-            value={limitInput}
-            onChange={(e) =>
-              setLimitInput(
-                Math.min(Math.max(Number(e.target.value) || 1, 1), 20),
-              )
-            }
-          />
-          <Button type="submit" loading={loading}>
-            Load Matches
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => {
-              setBuyerInput("");
-              setCompanyFilter("");
-              setSubmittedParams(null);
-              updateParams("", "", "");
+    <div style={{ background: "#f4f7fc", minHeight: "calc(100vh - 68px)" }}>
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          padding: "40px 80px 0",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 20,
+        }}
+      >
+        <div
+          style={{
+            background: "#f4f7fc",
+            border: "1px solid #0056ee",
+            borderRadius: 999,
+            padding: "8px 12px",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: "#0056ee",
+              lineHeight: "16px",
             }}
-            disabled={loading}
           >
-            Clear
-          </Button>
+            {t("matches_badge")}
+          </span>
         </div>
-      </form>
-      <div className="mt-4">
-        <CurrencySelect value={currency} onChange={setCurrency} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: 32,
+              fontWeight: 700,
+              color: "#080616",
+              margin: 0,
+              lineHeight: "38px",
+            }}
+          >
+            {t("matches_title")}
+          </h1>
+          <p
+            style={{
+              fontSize: 16,
+              color: "#a2a0a0",
+              margin: 0,
+              lineHeight: "22px",
+            }}
+          >
+            {t("matches_subtitle")}
+          </p>
+        </div>
       </div>
-
-      {isError && (
-        <div className="error mt-3" role="alert">
-          {error?.message || "Failed to load matches"}
-        </div>
-      )}
-      {message && (
-        <div className="card mt-3" role="status">
-          {message}
-        </div>
-      )}
-
-      {!loading &&
-        filteredMatches.length === 0 &&
-        submittedParams &&
-        !isError && (
-          <div className="mt-4 muted">
-            No matches yet. Try increasing the limit or updating company data.
-          </div>
-        )}
 
       <div
-        className="grid mt-4"
-        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          padding: "40px 80px 0",
+        }}
       >
-        {filteredMatches.map((match) => (
-          <Card key={match.company?._id || match.score}>
-            <div className="row space">
-              <div>
-                <strong>{match.company?.name}</strong>
-                <div className="muted small">{match.company?.industry}</div>
-              </div>
-              <span className="badge primary">
-                score {Number(match.score).toFixed(2)}
-              </span>
-            </div>
-            {match.company?.images?.[0]?.url && (
-              <div
-                style={{
-                  marginTop: "1rem",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  maxHeight: "200px",
-                }}
-              >
-                <img
-                  src={match.company.images[0].url}
-                  alt={match.company.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </div>
-            )}
-            {(match.reasons || []).length > 0 && (
-              <ul className="mt-3 small">
-                {match.reasons.map((reason) => (
-                  <li key={reason}>{reason}</li>
-                ))}
-              </ul>
-            )}
-            <div className="row gap-4 mt-3" style={{ flexWrap: "wrap" }}>
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  navigate(`/companies?companyId=${match.company?._id}`)
-                }
-              >
-                Details
-              </Button>
-              {match.company?.videoUrl && (
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    window.open(
-                      match.company.videoUrl,
-                      "_blank",
-                      "noopener,noreferrer",
-                    );
-                  }}
-                >
-                  Watch video
-                </Button>
-              )}
-              <Button
-                loading={creatingPaymentId === match.company?._id}
-                onClick={() => handleCreatePayment(match.company?._id)}
-              >
-                Request Payment
-              </Button>
-            </div>
-          </Card>
-        ))}
+        <PartnerSearchInput
+          onSearch={(q) => {
+            setSubmittedQuery(q);
+            setHiddenIds(new Set());
+          }}
+          isLoading={isFetching}
+        />
       </div>
 
-      <div className="mt-4">
-        <Link to="/buyers/new">Create a new buyer</Link> ·{" "}
-        <Link to="/companies">Browse companies</Link>
+      <div
+        style={{
+          background: "#fafafa",
+          marginTop: 40,
+          paddingBottom: 40,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1440,
+            margin: "0 auto",
+            padding: "32px 104px 32px 80px",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <SquareButton
+            variant="primary"
+            disabled={checkedIds.size === 0 || isPending}
+            onClick={handleAddPartners}
+            style={{
+              width: 148,
+              padding: "8px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+            }}
+          >
+            <Plus size={24} strokeWidth={1.5} />
+            {t("matches_add_partner")}
+          </SquareButton>
+        </div>
+
+        <div style={{ maxWidth: 1440, margin: "0 auto", padding: "0 80px" }}>
+          <PartnerTable
+            partners={partners}
+            isFetching={isFetching}
+            submittedQuery={submittedQuery}
+            checkedIds={checkedIds}
+            onToggleAll={toggleAll}
+            onToggleOne={toggleOne}
+          />
+        </div>
       </div>
     </div>
   );
