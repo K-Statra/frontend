@@ -6,6 +6,7 @@ import PageHero from "@/components/PageHero";
 import PartnerSearchInput from "@/components/PartnerSearchInput";
 import PartnerTable from "@/components/PartnerTable";
 import SquareButton from "@/components/SquareButton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { usePartnerSearch } from "@/hooks/matches/usePartners";
 import { useSavePartner } from "@/hooks/matches/useSavePartner";
 
@@ -98,51 +99,61 @@ export default function Matches() {
         />
       </div>
 
-      <div
-        style={{
-          background: "#fafafa",
-          marginTop: 40,
-          paddingBottom: 40,
-        }}
-      >
+      {submittedQuery && (
         <div
           style={{
-            maxWidth: 1440,
-            margin: "0 auto",
-            padding: "32px 104px 32px 80px",
-            display: "flex",
-            justifyContent: "flex-end",
+            background: isFetching ? "#f4f7fc" : "#fafafa",
+            marginTop: 40,
+            paddingBottom: isFetching ? 0 : 40,
           }}
         >
-          <SquareButton
-            variant="primary"
-            disabled={checkedIds.size === 0 || isPending}
-            onClick={handleAddPartners}
-            style={{
-              width: 148,
-              padding: "8px 16px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 4,
-            }}
-          >
-            <Plus size={24} strokeWidth={1.5} />
-            {t("matches_add_partner")}
-          </SquareButton>
-        </div>
+          {isFetching ? (
+            <LoadingSpinner />
+          ) : (
+            <>
+              <div
+                style={{
+                  maxWidth: 1440,
+                  margin: "0 auto",
+                  padding: "32px 104px 32px 80px",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <SquareButton
+                  variant="primary"
+                  disabled={checkedIds.size === 0 || isPending}
+                  onClick={handleAddPartners}
+                  style={{
+                    width: 148,
+                    padding: "8px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 4,
+                  }}
+                >
+                  <Plus size={24} strokeWidth={1.5} />
+                  {t("matches_add_partner")}
+                </SquareButton>
+              </div>
 
-        <div style={{ maxWidth: 1440, margin: "0 auto", padding: "0 80px" }}>
-          <PartnerTable
-            partners={partners}
-            isFetching={isFetching}
-            submittedQuery={submittedQuery}
-            checkedIds={checkedIds}
-            onToggleAll={toggleAll}
-            onToggleOne={toggleOne}
-          />
+              <div
+                style={{ maxWidth: 1440, margin: "0 auto", padding: "0 80px" }}
+              >
+                <PartnerTable
+                  partners={partners}
+                  isFetching={isFetching}
+                  submittedQuery={submittedQuery}
+                  checkedIds={checkedIds}
+                  onToggleAll={toggleAll}
+                  onToggleOne={toggleOne}
+                />
+              </div>
+            </>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
