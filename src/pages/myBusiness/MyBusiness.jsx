@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
+import PageHero from "@/components/PageHero";
+import MyInfo from "@/pages/myBusiness/MyInfo";
 
 export default function MyBusiness() {
   const { t } = useI18n();
@@ -7,53 +9,11 @@ export default function MyBusiness() {
 
   return (
     <div style={{ background: "#fafafa", minHeight: "100vh" }}>
-      <div style={{ background: "#f4f7fc" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 20,
-            padding: "40px 80px",
-          }}
-        >
-          <div
-            style={{
-              border: "0.5px solid #0056ee",
-              borderRadius: 999,
-              padding: "8px 12px",
-              background: "#f4f7fc",
-            }}
-          >
-            <span style={{ fontSize: 12, fontWeight: 500, color: "#0056ee" }}>
-              {t("my_business_badge")}
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-              alignItems: "center",
-            }}
-          >
-            <span
-              style={{
-                fontSize: 32,
-                fontWeight: 700,
-                color: "#080616",
-                textAlign: "center",
-                lineHeight: "38px",
-              }}
-            >
-              {t("my_business_title")}
-            </span>
-            <span style={{ fontSize: 16, color: "#a2a0a0" }}>
-              {t("my_business_subtitle")}
-            </span>
-          </div>
-        </div>
-      </div>
+      <PageHero
+        badge={t("my_business_badge")}
+        title={t("my_business_title")}
+        subtitle={t("my_business_subtitle")}
+      />
 
       <div style={{ padding: "40px 80px 20px" }}>
         <div
@@ -109,7 +69,7 @@ export default function MyBusiness() {
         </div>
       </div>
 
-      <div>{activeTab === "my-info" ? <div /> : <div />}</div>
+      <div>{activeTab === "my-info" ? <MyInfo /> : <div />}</div>
     </div>
   );
 }
