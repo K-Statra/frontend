@@ -3,9 +3,9 @@ import { useI18n } from "@/lib/i18n/I18nProvider";
 export default function StepProgressBar({ currentStep }) {
   const { t } = useI18n();
   const STEPS = [
-    { label: t("payment_step_select_partner") },
     { label: t("payment_step_verify_info") },
     { label: t("payment_step_request_payment") },
+    { label: t("payment_step_complete") },
   ];
   return (
     <div

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
@@ -10,16 +9,15 @@ import { useAuthStore } from "@/stores/authStore";
 import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment";
 
 export default function PaymentRequestForm({
-  partner,
   sellerWalletAddress,
   milestones,
   onMilestonesChange,
   onBack,
+  onNext,
 }) {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(false);
-  const { companyId, role } = useAuthStore();
+  const { companyId } = useAuthStore();
   const { mutateAsync, isPending } = useCreateEscrowPayment();
 
   const handleChange = (index, updated) => {
@@ -46,8 +44,7 @@ export default function PaymentRequestForm({
   };
 
   const handleSubmit = async () => {
-    const isBuyer = role === "buyer";
-    const buyerId = isBuyer ? companyId : partner._id;
+    const buyerId = companyId;
 
     const escrows = milestones.map((m, index) => ({
       label: m.milestonePayment,
@@ -60,7 +57,7 @@ export default function PaymentRequestForm({
 
     await mutateAsync({ buyerId, sellerWalletAddress, currency, escrows });
     toast.success("결제 요청이 생성되었습니다.");
-    navigate("/payments");
+    onNext();
   };
 
   return (

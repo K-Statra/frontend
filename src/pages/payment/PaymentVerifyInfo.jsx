@@ -4,13 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import SquareButton from "@/components/SquareButton";
 import LabeledInput from "@/components/LabeledInput";
+import WalletConfirmModal from "@/components/payment/WalletConfirmModal";
 
-export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
+export default function PaymentVerifyInfo({ onBack, onNext }) {
   const { t } = useI18n();
   const [verified, setVerified] = useState(false);
-  const [walletAddress, setWalletAddress] = useState(
-    partner?.walletAddress ?? "",
-  );
+  const [walletAddress, setWalletAddress] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const handleNext = () => setShowModal(true);
 
   return (
     <div style={{ paddingBottom: 80 }}>
@@ -90,11 +92,22 @@ export default function PaymentVerifyInfo({ partner, onBack, onNext }) {
         <SquareButton
           variant="primary"
           disabled={!verified || !walletAddress.trim()}
-          onClick={() => onNext(walletAddress)}
+          onClick={handleNext}
         >
           {t("payment_next")}
         </SquareButton>
       </div>
+
+      {showModal && (
+        <WalletConfirmModal
+          address={walletAddress}
+          onConfirm={() => {
+            setShowModal(false);
+            onNext(walletAddress);
+          }}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }

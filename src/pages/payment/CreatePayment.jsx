@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import StepProgressBar from "@/components/payment/StepProgressBar";
-import PaymentSelectPartner from "@/pages/payment/PaymentSelectPartner";
 import PaymentVerifyInfo from "@/pages/payment/PaymentVerifyInfo";
 import PaymentRequestForm from "@/pages/payment/PaymentRequestForm";
+import PaymentComplete from "@/pages/payment/PaymentComplete";
 
 const variants = {
   initial: (dir) => ({ x: dir * 80, opacity: 0 }),
@@ -28,7 +28,6 @@ export default function CreatePayment() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [dir, setDir] = useState(1);
-  const [selectedPartner, setSelectedPartner] = useState(null);
   const [sellerWalletAddress, setSellerWalletAddress] = useState("");
   const [milestones, setMilestones] = useState([
     {
@@ -90,16 +89,18 @@ export default function CreatePayment() {
         </span>
       </div>
 
-      <div
-        style={{
-          background: "#f4f7fc",
-          display: "flex",
-          justifyContent: "center",
-          padding: "40px 80px 80px",
-        }}
-      >
-        <StepProgressBar currentStep={step} />
-      </div>
+      {step >= 1 && (
+        <div
+          style={{
+            background: "#f4f7fc",
+            display: "flex",
+            justifyContent: "center",
+            padding: "40px 80px 80px",
+          }}
+        >
+          <StepProgressBar currentStep={step} />
+        </div>
+      )}
 
       <div>
         <AnimatePresence mode="popLayout" custom={dir}>
@@ -112,10 +113,12 @@ export default function CreatePayment() {
               animate="animate"
               exit="exit"
             >
-              <PaymentSelectPartner
-                selectedPartner={selectedPartner}
-                onSelect={setSelectedPartner}
-                onNext={goNext}
+              <PaymentVerifyInfo
+                onBack={goBack}
+                onNext={(addr) => {
+                  setSellerWalletAddress(addr);
+                  goNext();
+                }}
               />
             </motion.div>
           )}
@@ -128,13 +131,12 @@ export default function CreatePayment() {
               animate="animate"
               exit="exit"
             >
-              <PaymentVerifyInfo
-                partner={selectedPartner}
+              <PaymentRequestForm
+                sellerWalletAddress={sellerWalletAddress}
+                milestones={milestones}
+                onMilestonesChange={setMilestones}
                 onBack={goBack}
-                onNext={(addr) => {
-                  setSellerWalletAddress(addr);
-                  goNext();
-                }}
+                onNext={goNext}
               />
             </motion.div>
           )}
@@ -147,13 +149,7 @@ export default function CreatePayment() {
               animate="animate"
               exit="exit"
             >
-              <PaymentRequestForm
-                partner={selectedPartner}
-                sellerWalletAddress={sellerWalletAddress}
-                milestones={milestones}
-                onMilestonesChange={setMilestones}
-                onBack={goBack}
-              />
+              <PaymentComplete />
             </motion.div>
           )}
         </AnimatePresence>
