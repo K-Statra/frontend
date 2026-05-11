@@ -12,6 +12,7 @@ export default function App() {
   const location = useLocation();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     track("page_view", { path: location.pathname });
   }, [location]);
 
@@ -24,7 +25,9 @@ export default function App() {
       <main
         id="main-content"
         className={
-          ["/", "/login", "/register", "/matches"].includes(location.pathname)
+          ["/", "/login", "/register", "/matches", "/my-business"].includes(
+            location.pathname,
+          ) || location.pathname.startsWith("/payments")
             ? ""
             : "container"
         }
