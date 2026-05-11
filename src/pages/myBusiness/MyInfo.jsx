@@ -1,4 +1,12 @@
-import { Phone, Mail, Tag, FileText, Link, Building2 } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  Tag,
+  FileText,
+  Link,
+  Building2,
+  Wallet,
+} from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import LabeledInput from "@/components/LabeledInput";
 import AuthDropdown from "@/components/AuthDropdown";
@@ -47,6 +55,7 @@ export default function MyInfo() {
           <LabeledInput
             label={t("my_info_wallet_label")}
             value={walletAddress}
+            icon={Wallet}
             readOnly
           />
           <LabeledInput
