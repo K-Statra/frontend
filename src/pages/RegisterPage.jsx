@@ -10,7 +10,7 @@ import {
   Package,
   Link,
 } from "lucide-react";
-import AuthInput from "@/components/AuthInput.jsx";
+import LabeledInput from "@/components/LabeledInput.jsx";
 import AuthDropdown from "@/components/AuthDropdown.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
@@ -347,7 +347,7 @@ export default function RegisterPage() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <AuthInput
+              <LabeledInput
                 label={t("register_company_label")}
                 placeholder={t("register_company_placeholder")}
                 value={form.companyName}
@@ -355,7 +355,7 @@ export default function RegisterPage() {
                 onKeyDown={handleKeyDown}
                 icon={Building2}
               />
-              <AuthInput
+              <LabeledInput
                 label={t("register_password_label")}
                 placeholder={t("register_password_placeholder")}
                 type="password"
@@ -363,7 +363,7 @@ export default function RegisterPage() {
                 onChange={set("password")}
                 onKeyDown={handleKeyDown}
               />
-              <AuthInput
+              <LabeledInput
                 label={t("register_rep_label")}
                 placeholder={t("register_rep_placeholder")}
                 value={form.representativeName}
@@ -371,7 +371,7 @@ export default function RegisterPage() {
                 onKeyDown={handleKeyDown}
                 icon={User}
               />
-              <AuthInput
+              <LabeledInput
                 label={t("register_email_label")}
                 placeholder="kstatra@gmail.com"
                 type="email"
@@ -380,7 +380,7 @@ export default function RegisterPage() {
                 onKeyDown={handleKeyDown}
                 icon={Mail}
               />
-              <AuthInput
+              <LabeledInput
                 label={t("register_phone_label")}
                 placeholder={t("register_phone_placeholder")}
                 value={form.phone}
@@ -399,7 +399,7 @@ export default function RegisterPage() {
                   ]}
                 />
                 <div style={{ flex: 1 }}>
-                  <AuthInput
+                  <LabeledInput
                     label={
                       isBuyer
                         ? t("register_keywords_buyer_label")
@@ -417,7 +417,7 @@ export default function RegisterPage() {
                   />
                 </div>
               </div>
-              <AuthInput
+              <LabeledInput
                 label={t("register_company_intro_label")}
                 placeholder={t("register_company_intro_placeholder")}
                 value={form.companyIntro}
@@ -425,7 +425,7 @@ export default function RegisterPage() {
                 onKeyDown={handleKeyDown}
                 icon={FileText}
               />
-              <AuthInput
+              <LabeledInput
                 label={t("register_product_intro_label")}
                 placeholder={
                   isBuyer
@@ -437,7 +437,7 @@ export default function RegisterPage() {
                 onKeyDown={handleKeyDown}
                 icon={Package}
               />
-              <AuthInput
+              <LabeledInput
                 label={t("register_website_label")}
                 placeholder="https://www.k-statra.com"
                 type="url"

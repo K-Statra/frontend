@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
-import AuthInput from "@/components/AuthInput.jsx";
+import LabeledInput from "@/components/LabeledInput.jsx";
 import SquareButton from "@/components/SquareButton.jsx";
 import PillButton from "@/components/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
@@ -284,7 +284,7 @@ export default function LoginPage() {
               width: 520,
             }}
           >
-            <AuthInput
+            <LabeledInput
               label={t("login_email_label")}
               placeholder="kstatra@gmail.com"
               type="email"
@@ -293,7 +293,7 @@ export default function LoginPage() {
               onKeyDown={handleKeyDown}
               icon={Mail}
             />
-            <AuthInput
+            <LabeledInput
               label={t("login_password_label")}
               placeholder={t("login_password_placeholder")}
               type="password"

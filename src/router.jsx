@@ -19,6 +19,7 @@ import AdminMatches from "@/pages/AdminMatches.jsx";
 import AdminStats from "@/pages/AdminStats.jsx";
 import ContactPage from "@/pages/ContactPage.jsx";
 import About from "@/pages/About.jsx";
+import CreatePayment from "@/pages/payment/CreatePayment.jsx";
 
 function NotFound() {
   const location = useLocation();
@@ -53,6 +54,7 @@ export default function AppRouter() {
       <Route path="/admin/payments" element={<AdminPayments />} />
       <Route path="/admin/matches" element={<AdminMatches />} />
       <Route path="/admin/stats" element={<AdminStats />} />
+      <Route path="/payments/create" element={<CreatePayment />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

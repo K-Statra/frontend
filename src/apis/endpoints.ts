@@ -36,4 +36,12 @@ export const ENDPOINTS = {
     partners: "/my-business/partners",
     partnerById: (id: string) => `/my-business/partners/${id}`,
   },
+  escrowPayments: {
+    root: "/escrow-payments",
+    byId: (id: string) => `/escrow-payments/${id}`,
+    approve: (id: string) => `/escrow-payments/${id}/approve`,
+    pay: (id: string) => `/escrow-payments/${id}/pay`,
+    userByWallet: (address: string) =>
+      `/escrow-payments/users/wallet/${address}`,
+  },
 };

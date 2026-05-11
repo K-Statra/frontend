@@ -6,7 +6,7 @@ import logoTypo from "@/assets/logo_typo.png";
 
 const navItems = [
   { to: "/matches", key: "nav_partner_matching" },
-  { to: "/payments", key: "nav_xrp_payment" },
+  { to: "/payments/create", key: "nav_xrp_payment" },
   { to: "/overview", key: "nav_my_business" },
 ];
 
