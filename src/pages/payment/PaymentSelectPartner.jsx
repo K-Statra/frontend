@@ -15,7 +15,7 @@ export default function PaymentSelectPartner({
   const { t } = useI18n();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const { data, isFetching } = useMyPartners(page);
+  const { data, isFetching, isError, refetch } = useMyPartners(page);
 
   const partners = (data?.data ?? []).map((p) => ({
     ...p,
@@ -69,6 +69,36 @@ export default function PaymentSelectPartner({
       <div style={{ maxWidth: 1440, margin: "0 auto", padding: "0 80px" }}>
         {isFetching ? (
           <PartnerTableSkeleton />
+        ) : isError ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 12,
+              padding: "60px 0",
+              color: "#a2a0a0",
+            }}
+          >
+            <span style={{ fontSize: 15 }}>
+              파트너 목록을 불러오지 못했습니다.
+            </span>
+            <button
+              onClick={() => refetch()}
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: "#0056ee",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                textDecoration: "underline",
+                padding: 0,
+              }}
+            >
+              다시 시도
+            </button>
+          </div>
         ) : (
           <PartnerTable
             partners={partners}
