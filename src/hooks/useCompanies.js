@@ -8,3 +8,11 @@ export function useCompanies(filters, page, limit) {
     placeholderData: (prev) => prev,
   });
 }
+
+export function useCompany(id) {
+  return useQuery({
+    queryKey: ["company", id],
+    queryFn: () => companiesApi.getById(id),
+    enabled: !!id,
+  });
+}

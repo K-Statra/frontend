@@ -43,5 +43,7 @@ export const ENDPOINTS = {
     pay: (id: string) => `/escrow-payments/${id}/pay`,
     userByWallet: (address: string) =>
       `/escrow-payments/users/wallet/${address}`,
+    approveEvent: (id: string, escrowId: string, type: string) =>
+      `/escrow-payments/${id}/escrows/${escrowId}/events/${encodeURIComponent(type)}/approve`,
   },
 };

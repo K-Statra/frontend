@@ -7,3 +7,11 @@ export function useBuyers(params) {
     queryFn: () => buyersApi.list(params),
   });
 }
+
+export function useBuyer(id) {
+  return useQuery({
+    queryKey: ["buyer", id],
+    queryFn: () => buyersApi.getById(id),
+    enabled: !!id,
+  });
+}
