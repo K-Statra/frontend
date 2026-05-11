@@ -8,6 +8,7 @@ const navItems = [
   { to: "/matches", key: "nav_partner_matching" },
   { to: "/payments/create", key: "nav_xrp_payment" },
   { to: "/my-business", key: "nav_my_business" },
+  { to: "/schedule", key: "nav_schedule" },
 ];
 
 export default function Header() {

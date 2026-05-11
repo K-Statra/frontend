@@ -11,7 +11,7 @@ import BuyerForm from "@/pages/BuyerForm.jsx";
 import CompanyInputForm from "@/pages/CompanyInputForm.jsx";
 import Matches from "@/pages/Matches.jsx";
 import PaymentsPage from "@/pages/PaymentsPage.jsx";
-import SchedulePage from "@/pages/SchedulePage.jsx";
+import SchedulePage from "@/pages/schedule/SchedulePage.jsx";
 import PaymentCheckout from "@/pages/PaymentCheckout.jsx";
 import PaymentStatus from "@/pages/PaymentStatus.jsx";
 import AdminPayments from "@/pages/AdminPayments.jsx";
