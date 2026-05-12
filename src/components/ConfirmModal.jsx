@@ -1,13 +1,16 @@
 import { useEffect } from "react";
-import { useI18n } from "@/lib/i18n/I18nProvider";
 
-export default function EscrowPaymentModal({
+export default function ConfirmModal({
   open,
   onClose,
   onConfirm,
   isPending,
+  title,
+  subtitle,
+  cancelLabel,
+  confirmLabel,
+  pendingLabel,
 }) {
-  const { t } = useI18n();
   useEffect(() => {
     function onKey(e) {
       if (e.key === "Escape" && !isPending) onClose?.();
@@ -86,19 +89,21 @@ export default function EscrowPaymentModal({
                 lineHeight: "30px",
               }}
             >
-              {t("escrow_payment_modal_title")}
+              {title}
             </span>
-            <span
-              style={{
-                fontSize: 16,
-                fontWeight: 400,
-                color: "#080616",
-                lineHeight: "22px",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {t("escrow_payment_modal_subtitle")}
-            </span>
+            {subtitle && (
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 400,
+                  color: "#080616",
+                  lineHeight: "22px",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {subtitle}
+              </span>
+            )}
           </div>
         </div>
 
@@ -120,7 +125,7 @@ export default function EscrowPaymentModal({
               opacity: isPending ? 0.6 : 1,
             }}
           >
-            {t("escrow_payment_modal_cancel")}
+            {cancelLabel}
           </button>
           <button
             onClick={isPending ? undefined : onConfirm}
@@ -139,9 +144,7 @@ export default function EscrowPaymentModal({
               opacity: isPending ? 0.6 : 1,
             }}
           >
-            {isPending
-              ? t("escrow_payment_modal_processing")
-              : t("escrow_payment_modal_confirm")}
+            {isPending ? pendingLabel : confirmLabel}
           </button>
         </div>
       </div>

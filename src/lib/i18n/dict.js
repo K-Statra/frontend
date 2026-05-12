@@ -690,7 +690,7 @@ Object.assign(en, {
   escrow_payment_modal_title: "Do you have XRP in your wallet?",
   escrow_payment_modal_subtitle:
     "Check your XRP balance before payment.\nPayment will not proceed if your balance is insufficient.",
-  escrow_payment_modal_cancel: "No, Check Wallet First",
+  escrow_payment_modal_cancel: "No",
   escrow_payment_modal_confirm: "Yes, Continue Payment",
   escrow_payment_modal_processing: "Processing...",
   payment_escrow_info_label: "Escrow Info",
@@ -913,7 +913,7 @@ const ko = {
   escrow_payment_modal_title: "지갑에 XRP가 있나요?",
   escrow_payment_modal_subtitle:
     "결제 전 XRP 잔액을 확인해 주세요.\n잔액이 부족하면 결제가 진행되지 않습니다.",
-  escrow_payment_modal_cancel: "아니요, 지갑부터 확인할게요",
+  escrow_payment_modal_cancel: "아니요",
   escrow_payment_modal_confirm: "네, 결제 진행할게요",
   escrow_payment_modal_processing: "처리 중...",
   payment_escrow_info_label: "에스크로 정보",

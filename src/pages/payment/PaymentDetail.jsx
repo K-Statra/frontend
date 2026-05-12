@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import { useAuthStore } from "@/stores/authStore";
 import LoadingSpinner from "@/components/LoadingSpinner.jsx";
-import EscrowPaymentModal from "@/components/payment/EscrowPaymentModal";
+import ConfirmModal from "@/components/ConfirmModal";
 import {
   useEscrowPayment,
   useApproveEscrowPayment,
@@ -455,7 +455,7 @@ export default function PaymentDetail({ paymentId }) {
         )}
       </div>
 
-      <EscrowPaymentModal
+      <ConfirmModal
         open={payModalOpen}
         isPending={isPayPending}
         onClose={() => setPayModalOpen(false)}
@@ -464,6 +464,11 @@ export default function PaymentDetail({ paymentId }) {
             onSuccess: () => setPayModalOpen(false),
           })
         }
+        title={t("escrow_payment_modal_title")}
+        subtitle={t("escrow_payment_modal_subtitle")}
+        cancelLabel={t("escrow_payment_modal_cancel")}
+        confirmLabel={t("escrow_payment_modal_confirm")}
+        pendingLabel={t("escrow_payment_modal_processing")}
       />
 
       <div
