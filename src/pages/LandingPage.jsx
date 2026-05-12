@@ -1,8 +1,19 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import SquareButton from "@/components/SquareButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import { useAuthStore } from "@/stores/authStore";
+
+const EASE = [0.16, 1, 0.3, 1];
+
+function fadeUp(delay) {
+  return {
+    initial: { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease: EASE },
+  };
+}
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -63,7 +74,8 @@ export default function LandingPage() {
               alignItems: "center",
             }}
           >
-            <p
+            <motion.p
+              {...fadeUp(0.1)}
               style={{
                 background:
                   "linear-gradient(90deg, #0056ee 0%, #3e83ff 50%, #8ab4ff 100%)",
@@ -78,7 +90,7 @@ export default function LandingPage() {
               }}
             >
               {t("landing_tagline")}
-            </p>
+            </motion.p>
 
             <div
               style={{
@@ -88,7 +100,8 @@ export default function LandingPage() {
                 alignItems: "center",
               }}
             >
-              <p
+              <motion.p
+                {...fadeUp(0.25)}
                 style={{
                   fontSize: 56,
                   fontWeight: 700,
@@ -99,9 +112,12 @@ export default function LandingPage() {
                 }}
               >
                 {t("landing_hero_line1")}
-              </p>
+              </motion.p>
 
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <motion.div
+                {...fadeUp(0.4)}
+                style={{ display: "flex", gap: 12, alignItems: "center" }}
+              >
                 {t("landing_hero_prefix") && (
                   <p
                     style={{
@@ -115,7 +131,10 @@ export default function LandingPage() {
                     {t("landing_hero_prefix")}
                   </p>
                 )}
-                <div
+                <motion.div
+                  initial={{ clipPath: "inset(0 100% 0 0)" }}
+                  animate={{ clipPath: "inset(0 0 0 0)" }}
+                  transition={{ duration: 0.7, delay: 0.8, ease: EASE }}
                   style={{
                     background: "#0056ee",
                     padding: "2px 8px",
@@ -137,7 +156,7 @@ export default function LandingPage() {
                   >
                     {t("landing_hero_highlight")}
                   </p>
-                </div>
+                </motion.div>
                 {t("landing_hero_suffix") && (
                   <p
                     style={{
@@ -151,11 +170,12 @@ export default function LandingPage() {
                     {t("landing_hero_suffix")}
                   </p>
                 )}
-              </div>
+              </motion.div>
             </div>
           </div>
 
-          <p
+          <motion.p
+            {...fadeUp(0.7)}
             style={{
               fontSize: 16,
               color: "#818181",
@@ -166,10 +186,13 @@ export default function LandingPage() {
             }}
           >
             {t("landing_description")}
-          </p>
+          </motion.p>
         </div>
 
-        <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+        <motion.div
+          {...fadeUp(0.9)}
+          style={{ display: "flex", gap: 32, alignItems: "center" }}
+        >
           {isLoggedIn ? (
             <SquareButton variant="solid" onClick={() => navigate("/matches")}>
               {t("nav_partner_matching")}
@@ -190,7 +213,7 @@ export default function LandingPage() {
               </SquareButton>
             </>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
