@@ -9,8 +9,7 @@ export interface EscrowItemDto {
 }
 
 export interface CreateEscrowPaymentDto {
-  buyerId: string;
-  sellerWalletAddress: string;
+  counterpartyWalletAddress: string;
   memo?: string;
   currency?: "XRP" | "RLUSD";
   escrows: EscrowItemDto[];

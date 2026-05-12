@@ -6,7 +6,6 @@ import { useI18n } from "@/lib/i18n/I18nProvider";
 import SquareButton from "@/components/SquareButton";
 import EscrowInfoCard from "@/components/payment/EscrowInfoCard";
 import WalletAddressCard from "@/components/payment/WalletAddressCard";
-import { useAuthStore } from "@/stores/authStore";
 import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment";
 
 export default function PaymentRequestForm({
@@ -18,7 +17,6 @@ export default function PaymentRequestForm({
 }) {
   const { t } = useI18n();
   const [confirmed, setConfirmed] = useState(false);
-  const { companyId } = useAuthStore();
   const { mutateAsync, isPending } = useCreateEscrowPayment();
 
   const handleChange = (index, updated) => {
@@ -45,8 +43,6 @@ export default function PaymentRequestForm({
   };
 
   const handleSubmit = async () => {
-    const buyerId = companyId;
-
     const escrows = milestones.map((m, index) => ({
       label: m.label,
       amountXrp: parseFloat(m.xrplAmount) || 0,
@@ -57,8 +53,7 @@ export default function PaymentRequestForm({
     const firstMilestone = milestones[0];
     try {
       await mutateAsync({
-        buyerId,
-        sellerWalletAddress,
+        counterpartyWalletAddress: sellerWalletAddress,
         memo: firstMilestone?.memo?.trim() || undefined,
         currency: firstMilestone?.currency || "XRP",
         escrows,
