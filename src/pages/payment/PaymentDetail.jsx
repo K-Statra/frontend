@@ -1,5 +1,8 @@
+import { useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import { useAuthStore } from "@/stores/authStore";
 import LoadingSpinner from "@/components/LoadingSpinner.jsx";
+import EscrowPaymentModal from "@/components/payment/EscrowPaymentModal";
 import {
   useEscrowPayment,
   useApproveEscrowPayment,
@@ -8,7 +11,11 @@ import {
 } from "@/hooks/payments/useEscrowPayments";
 import { useMyProfile } from "@/hooks/myBusiness/useMyProfile";
 
+const PAID_STATUSES = ["PROCESSING", "ACTIVE", "COMPLETED"];
+const PRE_ESCROWED_ITEM_STATUSES = ["PENDING_ESCROW", "SUBMITTING"];
+
 function EscrowStatusBadge({ status }) {
+  const { t } = useI18n();
   const isDone = status === "RELEASED";
   return (
     <span
@@ -22,7 +29,7 @@ function EscrowStatusBadge({ status }) {
         whiteSpace: "nowrap",
       }}
     >
-      {isDone ? "Done" : "In Progress"}
+      {isDone ? t("payments_detail_done") : t("payments_status_in_progress")}
     </span>
   );
 }
@@ -73,16 +80,15 @@ function EventRow({
   prevDone,
   isPendingAny,
   escrowStatus,
+  escrowLocked,
 }) {
+  const { t } = useI18n();
   const { mutate: approveEvent, isPending: isPendingApprove } =
     useApproveEscrowEvent(paymentId);
-  const { mutate: payEscrow, isPending: isPendingPay } =
-    usePayEscrow(paymentId);
-  const isPending = isPendingApprove || isPendingPay;
 
-  const isPendingEscrow = escrowStatus === "PENDING_ESCROW";
+  const notYetEscrowed = PRE_ESCROWED_ITEM_STATUSES.includes(escrowStatus);
   const bothDone = approval.buyerApproved && approval.sellerApproved;
-  const locked = !prevDone && index > 0;
+  const locked = escrowLocked || (!prevDone && index > 0) || notYetEscrowed;
 
   const doneDate =
     bothDone && (approval.completedAt ?? approval.updatedAt ?? approval.doneAt)
@@ -113,27 +119,25 @@ function EventRow({
       >
         <div style={{ display: "flex", gap: 24 }}>
           <ConfirmButton
-            label="Buyer Confirmed"
+            label={t("payments_confirm_buyer")}
             myApproved={approval.buyerApproved}
             bothDone={bothDone}
-            disabled={!isBuyer || locked || isPending || isPendingAny}
-            onClick={() =>
-              isPendingEscrow
-                ? payEscrow()
-                : approveEvent({ escrowId, type: approval.eventType })
-            }
+            disabled={!isBuyer || locked || isPendingApprove || isPendingAny}
+            onClick={() => approveEvent({ escrowId, type: approval.eventType })}
           />
           <ConfirmButton
-            label="Seller Confirmed"
+            label={t("payments_confirm_seller")}
             myApproved={approval.sellerApproved}
             bothDone={bothDone}
-            disabled={isBuyer || locked || isPending || isPendingAny}
+            disabled={isBuyer || locked || isPendingApprove || isPendingAny}
             onClick={() => approveEvent({ escrowId, type: approval.eventType })}
           />
         </div>
         {bothDone && (
           <span style={{ fontSize: 9, color: "#a2a0a0", whiteSpace: "nowrap" }}>
-            {doneDate ? `${doneDate} Done` : "Done"}
+            {doneDate
+              ? `${doneDate} ${t("payments_detail_done")}`
+              : t("payments_detail_done")}
           </span>
         )}
       </div>
@@ -141,17 +145,19 @@ function EventRow({
   );
 }
 
-function EscrowItem({ escrow, index, isBuyer, paymentId }) {
+function EscrowItem({ escrow, index, isBuyer, paymentId, prevEscrowsDone }) {
+  const { t } = useI18n();
   const { mutate: _approveEvent, isPending: isPendingAny } =
     useApproveEscrowEvent(paymentId);
 
   const approvals = escrow.approvals ?? [];
+  const escrowLocked = !prevEscrowsDone;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 17 }}>
         <span style={{ fontSize: 12, fontWeight: 500, color: "#080616" }}>
-          Escrow Info {index + 1}
+          {t("payment_escrow_info_label")} {index + 1}
         </span>
         <EscrowStatusBadge status={escrow.status} />
       </div>
@@ -208,6 +214,7 @@ function EscrowItem({ escrow, index, isBuyer, paymentId }) {
                 prevDone={prevDone}
                 isPendingAny={isPendingAny}
                 escrowStatus={escrow.status}
+                escrowLocked={escrowLocked}
               />
             );
           })}
@@ -218,12 +225,16 @@ function EscrowItem({ escrow, index, isBuyer, paymentId }) {
 }
 
 export default function PaymentDetail({ paymentId }) {
-  const { companyId } = useAuthStore();
+  const { t } = useI18n();
+  const { role } = useAuthStore();
   const { data, isLoading, isError, refetch } = useEscrowPayment(paymentId);
   const { mutate: approvePayment, isPending: isApproving } =
     useApproveEscrowPayment(paymentId);
+  const { mutate: payEscrow, isPending: isPayPending } =
+    usePayEscrow(paymentId);
 
   const { data: myProfile } = useMyProfile();
+  const [payModalOpen, setPayModalOpen] = useState(false);
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -240,7 +251,7 @@ export default function PaymentDetail({ paymentId }) {
           fontSize: 14,
         }}
       >
-        <span>데이터를 불러오지 못했습니다.</span>
+        <span>{t("payments_detail_load_error")}</span>
         <button
           onClick={() => refetch()}
           style={{
@@ -254,7 +265,7 @@ export default function PaymentDetail({ paymentId }) {
             cursor: "pointer",
           }}
         >
-          다시 시도
+          {t("payments_detail_retry")}
         </button>
       </div>
     );
@@ -262,11 +273,9 @@ export default function PaymentDetail({ paymentId }) {
 
   if (!data) return null;
 
-  const isBuyer = data.buyerId === companyId;
+  const isBuyer = role === "buyer";
 
-  const counterpartyName = isBuyer
-    ? (data.seller?.name ?? data.sellerCompanyName ?? "-")
-    : (data.buyer?.name ?? data.buyerCompanyName ?? "-");
+  const counterpartyName = data.partnerName ?? "-";
 
   const requestDate = data.createdAt
     ? new Date(data.createdAt)
@@ -292,13 +301,15 @@ export default function PaymentDetail({ paymentId }) {
     (a, b) => a.order - b.order,
   );
 
-  const myWalletAddress = myProfile?.wallet?.address ?? null;
-  const buyerWalletAddress = isBuyer
-    ? myWalletAddress
-    : (data.buyerWalletAddress ?? data.buyer?.wallet?.address ?? null);
-  const sellerWalletAddress = isBuyer
-    ? (data.sellerWalletAddress ?? data.seller?.wallet?.address ?? null)
-    : myWalletAddress;
+  const myWalletAddress =
+    data.myWalletAddress ?? myProfile?.wallet?.address ?? null;
+  const partnerWalletAddress = data.partnerWalletAddress ?? null;
+  const buyerWalletAddress = isBuyer ? myWalletAddress : partnerWalletAddress;
+  const sellerWalletAddress = isBuyer ? partnerWalletAddress : myWalletAddress;
+
+  const isPaid = PAID_STATUSES.includes(data.status);
+  const canInitiatePayment = isBuyer && data.status === "APPROVED";
+  const showPayButton = isBuyer && (canInitiatePayment || isPaid);
 
   return (
     <div
@@ -316,14 +327,14 @@ export default function PaymentDetail({ paymentId }) {
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <span style={{ fontSize: 14, fontWeight: 500, color: "#080616" }}>
-            Transaction Details
+            {t("payments_detail_title")}
           </span>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <span style={{ fontSize: 10, color: "#a2a0a0" }}>
               {counterpartyName}
             </span>
             <span style={{ fontSize: 10, color: "#a2a0a0" }}>
-              Request Date {requestDate}
+              {t("payments_detail_request_date")} {requestDate}
             </span>
           </div>
         </div>
@@ -336,7 +347,7 @@ export default function PaymentDetail({ paymentId }) {
           }}
         >
           <span style={{ fontSize: 10, fontWeight: 500, color: "#a2a0a0" }}>
-            Total Amount
+            {t("payments_detail_total_amount")}
           </span>
           <span style={{ fontSize: 16, fontWeight: 700, color: "#0056ee" }}>
             {totalAmount}
@@ -353,7 +364,7 @@ export default function PaymentDetail({ paymentId }) {
                 whiteSpace: "nowrap",
               }}
             >
-              Buyer XRP Wallet Address
+              {t("payments_detail_buyer_wallet")}
             </span>
             <div
               style={{
@@ -389,7 +400,7 @@ export default function PaymentDetail({ paymentId }) {
                 whiteSpace: "nowrap",
               }}
             >
-              Seller XRP Wallet Address
+              {t("payments_detail_seller_wallet")}
             </span>
             <div
               style={{
@@ -416,7 +427,44 @@ export default function PaymentDetail({ paymentId }) {
             </div>
           </div>
         </div>
+
+        {showPayButton && (
+          <button
+            onClick={
+              canInitiatePayment ? () => setPayModalOpen(true) : undefined
+            }
+            disabled={!canInitiatePayment || isPayPending}
+            style={{
+              width: "100%",
+              height: 46,
+              borderRadius: 8,
+              border: "none",
+              background: canInitiatePayment ? "#0056ee" : "#dadada",
+              color: "#fafafa",
+              fontSize: 16,
+              fontWeight: 500,
+              lineHeight: "22px",
+              cursor:
+                canInitiatePayment && !isPayPending ? "pointer" : "default",
+            }}
+          >
+            {isPaid
+              ? t("payments_detail_escrow_payment_completed")
+              : t("payments_detail_escrow_payment")}
+          </button>
+        )}
       </div>
+
+      <EscrowPaymentModal
+        open={payModalOpen}
+        isPending={isPayPending}
+        onClose={() => setPayModalOpen(false)}
+        onConfirm={() =>
+          payEscrow(undefined, {
+            onSuccess: () => setPayModalOpen(false),
+          })
+        }
+      />
 
       <div
         style={{
@@ -426,15 +474,21 @@ export default function PaymentDetail({ paymentId }) {
           paddingBottom: showApprovalButtons ? 24 : 0,
         }}
       >
-        {sortedEscrows.map((escrow, i) => (
-          <EscrowItem
-            key={escrow._id}
-            escrow={escrow}
-            index={i}
-            isBuyer={isBuyer}
-            paymentId={paymentId}
-          />
-        ))}
+        {sortedEscrows.map((escrow, i) => {
+          const prevEscrowsDone =
+            i === 0 ||
+            sortedEscrows.slice(0, i).every((e) => e.status === "RELEASED");
+          return (
+            <EscrowItem
+              key={escrow._id}
+              escrow={escrow}
+              index={i}
+              isBuyer={isBuyer}
+              paymentId={paymentId}
+              prevEscrowsDone={prevEscrowsDone}
+            />
+          );
+        })}
       </div>
 
       {showApprovalButtons && (
@@ -454,7 +508,7 @@ export default function PaymentDetail({ paymentId }) {
               cursor: "pointer",
             }}
           >
-            Reject
+            {t("payments_action_reject")}
           </button>
           <button
             onClick={() => approvePayment("ACCEPT")}
@@ -471,7 +525,7 @@ export default function PaymentDetail({ paymentId }) {
               cursor: "pointer",
             }}
           >
-            Accept
+            {t("payments_action_accept")}
           </button>
         </div>
       )}

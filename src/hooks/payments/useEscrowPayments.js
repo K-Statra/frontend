@@ -1,5 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { escrowPaymentsApi } from "@/apis";
+
+function extractErrorMessage(error, fallback) {
+  const msg = error?.response?.data?.message?.message;
+  let text;
+  if (Array.isArray(msg)) text = msg.join(", ");
+  else if (typeof msg === "string") text = msg;
+  else return fallback;
+
+  if (text.startsWith("Insufficient XRP balance")) {
+    return "잔액이 부족합니다.";
+  }
+  return text;
+}
 
 export function useEscrowPaymentList(group, page = 1, limit = 10) {
   return useQuery({
@@ -20,11 +34,19 @@ export function useApproveEscrowPayment(paymentId) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (action) => escrowPaymentsApi.approve(paymentId, action),
-    onSuccess: () => {
+    onSuccess: (_, action) => {
       queryClient.invalidateQueries({
         queryKey: ["escrow-payment", paymentId],
       });
       queryClient.invalidateQueries({ queryKey: ["escrow-payments"] });
+      toast.success(
+        action === "REJECT"
+          ? "결제 요청을 거절했습니다."
+          : "결제 요청을 수락했습니다.",
+      );
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, "결제 승인에 실패했습니다."));
     },
   });
 }
@@ -39,6 +61,9 @@ export function useApproveEscrowEvent(paymentId) {
         queryKey: ["escrow-payment", paymentId],
       });
     },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, "이벤트 승인에 실패했습니다."));
+    },
   });
 }
 
@@ -50,6 +75,9 @@ export function usePayEscrow(paymentId) {
       queryClient.invalidateQueries({
         queryKey: ["escrow-payment", paymentId],
       });
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, "결제 개시에 실패했습니다."));
     },
   });
 }
