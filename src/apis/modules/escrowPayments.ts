@@ -19,8 +19,20 @@ export const escrowPaymentsApi = {
   create: (data: CreateEscrowPaymentDto) =>
     http.post(ENDPOINTS.escrowPayments.root, data),
 
-  getList: (params: { group?: string; page?: number; limit?: number } = {}) =>
-    http.get(ENDPOINTS.escrowPayments.root, { params }),
+  getList: (
+    params: {
+      group?: "ongoing" | "done";
+      status?:
+        | "PENDING_APPROVAL"
+        | "APPROVED"
+        | "PROCESSING"
+        | "ACTIVE"
+        | "COMPLETED"
+        | "CANCELLED";
+      page?: number;
+      limit?: number;
+    } = {},
+  ) => http.get(ENDPOINTS.escrowPayments.root, { params }),
 
   getById: (id: string) =>
     http.get(ENDPOINTS.escrowPayments.byId(id)),

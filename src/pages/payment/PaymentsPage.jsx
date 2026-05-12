@@ -2,22 +2,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
-import { useAuthStore } from "@/stores/authStore";
 import PageHero from "@/components/PageHero";
 import SegmentedControl from "@/components/SegmentedControl.jsx";
 import LoadingSpinner from "@/components/LoadingSpinner.jsx";
 import { useEscrowPaymentList } from "@/hooks/payments/useEscrowPayments";
 import PaymentDetail from "@/pages/payment/PaymentDetail.jsx";
+import EscrowProgressBar from "@/components/payment/EscrowProgressBar";
 
 const STATUS_TEXT = {
-  DRAFT: "awaiting",
   PENDING_APPROVAL: "awaiting",
   APPROVED: "in_progress",
-  PROCESSING: "in_progress",
-  ACTIVE: "in_progress",
-  COMPLETED: "done",
-  CANCELLED: "awaiting",
 };
+
+const PROGRESS_BAR_STATUSES = ["PROCESSING", "ACTIVE"];
+const ACTIVE_ITEM_STATUSES = [
+  "SUBMITTING",
+  "ESCROWED",
+  "RELEASING",
+  "RELEASED",
+];
 
 function AmountCell({ amount, currency }) {
   if (amount == null)
@@ -33,11 +36,9 @@ function AmountCell({ amount, currency }) {
   );
 }
 
-function PaymentRow({ item, isSelected, onClick, tab }) {
-  const counterparty =
-    tab === "received"
-      ? (item.buyer?.name ?? item.buyerCompanyName ?? "-")
-      : (item.seller?.name ?? item.sellerCompanyName ?? "-");
+function PaymentRow({ item, isSelected, onClick }) {
+  const { t } = useI18n();
+  const counterparty = item.partnerName ?? "-";
   const date = item.createdAt
     ? new Date(item.createdAt)
         .toLocaleDateString("ko-KR", {
@@ -48,7 +49,47 @@ function PaymentRow({ item, isSelected, onClick, tab }) {
         .replace(/\. /g, " / ")
         .replace(/\.$/, "")
     : "-";
-  const statusKey = STATUS_TEXT[item.status] ?? "awaiting";
+  const escrows = Array.isArray(item.escrows) ? item.escrows : [];
+
+  let progressContent;
+  if (item.status === "COMPLETED") {
+    progressContent = t("payments_status_finished");
+  } else if (item.status === "CANCELLED") {
+    progressContent = t("payments_status_cancelled");
+  } else if (
+    PROGRESS_BAR_STATUSES.includes(item.status) &&
+    escrows.length > 0
+  ) {
+    const sortedEscrows = [...escrows].sort(
+      (a, b) => (a.order ?? 0) - (b.order ?? 0),
+    );
+    const steps = Math.min(sortedEscrows.length, 3);
+    let activeCount = 0;
+    for (const e of sortedEscrows.slice(0, steps)) {
+      if (e.status === "RELEASED") {
+        activeCount++;
+      } else if (ACTIVE_ITEM_STATUSES.includes(e.status)) {
+        activeCount++;
+        break;
+      } else {
+        break;
+      }
+    }
+    const labels = sortedEscrows.slice(0, steps).map((e) => e.label ?? "");
+    progressContent = (
+      <EscrowProgressBar
+        steps={steps}
+        currentStep={activeCount}
+        labels={labels}
+      />
+    );
+  } else {
+    const statusKey = STATUS_TEXT[item.status] ?? "awaiting";
+    progressContent =
+      statusKey === "in_progress"
+        ? t("payments_status_in_progress")
+        : t("payments_status_awaiting");
+  }
 
   return (
     <tr
@@ -64,11 +105,7 @@ function PaymentRow({ item, isSelected, onClick, tab }) {
         <AmountCell amount={item.totalAmountXrp} currency={item.currency} />
       </td>
       <td style={{ ...tdStyle, textAlign: "center", color: "#a2a0a0" }}>
-        {statusKey === "awaiting"
-          ? "Awaiting Response"
-          : statusKey === "done"
-            ? "Done"
-            : "In Progress"}
+        {progressContent}
       </td>
     </tr>
   );
@@ -93,27 +130,19 @@ const tdStyle = {
 export default function PaymentsPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const { companyId } = useAuthStore();
-  const [tab, setTab] = useState("received");
+  const [tab, setTab] = useState("ongoing");
   const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
   const limit = 10;
 
   const { data, isLoading, isError, refetch } = useEscrowPaymentList(
-    "ongoing",
+    tab,
     page,
     limit,
   );
 
-  const rawItems = Array.isArray(data)
-    ? data
-    : (data?.data ?? data?.items ?? []);
+  const items = Array.isArray(data) ? data : (data?.data ?? data?.items ?? []);
   const total = Array.isArray(data) ? data.length : (data?.total ?? 0);
-  const items = rawItems.filter((item) =>
-    tab === "received"
-      ? item.sellerId === companyId
-      : item.buyerId === companyId,
-  );
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   function handleTabChange(val) {
@@ -150,8 +179,8 @@ export default function PaymentsPage() {
           >
             <SegmentedControl
               tabs={[
-                { value: "received", label: t("payments_tab_received") },
-                { value: "sent", label: t("payments_tab_sent") },
+                { value: "ongoing", label: t("payments_tab_ongoing") },
+                { value: "done", label: t("payments_tab_done") },
               ]}
               value={tab}
               onChange={handleTabChange}
@@ -214,13 +243,18 @@ export default function PaymentsPage() {
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ background: "#edf1f4" }}>
-                    <th style={{ ...thStyle, width: 114 }}>REQUEST DATE</th>
-                    <th style={{ ...thStyle, width: 152 }}>COMPANY</th>
-                    <th style={{ ...thStyle, width: 123 }}>
-                      TOTAL AMOUNT
-                      <br />/ CURRENCY
+                    <th style={{ ...thStyle, width: 114 }}>
+                      {t("payments_col_request_date")}
                     </th>
-                    <th style={thStyle}>PROGRESS STATUS</th>
+                    <th style={{ ...thStyle, width: 152 }}>
+                      {t("payments_col_company")}
+                    </th>
+                    <th
+                      style={{ ...thStyle, width: 123, whiteSpace: "pre-line" }}
+                    >
+                      {t("payments_col_amount")}
+                    </th>
+                    <th style={thStyle}>{t("payments_col_status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -249,7 +283,6 @@ export default function PaymentsPage() {
                             item._id === selectedId ? null : item._id,
                           )
                         }
-                        tab={tab}
                       />
                     ))
                   )}
