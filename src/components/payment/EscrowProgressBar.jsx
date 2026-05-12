@@ -1,7 +1,11 @@
+import { motion } from "framer-motion";
+
 const MAX_STEPS = 3;
 const ACTIVE_COLOR = "#0056ee";
 const PENDING_COLOR = "#dadada";
 const ACTIVE_LABEL_COLOR = "#080616";
+const EASE = [0.16, 1, 0.3, 1];
+const STEP_DELAY = 0.18;
 
 export default function EscrowProgressBar({
   steps,
@@ -22,10 +26,8 @@ export default function EscrowProgressBar({
       {Array.from({ length: total }).map((_, i) => {
         const stepNum = i + 1;
         const isActive = stepNum <= currentStep;
-        const circleColor = isActive ? ACTIVE_COLOR : PENDING_COLOR;
         const isLastStep = i === total - 1;
         const nextIsActive = stepNum < currentStep;
-        const lineColor = nextIsActive ? ACTIVE_COLOR : PENDING_COLOR;
 
         return (
           <div
@@ -47,12 +49,21 @@ export default function EscrowProgressBar({
                 flexShrink: 0,
               }}
             >
-              <div
+              <motion.div
+                initial={{ scale: 0.5, backgroundColor: PENDING_COLOR }}
+                animate={{
+                  scale: 1,
+                  backgroundColor: isActive ? ACTIVE_COLOR : PENDING_COLOR,
+                }}
+                transition={{
+                  duration: 0.4,
+                  delay: i * STEP_DELAY,
+                  ease: EASE,
+                }}
                 style={{
                   width: 20,
                   height: 20,
                   borderRadius: 9999,
-                  background: circleColor,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -63,13 +74,22 @@ export default function EscrowProgressBar({
                 }}
               >
                 {stepNum}
-              </div>
-              <span
+              </motion.div>
+              <motion.span
+                initial={{ opacity: 0, color: PENDING_COLOR }}
+                animate={{
+                  opacity: 1,
+                  color: isActive ? ACTIVE_LABEL_COLOR : PENDING_COLOR,
+                }}
+                transition={{
+                  duration: 0.35,
+                  delay: i * STEP_DELAY + 0.1,
+                  ease: EASE,
+                }}
                 style={{
                   fontSize: 10,
                   fontWeight: 500,
                   lineHeight: "12px",
-                  color: isActive ? ACTIVE_LABEL_COLOR : PENDING_COLOR,
                   textAlign: "center",
                   maxWidth: 80,
                   overflow: "hidden",
@@ -78,7 +98,7 @@ export default function EscrowProgressBar({
                 }}
               >
                 {labels[i] ?? `Step ${stepNum}`}
-              </span>
+              </motion.span>
             </div>
 
             {!isLastStep && (
@@ -87,9 +107,35 @@ export default function EscrowProgressBar({
                   flex: 1,
                   height: 1,
                   marginTop: 9.5,
-                  borderTop: `1px dashed ${lineColor}`,
+                  position: "relative",
                 }}
-              />
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    borderTop: `1px dashed ${PENDING_COLOR}`,
+                  }}
+                />
+                <motion.div
+                  initial={{ clipPath: "inset(0 100% 0 0)" }}
+                  animate={{
+                    clipPath: nextIsActive
+                      ? "inset(0 0% 0 0)"
+                      : "inset(0 100% 0 0)",
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: i * STEP_DELAY + 0.12,
+                    ease: EASE,
+                  }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    borderTop: `1px dashed ${ACTIVE_COLOR}`,
+                  }}
+                />
+              </div>
             )}
           </div>
         );
