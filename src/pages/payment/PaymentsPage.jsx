@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider.jsx";
 import PageHero from "@/components/PageHero";
@@ -13,6 +14,8 @@ const STATUS_TEXT = {
   PENDING_APPROVAL: "awaiting",
   APPROVED: "in_progress",
 };
+
+const ROW_EASE = [0.16, 1, 0.3, 1];
 
 const PROGRESS_BAR_STATUSES = ["PROCESSING", "ACTIVE"];
 const ACTIVE_ITEM_STATUSES = [
@@ -36,7 +39,7 @@ function AmountCell({ amount, currency }) {
   );
 }
 
-function PaymentRow({ item, isSelected, onClick }) {
+function PaymentRow({ item, isSelected, onClick, index = 0 }) {
   const { t } = useI18n();
   const counterparty = item.partnerName ?? "-";
   const date = item.createdAt
@@ -92,8 +95,15 @@ function PaymentRow({ item, isSelected, onClick }) {
   }
 
   return (
-    <tr
+    <motion.tr
       onClick={onClick}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.35,
+        delay: index * 0.04,
+        ease: ROW_EASE,
+      }}
       style={{
         cursor: "pointer",
         background: isSelected ? "#ecf3ff" : "transparent",
@@ -107,7 +117,7 @@ function PaymentRow({ item, isSelected, onClick }) {
       <td style={{ ...tdStyle, textAlign: "center", color: "#a2a0a0" }}>
         {progressContent}
       </td>
-    </tr>
+    </motion.tr>
   );
 }
 
@@ -273,7 +283,7 @@ export default function PaymentsPage() {
                       </td>
                     </tr>
                   ) : (
-                    items.map((item) => (
+                    items.map((item, index) => (
                       <PaymentRow
                         key={item._id}
                         item={item}
@@ -283,6 +293,7 @@ export default function PaymentsPage() {
                             item._id === selectedId ? null : item._id,
                           )
                         }
+                        index={index}
                       />
                     ))
                   )}
@@ -336,22 +347,37 @@ export default function PaymentsPage() {
             overflowY: "auto",
           }}
         >
-          {selectedId ? (
-            <PaymentDetail paymentId={selectedId} />
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                color: "#a2a0a0",
-                fontSize: 14,
-              }}
-            >
-              목록에서 결제 건을 선택하세요.
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            {selectedId ? (
+              <motion.div
+                key={selectedId}
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 24 }}
+                transition={{ duration: 0.3, ease: ROW_EASE }}
+              >
+                <PaymentDetail paymentId={selectedId} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="placeholder"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  color: "#a2a0a0",
+                  fontSize: 14,
+                }}
+              >
+                목록에서 결제 건을 선택하세요.
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
