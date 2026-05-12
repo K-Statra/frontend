@@ -38,7 +38,7 @@ export default function SegmentedControl({ tabs, value, onChange }) {
                 inset: 0,
                 borderRadius: 8,
                 background: "#fafafa",
-                border: "1px solid #dadada",
+                border: "none",
                 zIndex: -1,
               }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
