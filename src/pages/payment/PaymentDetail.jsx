@@ -85,10 +85,18 @@ function EventRow({
   const { t } = useI18n();
   const { mutate: approveEvent, isPending: isPendingApprove } =
     useApproveEscrowEvent(paymentId);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const notYetEscrowed = PRE_ESCROWED_ITEM_STATUSES.includes(escrowStatus);
   const bothDone = approval.buyerApproved && approval.sellerApproved;
   const locked = escrowLocked || (!prevDone && index > 0) || notYetEscrowed;
+
+  function handleConfirmEvent() {
+    approveEvent(
+      { escrowId, type: approval.eventType },
+      { onSuccess: () => setConfirmOpen(false) },
+    );
+  }
 
   const doneDate =
     bothDone && (approval.completedAt ?? approval.updatedAt ?? approval.doneAt)
@@ -123,14 +131,14 @@ function EventRow({
             myApproved={approval.buyerApproved}
             bothDone={bothDone}
             disabled={!isBuyer || locked || isPendingApprove || isPendingAny}
-            onClick={() => approveEvent({ escrowId, type: approval.eventType })}
+            onClick={() => setConfirmOpen(true)}
           />
           <ConfirmButton
             label={t("payments_confirm_seller")}
             myApproved={approval.sellerApproved}
             bothDone={bothDone}
             disabled={isBuyer || locked || isPendingApprove || isPendingAny}
-            onClick={() => approveEvent({ escrowId, type: approval.eventType })}
+            onClick={() => setConfirmOpen(true)}
           />
         </div>
         {bothDone && (
@@ -141,6 +149,18 @@ function EventRow({
           </span>
         )}
       </div>
+
+      <ConfirmModal
+        open={confirmOpen}
+        isPending={isPendingApprove}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmEvent}
+        title={t("event_confirm_modal_title")}
+        subtitle={t("event_confirm_modal_subtitle")}
+        cancelLabel={t("event_confirm_modal_cancel")}
+        confirmLabel={t("event_confirm_modal_confirm")}
+        pendingLabel={t("event_confirm_modal_processing")}
+      />
     </div>
   );
 }
