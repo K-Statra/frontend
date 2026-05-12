@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { animate } from "framer-motion";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import { useAuthStore } from "@/stores/authStore";
 import LoadingSpinner from "@/components/LoadingSpinner.jsx";
@@ -13,6 +14,22 @@ import { useMyProfile } from "@/hooks/myBusiness/useMyProfile";
 
 const PAID_STATUSES = ["PROCESSING", "ACTIVE", "COMPLETED"];
 const PRE_ESCROWED_ITEM_STATUSES = ["PENDING_ESCROW", "SUBMITTING"];
+
+function useCountUp(target, duration = 1.2) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (target == null) return undefined;
+    const controls = animate(0, target, {
+      duration,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: setValue,
+    });
+    return () => controls.stop();
+  }, [target, duration]);
+
+  return value;
+}
 
 function EscrowStatusBadge({ status }) {
   const { t } = useI18n();
@@ -255,6 +272,7 @@ export default function PaymentDetail({ paymentId }) {
 
   const { data: myProfile } = useMyProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);
+  const animatedAmount = useCountUp(data?.totalAmountXrp ?? null);
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -310,7 +328,7 @@ export default function PaymentDetail({ paymentId }) {
 
   const totalAmount =
     data.totalAmountXrp != null
-      ? `${data.totalAmountXrp.toLocaleString()} ${data.currency ?? "XRP"}`
+      ? `${Math.round(animatedAmount).toLocaleString()} ${data.currency ?? "XRP"}`
       : "-";
 
   const myApprovedAtPaymentLevel = isBuyer
