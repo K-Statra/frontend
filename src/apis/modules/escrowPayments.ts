@@ -9,8 +9,7 @@ export interface EscrowItemDto {
 }
 
 export interface CreateEscrowPaymentDto {
-  buyerId: string;
-  sellerWalletAddress: string;
+  counterpartyWalletAddress: string;
   memo?: string;
   currency?: "XRP" | "RLUSD";
   escrows: EscrowItemDto[];
@@ -20,11 +19,29 @@ export const escrowPaymentsApi = {
   create: (data: CreateEscrowPaymentDto) =>
     http.post(ENDPOINTS.escrowPayments.root, data),
 
+  getList: (
+    params: {
+      group?: "ongoing" | "done";
+      status?:
+        | "PENDING_APPROVAL"
+        | "APPROVED"
+        | "PROCESSING"
+        | "ACTIVE"
+        | "COMPLETED"
+        | "CANCELLED";
+      page?: number;
+      limit?: number;
+    } = {},
+  ) => http.get(ENDPOINTS.escrowPayments.root, { params }),
+
   getById: (id: string) =>
     http.get(ENDPOINTS.escrowPayments.byId(id)),
 
-  approve: (id: string) =>
-    http.post(ENDPOINTS.escrowPayments.approve(id)),
+  approve: (id: string, action?: "ACCEPT" | "REJECT") =>
+    http.post(ENDPOINTS.escrowPayments.approve(id), action ? { action } : undefined),
+
+  approveEvent: (id: string, escrowId: string, type: string) =>
+    http.post(ENDPOINTS.escrowPayments.approveEvent(id, escrowId, type)),
 
   pay: (id: string) =>
     http.post(ENDPOINTS.escrowPayments.pay(id)),
