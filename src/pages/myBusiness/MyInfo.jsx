@@ -1,12 +1,4 @@
-import {
-  Phone,
-  Mail,
-  Tag,
-  FileText,
-  Link,
-  Building2,
-  Wallet,
-} from "lucide-react";
+import { Phone, Mail, Tag, Building2, Wallet } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import LabeledInput from "@/components/LabeledInput";
 import AuthDropdown from "@/components/AuthDropdown";
@@ -24,10 +16,6 @@ export default function MyInfo() {
   const email = data?.representativeEmail || data?.email || "";
   const companyType = data?.type || "buyer";
   const keywords = (data?.needs || data?.exportItems || []).join(", ");
-  const companyIntro =
-    data?.sellerIntroduction || data?.buyerIntroduction || data?.intro_en || "";
-  const productIntro = data?.productIntroduction || data?.product_intro || "";
-  const websiteUrl = data?.websiteUrl || data?.website || "";
 
   return (
     <div
@@ -91,25 +79,6 @@ export default function MyInfo() {
               />
             </div>
           </div>
-          <LabeledInput
-            label={t("register_company_intro_label")}
-            value={companyIntro}
-            icon={FileText}
-            readOnly
-          />
-          <LabeledInput
-            label={t("register_product_intro_label")}
-            value={productIntro}
-            icon={FileText}
-            readOnly
-          />
-          <LabeledInput
-            label={t("register_website_label")}
-            type="url"
-            value={websiteUrl}
-            icon={Link}
-            readOnly
-          />
         </div>
       </div>
     </div>
