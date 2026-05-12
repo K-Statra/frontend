@@ -10,5 +10,4 @@ logs
 *.err
 tmp.txt
 uploads/
-frontend/dist/
-scripts/
+dist/
