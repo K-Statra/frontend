@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import LandingPage from "@/pages/LandingPage.jsx";
-import LoginPage from "@/pages/LoginPage.jsx";
-import RegisterPage from "@/pages/RegisterPage.jsx";
-import Matches from "@/pages/Matches.jsx";
+import LandingPage from "@/pages/landing/LandingPage.jsx";
+import LoginPage from "@/pages/auth/LoginPage.jsx";
+import RegisterPage from "@/pages/auth/RegisterPage.jsx";
+import Matches from "@/pages/matches/Matches.jsx";
 import PaymentsPage from "@/pages/payment/PaymentsPage.jsx";
 import SchedulePage from "@/pages/schedule/SchedulePage.jsx";
 import CreatePayment from "@/pages/payment/CreatePayment.jsx";
