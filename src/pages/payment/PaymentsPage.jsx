@@ -7,7 +7,7 @@ import PageHero from "@/components/PageHero";
 import SegmentedControl from "@/components/SegmentedControl.jsx";
 import LoadingSpinner from "@/components/LoadingSpinner.jsx";
 import { useEscrowPaymentList } from "@/hooks/payments/useEscrowPayments";
-import PaymentDetail from "@/pages/payment/PaymentDetail.jsx";
+import PaymentDetail from "@/components/payment/PaymentDetail.jsx";
 import EscrowProgressBar from "@/components/payment/EscrowProgressBar";
 
 const STATUS_TEXT = {
