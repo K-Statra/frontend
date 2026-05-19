@@ -22,8 +22,8 @@ const NAV_COLUMNS = [
   {
     titleKey: "nav_my_business",
     links: [
-      { labelKey: "nav_overview", to: "/overview" },
-      { labelKey: "nav_my_partners", to: "/partners" },
+      { labelKey: "my_business_tab_my_info", to: "/my-business" },
+      { labelKey: "my_business_tab_partner_list", to: "/my-business" },
     ],
   },
 ];
