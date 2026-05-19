@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import PageHero from "@/components/PageHero";
 import SegmentedControl from "@/components/SegmentedControl";
-import MyInfo from "@/pages/myBusiness/MyInfo";
-import MyPartnerList from "@/pages/myBusiness/MyPartnerList";
+import MyInfo from "@/components/myBusiness/MyInfo";
+import MyPartnerList from "@/components/myBusiness/MyPartnerList";
 
 export default function MyBusiness() {
   const { t } = useI18n();

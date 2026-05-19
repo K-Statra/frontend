@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import StepProgressBar from "@/components/payment/StepProgressBar";
-import PaymentVerifyInfo from "@/pages/payment/PaymentVerifyInfo";
-import PaymentRequestForm from "@/pages/payment/PaymentRequestForm";
-import PaymentComplete from "@/pages/payment/PaymentComplete";
+import PaymentVerifyInfo from "@/components/payment/PaymentVerifyInfo";
+import PaymentRequestForm from "@/components/payment/PaymentRequestForm";
+import PaymentComplete from "@/components/payment/PaymentComplete";
 
 const variants = {
   initial: (dir) => ({ x: dir * 80, opacity: 0 }),
