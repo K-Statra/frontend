@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import PageHero from "@/components/PageHero";
+import PageHero from "@/components/shared/PageHero";
 import PartnerSearchInput from "@/components/PartnerSearchInput";
-import PartnerTable from "@/components/PartnerTable";
-import SquareButton from "@/components/SquareButton";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import PartnerTable from "@/components/shared/PartnerTable";
+import SquareButton from "@/components/shared/SquareButton";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { usePartnerSearch } from "@/hooks/matches/usePartners";
 import { useSavePartner } from "@/hooks/matches/useSavePartner";
 

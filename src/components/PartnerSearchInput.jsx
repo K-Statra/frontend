@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import SquareButton from "@/components/SquareButton";
+import SquareButton from "@/components/shared/SquareButton";
 
 export default function PartnerSearchInput({ onSearch, isLoading }) {
   const { t } = useI18n();

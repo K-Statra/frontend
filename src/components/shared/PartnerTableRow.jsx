@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Tooltip from "@/components/Tooltip";
+import Tooltip from "@/components/shared/Tooltip";
 
 export default function PartnerTableRow({
   name,

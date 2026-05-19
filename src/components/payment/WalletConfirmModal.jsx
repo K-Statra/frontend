@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import SquareButton from "@/components/SquareButton";
+import SquareButton from "@/components/shared/SquareButton";
 import { useWalletUser } from "@/hooks/payments/useWalletUser";
 
 function InfoRow({ label, value }) {

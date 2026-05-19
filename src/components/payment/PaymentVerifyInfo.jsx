@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import SquareButton from "@/components/SquareButton";
-import LabeledInput from "@/components/LabeledInput";
+import SquareButton from "@/components/shared/SquareButton";
+import LabeledInput from "@/components/shared/LabeledInput";
 import WalletConfirmModal from "@/components/payment/WalletConfirmModal";
 
 export default function PaymentVerifyInfo({ onBack, onNext }) {

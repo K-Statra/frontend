@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { animate } from "framer-motion";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import { useAuthStore } from "@/stores/authStore";
-import LoadingSpinner from "@/components/LoadingSpinner.jsx";
-import ConfirmModal from "@/components/ConfirmModal";
+import LoadingSpinner from "@/components/shared/LoadingSpinner.jsx";
+import ConfirmModal from "@/components/shared/ConfirmModal";
 import {
   useEscrowPayment,
   useApproveEscrowPayment,

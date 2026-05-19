@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
-import LabeledInput from "@/components/LabeledInput.jsx";
-import SquareButton from "@/components/SquareButton.jsx";
-import PillButton from "@/components/PillButton.jsx";
+import LabeledInput from "@/components/shared/LabeledInput.jsx";
+import SquareButton from "@/components/shared/SquareButton.jsx";
+import PillButton from "@/components/shared/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useLogin } from "@/hooks/useAuth";
 import { useI18n } from "@/lib/i18n/I18nProvider";

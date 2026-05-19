@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import SquareButton from "@/components/SquareButton";
+import SquareButton from "@/components/shared/SquareButton";
 
 export default function PaymentComplete() {
   const { t } = useI18n();

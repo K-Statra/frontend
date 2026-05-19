@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import PartnerTable from "@/components/PartnerTable";
+import PartnerTable from "@/components/shared/PartnerTable";
 import PartnerTableSkeleton from "@/components/payment/PartnerTableSkeleton";
-import SquareButton from "@/components/SquareButton";
+import SquareButton from "@/components/shared/SquareButton";
 import { useMyPartners } from "@/hooks/myBusiness/useMyPartners";
 import { useRemovePartner } from "@/hooks/myBusiness/useRemovePartner";
 

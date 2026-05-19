@@ -10,10 +10,10 @@ import {
   Package,
   Link,
 } from "lucide-react";
-import LabeledInput from "@/components/LabeledInput.jsx";
-import AuthDropdown from "@/components/AuthDropdown.jsx";
-import SquareButton from "@/components/SquareButton.jsx";
-import PillButton from "@/components/PillButton.jsx";
+import LabeledInput from "@/components/shared/LabeledInput.jsx";
+import AuthDropdown from "@/components/shared/AuthDropdown.jsx";
+import SquareButton from "@/components/shared/SquareButton.jsx";
+import PillButton from "@/components/shared/PillButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useRegister } from "@/hooks/useAuth";
 import { useI18n } from "@/lib/i18n/I18nProvider";

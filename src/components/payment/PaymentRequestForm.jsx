@@ -3,7 +3,7 @@ import { Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import SquareButton from "@/components/SquareButton";
+import SquareButton from "@/components/shared/SquareButton";
 import EscrowInfoCard from "@/components/payment/EscrowInfoCard";
 import WalletAddressCard from "@/components/payment/WalletAddressCard";
 import { useCreateEscrowPayment } from "@/hooks/payments/useCreateEscrowPayment";

@@ -1,7 +1,7 @@
 import { Phone, Mail, Tag, Building2, Wallet } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import LabeledInput from "@/components/LabeledInput";
-import AuthDropdown from "@/components/AuthDropdown";
+import LabeledInput from "@/components/shared/LabeledInput";
+import AuthDropdown from "@/components/shared/AuthDropdown";
 import { useMyProfile } from "@/hooks/myBusiness/useMyProfile";
 
 export default function MyInfo() {

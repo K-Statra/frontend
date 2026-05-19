@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useI18n } from "@/lib/i18n/I18nProvider";
-import PartnerTableRow from "@/components/PartnerTableRow";
+import PartnerTableRow from "@/components/shared/PartnerTableRow";
 
 const rowVariants = {
   hidden: { opacity: 0, y: 16 },

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import SquareButton from "@/components/SquareButton.jsx";
+import SquareButton from "@/components/shared/SquareButton.jsx";
 import worldMap from "@/assets/world-map.png";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import { useAuthStore } from "@/stores/authStore";
