@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import LandingPage from "@/pages/landing/LandingPage.jsx";
 import LoginPage from "@/pages/auth/LoginPage.jsx";
 import RegisterPage from "@/pages/auth/RegisterPage.jsx";
@@ -8,16 +7,7 @@ import PaymentsPage from "@/pages/payment/PaymentsPage.jsx";
 import SchedulePage from "@/pages/schedule/SchedulePage.jsx";
 import CreatePayment from "@/pages/payment/CreatePayment.jsx";
 import MyBusiness from "@/pages/myBusiness/MyBusiness.jsx";
-
-function NotFound() {
-  const location = useLocation();
-  return (
-    <div>
-      <h2>404</h2>
-      <p>Page not found: {location.pathname}</p>
-    </div>
-  );
-}
+import NotFoundPage from "@/pages/error/NotFoundPage.jsx";
 
 export default function AppRouter() {
   return (
@@ -30,7 +20,7 @@ export default function AppRouter() {
       <Route path="/payments/create" element={<CreatePayment />} />
       <Route path="/matches" element={<Matches />} />
       <Route path="/my-business" element={<MyBusiness />} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
